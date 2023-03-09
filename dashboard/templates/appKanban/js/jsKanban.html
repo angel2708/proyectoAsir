@@ -1,0 +1,32 @@
+{% load static %}
+
+<!-- BEGIN: Vendor JS-->
+<script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+<!-- BEGIN Vendor JS-->
+
+<!-- BEGIN: Page Vendor JS-->
+{% comment %} <script src="{% static 'vendors/js/jkanban/jkanban.min.js' %}"></script> {% endcomment %}
+<script src="{% static 'vendors/js/pickers/daterange/moment.min.js' %}"></script>
+<script src="{% static 'vendors/js/pickers/daterange/daterangepicker.js' %}"></script>
+<script src="{% static 'vendors/js/extensions/sweetalert2.all.min.js' %}"></script>
+<script src="{% static 'vendors/js/forms/select/select2.full.min.js' %}"></script>
+<script src="{% static 'vendors/js/forms/quill/quill.js' %}"></script>
+<script src="{% static 'vendors/js/extensions/dragula.min.js' %}"></script>
+<script src="{% static 'vendors/js/forms/toggle/switchery.min.js' %}"></script>
+<script src="{% static 'vendors/js/forms/toggle/bootstrap-checkbox.min.js' %}"></script>
+<!-- END: Page Vendor JS-->
+
+<!-- BEGIN: Theme JS-->
+<script src="{% static 'js/core/app-menu.js' %}"></script>
+<script src="{% static 'js/core/app.js' %}"></script>
+<!-- END: Theme JS-->
+
+<!-- BEGIN: Page JS-->
+<script src="{% static 'js/scripts/extensions/toastr.js' %}"></script>
+<script src="{% static 'js/scripts/extensions/sweet-alerts.js' %}"></script>
+<script src="{% static 'js/scripts/extensions/sweet-alerts.min.js' %}"></script>
+<script src="{% static 'js/scripts/forms/switch.js' %}"></script>
+<script src="{% static 'js/apps/kanban/kanban.js' %}"></script>
+{% comment %} <script src="{% static 'js/scripts/pages/app-kanban.js' %}"></script>
+<script src="{% static 'js/scripts/pages/app-kanban.min.js' %}"></script> {% endcomment %}
+<!-- END: Page JS-->

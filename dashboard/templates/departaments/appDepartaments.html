@@ -1,0 +1,169 @@
+{% extends 'general/layout.html' %}
+
+{% load static %}
+
+{% block titlePage %}
+Usuarios
+{% endblock %}
+
+{% block css %}
+
+    {% include 'departaments/css/cssDepartaments.html' %}
+
+{% endblock %}
+
+{% block body %}
+    <body class="vertical-layout vertical-menu-modern 2-columns app-contacts fixed-navbar" data-open="click" data-menu="vertical-menu-modern" data-col="2-columns">
+{% endblock %}
+
+{% block appContent %}
+
+    <!-- BEGIN: Content-->
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="content-wrapper">
+            <div class="content-body">
+                <!-- TABLA USUARIOS -->
+                <section class="row all-contacts">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-head">
+                                <div class="card-header">
+                                    <h4 class="card-title" data-i18n="Departaments-Management">Gestión de departamentos</h4>
+                                    <div class="heading-elements mt-0">
+                                        {% if permissions.create or permissions == "main_admin" %}
+                                            <button class="btn btn-primary btn-md departament-create" data-toggle="modal" data-target="#DepartamentModal"><i class="d-md-none d-block feather icon-plus white"></i>
+                                                <span class="d-md-block d-none" data-i18n="Add-Departament">Añadir departamento</span>
+                                            </button>
+                                        {% endif %}                                        
+
+                                            <!-- Modal Crear Usuario start -->
+                                            <div class="modal fade" id="DepartamentModal" tabindex="-1" role="dialog" aria-labelledby="departamentModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <section class="contact-form">
+                                                            <form method="POST" id="form-departament" class="contact-input">
+                                                                {% csrf_token %}
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="departamentModalLabel" data-i18n="Departament-Management">Gestión del departamento</h5>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <fieldset class="form-group col-12">
+                                                                        <input type="text" id="departament-name" class="departament-name form-control" placeholder="Nombre del departamento">
+                                                                    </fieldset>
+
+                                                                    <fieldset class="form-group col-12">
+                                                                        <select class="custom-select block dept-manager" name="dept-manager">
+                                                                            <option value="0">Seleccionar encargado<option>
+                                                                        </select>
+                                                                    </fieldset>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <fieldset class="form-group position-relative has-icon-left mb-0">
+                                                                        <button type="button" class="btn btn-info saveDepartament">
+                                                                            <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                                                            <span class="d-none d-lg-block" data-i18n="Save">Guardar</span>
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-info addDepartament">
+                                                                            <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                                                            <span class="d-none d-lg-block" data-i18n="Add">Añadir</span>
+                                                                        </button>
+                                                                    </fieldset>
+                                                                </div>
+                                                            </form>
+                                                        </section>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Modal Crear cliente end -->
+                                            <span class="dropdown">
+                                                <button id="btnSearchDrop1" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="btn btn-warning dropdown-menu-right dropdown-toggle btn-md">
+                                                    <i class="feather icon-download-cloud white"></i></button>
+                                                <span aria-labelledby="btnSearchDrop1" class="dropdown-menu dropdown-menu-right mt-1">
+                                                    <a href="#" class="dropdown-item" data-i18n="Import"><i class="feather icon-upload"></i> Importar</a>
+                                                    <a href="#" class="dropdown-item" data-i18n="Export"><i class="feather icon-download"></i> Exportar</a>
+                                                    <a href="#" class="dropdown-item" data-i18n="Find-Duplicate"><i class="feather icon-shuffle"></i>Buscar duplicados</a>
+                                                </span>
+                                            </span>
+                                            <button class="btn btn-default btn-sm"><i class="feather icon-settings white"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <div class="card-body">
+                                        <!-- Task List table -->
+                                        <div class="table-responsive">
+                                            <table id="departaments-table" class="table table-white-space table-bordered row-grouping display no-wrap icheck table-middle text-center">
+                                                <thead>
+                                                    <tr>
+                                                        <th><input type="checkbox" class="input-chk" id="check-all" onclick="toggle();"></th>
+                                                        <th data-i18n="Code">Codigo</th>
+                                                        <th data-i18n="Name">Nombre</th>
+                                                        <th data-i18n="Manager">Encargado</th>
+                                                        <th data-i18n="User-Number">Nº Usuarios</th>
+                                                        <th data-i18n="Actions">Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for departament in departaments %}
+                                                    {% csrf_token %}
+                                                        <tr>
+                                                            <td>
+                                                                <input type="hidden" class="hidden-id" value="{{departament.id}}">
+                                                                <input type="hidden" class="hidden-name" value="{{departament.name}}">
+                                                                <input type="checkbox" class="input-chk check">
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <a class="id index-reference" href="{{departament.id}}">{{ forloop.counter }}</a>
+                                                            </td>
+                                                            <td>
+                                                                <p class="departament-name dpt-id-{{departament.id}}">{{departament.name}}</p>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                {% if departament.first_name is null %}
+                                                                    <p class="dpt-manager-{{departament.id}}">Sin asignar</p>
+                                                                {% else %}
+                                                                    <p class="dpt-manager-{{departament.id}}">{{departament.first_name}} {{departament.last_name}}</p>
+                                                                {% endif %}
+                                                            </td>
+                                                            <td class="text-center">
+                                                                {% if departament.nw is null %}
+                                                                    <p>0</p>
+                                                                {% else %}
+                                                                    <p>{{departament.nw}}</p>
+                                                                {% endif %}
+                                                            </td>   
+                                                            <td>
+                                                                {% if permissions.edit or permissions == "main_admin" %}
+                                                                    <a data-toggle="modal" data-target="#DepartamentModal" class="primary edit-departament mr-1"><i class="fa fa-pen"></i></a>
+                                                                {% endif %}
+                                                                {% if permissions.delete or permissions == "main_admin" %}
+                                                                    <a class="danger delete-departament mr-1"><i class="fa fa-trash"></i></a>
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </section>
+                    <!-- TABLA USUSARIOS -->
+            </div>
+        </div>
+    </div>
+    <!-- END: Content-->
+
+{% endblock %}
+
+{% block js %}
+
+    {% include 'departaments/js/jsDepartaments.html' %}
+
+{% endblock %}

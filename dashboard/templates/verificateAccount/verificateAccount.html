@@ -1,0 +1,145 @@
+
+{% load static %}
+
+{% block titlePage %}
+{% comment %} Verificate Account {% endcomment %}
+{% endblock %}
+
+{% block css %}
+
+    {% include 'verificateAccount/css/cssVerificateAccount.html' %}
+
+{% endblock %}
+
+{% block body %}
+    <body class="vertical-layout vertical-menu-modern 1-column bg-full-screen-image-dark blank-page blank-page" data-open="click" data-menu="vertical-menu-modern" data-col="1-column">
+{% endblock %}
+
+{% block appContent %}
+
+    <!-- BEGIN: Content-->
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+            </div>
+            <div class="content-body">
+                <section class="row flexbox-container">
+                    <div class="col-12 d-flex align-items-center justify-content-end full-height">
+                        <div class=" row align-items-center">
+
+                            <div class="float-left col align-self-center" style="position:absolute; left:-325px;">
+                            {% include "postRegister/reviewsRegister.html" %}
+                            </div>
+                        </div>
+
+
+                            <div class="col-lg-5 col-md-8 col-12 box-shadow-2 p-0 full-height max-height">
+                                <div class="card border-grey border-lighten-3 px-1 py-1 m-0 full-height">
+                                    <div class="card-header border-0">
+                                        <div class="card-title text-center">
+                                            <img src="{% static 'images/logo/stack-logo-dark.png' %}" alt="logo">
+                                        </div>
+                                        <h6 class="card-subtitle line-on-side text-muted text-center pt-2"><span data-i18n="Todo tu negocio en un mismo lugar">Todo tu negocio en un mismo lugar</span></h6>
+                                    </div>
+                                    <div class="card-content">
+                                        <div class="card-body">
+
+                                            <h2 class="display-2 text-center mb-8" >GRACIAS POR UNIRTE A NOSOTROS</h2>
+                                            <h3 style="font-size:19px;" class=" text-center mb-2">Su cuenta ha sido verificada correctamente.</h3>
+
+                                            <div class="row py-2">
+                                                <div class="col-12 col-sm-6 col-md-6 mb-1">
+                                                    <a href="{% url 'login' %}" class="btn btn-primary btn-block"><i class="feather icon-home"></i> Home</a>
+                                                </div>
+                                                <div class="col-12 col-sm-6 col-md-6 mb-1">
+                                                    <a href="{% url 'login' %}" class="btn btn-danger btn-block"><i class="feather icon-unlock"></i> Login</a>
+                                                </div>
+                                            </div>
+
+                                            
+                                            <div class="row d-none d-md-block">
+                                                <p class="text-muted text-center col-12 py-1">© <span class="year"></span> <a href="#">G </a>Crafted with <i class="feather icon-heart pink"> </i></p>
+                                            </div>
+
+                                        </div>
+                                        <!--<p class="card-subtitle line-on-side text-muted text-center font-small-3 mx-2 my-1" data-i18n="¿Nuevo en G?"><span>¿Nuevo en G?</span></p>
+                                        <div class="card-body">
+                                            <a href="{% url 'register' %}" class="btn btn-outline-danger btn-block" data-i18n="Crea una cuenta"><i class="feather icon-user"></i> Crea una cuenta</a>
+                                        </div>-->
+                                        <div>
+                                            <p class="card-subtitle line-on-side text-muted text-center mx-2 my-1 row d-none d-md-block" style="font-size:12px;"><span>Puedes encontrarnos en:</span></p><br>
+                                            <div class="text-center">
+                                            <a href="https://www.facebook.com/esmovil" class="btn btn-social-icon mr-1 mb-1 btn-outline-facebook"><span class="fa fa-facebook"></span></a>
+                                            <a href="https://twitter.com/esmovil_es?lang=es" class="btn btn-social-icon mr-1 mb-1 btn-outline-twitter"><span class="fa fa-twitter"></span></a>
+                                            <a href="https://www.linkedin.com/company/esmovil/" class="btn btn-social-icon mr-1 mb-1 btn-outline-linkedin"><span class="fa fa-linkedin font-medium-4"></span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    <!-- END: Content-->
+
+    {% comment %} <!-- BEGIN: Content-->
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+            </div>
+            <div class="content-body">
+                <section class="flexbox-container">
+                    <div class="col-12 d-flex align-items-center justify-content-center">
+                        <div class="col-lg-4 col-md-8 col-10 p-0">
+                            <div class="card-header bg-transparent border-0">
+                                <h2 class="error-code text-center mb-2">GRACIAS POR UNIRTE A NOSOTROS</h2>
+                                <h3 class="text-uppercase text-center">Su cuenta ha sido verificada correctamente</h3>
+                            </div>
+                            <div class="card-content">
+                                <!--<fieldset class="row py-2">
+                                    <div class="input-group col-12">
+                                        <input type="text" class="form-control form-control-xl input-xl border-grey border-lighten-1 " placeholder="Search..." aria-describedby="button-addon2">
+                                        <span class="input-group-append" id="button-addon2">
+                                            <button class="btn btn-secondary border-grey border-lighten-1" type="button"><i class="feather icon-search"></i></button>
+                                        </span>
+                                    </div>
+                                </fieldset>-->
+                                <div class="row py-2">
+                                    <div class="col-12 col-sm-6 col-md-6 mb-1">
+                                        <a href="{% url 'login' %}"" class="btn btn-primary btn-block"><i class="feather icon-home"></i> Home</a>
+                                    </div>
+                                    <div class="col-12 col-sm-6 col-md-6 mb-1">
+                                        <a href="{% url 'login' %}"" class="btn btn-danger btn-block"><i class="feather icon-unlock"></i> Login</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <div class="row">
+                                    <p class="text-muted text-center col-12 py-1">© <span class="year"></span> <a href="#">G </a>Crafted with <i class="feather icon-heart pink"> </i></p>
+                                    <div class="col-12 text-center">
+                                        <a href="#" class="btn btn-social-icon mr-1 mb-1 btn-outline-facebook"><span class="fa fa-facebook"></span></a>
+                                        <a href="#" class="btn btn-social-icon mr-1 mb-1 btn-outline-twitter"><span class="fa fa-twitter"></span></a>
+                                        <a href="#" class="btn btn-social-icon mr-1 mb-1 btn-outline-linkedin"><span class="fa fa-linkedin font-medium-4"></span></a>
+                                        <a href="#" class="btn btn-social-icon mr-1 mb-1 btn-outline-github"><span class="fa fa-github font-medium-4"></span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </div> {% endcomment %}
+    <!-- END: Content-->
+
+{% endblock %}
+
+{% block js %}
+
+    {% include 'verificateAccount/js/jsVerificateAccount.html' %}
+
+{% endblock %}

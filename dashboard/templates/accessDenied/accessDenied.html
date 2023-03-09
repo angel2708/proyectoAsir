@@ -1,0 +1,86 @@
+{% extends 'general/layout.html' %}
+
+{% load static %}
+
+{% block css %}
+
+    {% include 'accessDenied/css/cssAccessDenied.html' %}
+
+{% endblock %}
+
+{% block titlePage %}
+    Acceso denegado
+{% endblock %}
+
+{% block body %}
+    <body class="vertical-layout vertical-menu-modern content-left-sidebar fixed-navbar" data-open="click" data-menu="vertical-menu-modern" data-col="content-left-sidebar">
+{% endblock %}
+
+{% block appContent_hide %}
+
+{% endblock %}
+
+<!--MANTENIMIENTO-->
+
+{% block appContent %}
+
+<style>
+{% include '404/css/css404style.html' %}
+</style> 
+
+<!-- BEGIN: Content-->
+<div class="error-content" style="height: 95%;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 ">
+                <div class="error-text">
+                    <h1 class="error">404 Error</h1>
+                    <img height='400' width='400' src="/dashboard/staticfiles/images/mantenimiento/404notfound.png">
+                    
+                    <h4>¡Esta página no se ha podido encontrar!</h4>
+                    <p2>Lo siento, parece que la página a la que intentas acceder no existe, se le ha cambiado el nombre o se ha eliminado.</p2>
+                    <a href="<?=base_url()?>" class="btn btn-primary btn-round">Volver a página principal</a>
+                </div>
+            </div>
+        </div>
+    </div>
+ </div>
+
+        {% comment %} <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+            </div>
+            <div class="content-body">
+                <section class="flexbox-container">
+                    <div class="col-12 d-flex align-items-center justify-content-center">
+                        <div class="col-md-12 col-10 p-0">
+                            <div class="">
+                                <div class="card-body text-center">
+                                    <span class="card-title text-center">
+                                        <img src="{% static 'images/mantenimiento/mantenimiento.png' %}" style="width:40%;" class="img-fluid mx-auto d-block pt-2" alt="logo">
+                                    </span>
+                                </div>
+                                <div class="card-body text-center">
+                                    <h2>Lo sentimos, no podemos encontrar lo que buscas</h2>
+                                    <h4></h4>
+                                    <br>
+                                    <div class="mt-2"><i class="fa fa-cog spinner font-large-2"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div> {% endcomment %}
+
+{% endblock %}
+
+<!--MANTENIMIENTO-->
+
+{% block js %}
+
+    {% include 'accessDenied/js/jsAccessDenied.html' %}
+
+{% endblock %}

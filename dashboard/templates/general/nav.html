@@ -1,0 +1,78 @@
+{% load static %}
+
+{% block css %}
+
+    {% include 'general/css/cssCalendar.html' %}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+{% endblock %}
+{% load nav %}
+{% loadCompanies as companiesList%}
+{% csrf_token %}
+
+{% loadCompanies as companiesList %}
+{% getCa as ca %}
+{% getCompanyUserId as cuid %}
+{% getDepartament as departaments %}
+<!-- BEGIN: Header-->
+    <nav class="header-navbar navbar-expand-lg navbar navbar-with-menu fixed-top navbar-semi-dark navbar-shadow">
+        <div class="navbar-wrapper">
+            <div class="navbar-header">
+                <ul class="nav navbar-nav flex-row">
+                    <li class="nav-item mobile-menu d-lg-none mr-auto"><a class="nav-link nav-menu-main menu-toggle hidden-xs" href="#"><i class="feather icon-menu font-large-1"></i></a></li>
+                    <li class="nav-item mr-auto"><!--<a class="navbar-brand" href="/inicio"><img class="brand-logo" alt="stack admin logo" src="{% static 'images/logo/stack-logo-light.png' %}">-->
+                        <strong class="form-control switchCompany" id="switchCompany" style="margin-top:10px;">Proyecto Angel</strong>        
+                    </li>
+                    <li class="nav-item d-lg-none"><a class="nav-link open-navbar-container" data-toggle="collapse" data-target="#navbar-mobile"><i class="fa fa-ellipsis-v"></i></a></li>
+                </ul>
+            </div>
+            <div class="navbar-container content">
+                <div class="collapse navbar-collapse" id="navbar-mobile">
+                    <ul class="nav navbar-nav mr-auto float-left">
+                    </ul>
+                    <ul class="nav navbar-nav float-right" style="width:99%;">
+                        {% if ca.user_id != 84 %}
+                            <div style="margin-top:23px;">
+                                <div class="green-point"></div>
+                                <h4 class="check-in-time" style="background-color:white;" data-toggle="tooltip" data-placement="bottom" data-html="true" title=""></h4>
+                            </div>
+                            <div class="check-in-background"></div>
+                            <div class="check-in-button">
+                                <h3 class="check-in-text">Entrada</h3>
+                            </div>
+                        {% endif %}
+                        
+                        <li class="dropdown dropdown-notification nav-item" style="margin:auto; margin-right:0;"><a class="nav-link nav-link-label" href="#" data-toggle="dropdown"><i class="ficon feather icon-bell"></i><span class="badge badge-pill badge-danger badge-up notification-count"></span></a>
+                            <ul class="dropdown-menu dropdown-menu-media dropdown-menu-right notification-lsit" style="max-height:500px;overflow-y:auto;">
+                                <li class="dropdown-menu-header">
+                                    <h6 class="dropdown-header m-0"><span class="grey darken-2">Notificaciones</span>
+                                    {% if ca.role == 6 or ca.user_id == 14 %}
+                                        <input type="hidden" id="role" value="{{ca.role}}">
+                                        <span class="hide-all-notification notification-tag badge float-right badge-primary m-0" style="margin-left: 3% !important; cursor:pointer;">Limpiar</span>
+                                    {% endif %}
+                                    <span class="notification-tag badge badge-danger float-right m-0 new-notif-count"></span></h6>
+                                </li>
+
+                                <span class="notification-container"></span>
+                            
+                            </ul>
+                        </li>
+
+                        <li class="dropdown dropdown-user nav-item"><a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown">
+                                <div class="avatar avatar-online"><img src="{% static 'images/portrait/small/' %}{{request.user.avatar}}" alt="avatar"><i></i></div><span class="user-name">{{request.user.first_name}} {{request.user.last_name}}</span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="/users-management/{{ cuid }}"><i class="feather icon-user"></i> Mi perfil</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{% url 'logout' %}"><i class="feather icon-power"></i> Cerrar Sesión</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+{% block js %}
+
+{% endblock %}

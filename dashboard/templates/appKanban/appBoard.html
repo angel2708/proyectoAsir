@@ -1,0 +1,452 @@
+{% extends 'general/layout.html' %}
+
+{% load static %}
+
+{% block titlePage %}
+Kanban
+{% endblock %}
+
+{% block css %}
+
+    {% include 'appKanban/css/cssKanban.html' %}
+
+{% endblock %}
+
+{% block body %}
+    <body class="vertical-layout vertical-menu-modern content-left-sidebar todo-application  fixed-navbar" data-open="click" data-menu="vertical-menu-modern" data-col="content-left-sidebar">
+{% endblock %}
+
+{% block appContent %}
+
+    <!-- BEGIN: Content-->
+    <div class="app-content content">
+        <div class="content-wrapper">
+            <div class="content-header row">
+            </div>
+            <div class="content-body">
+                <!-- Basic Kanban App -->
+                <div class="kanban-overlay"></div>
+                <section id="kanban-wrapper">
+                    <div class="row">
+                        <div class="btn btn-secondary cursor-pointer" role='button' style=' background-color: #4A5151 !important; margin-left: 1.35%;'>
+                            <a class='white' href="{% url 'kanbans' %}"><i class="fas fa-home"></i> Volver a Inicio</a>
+                        </div>
+                        <div class="dropdown btn-board">
+                            <div class="dropdown-toggle cursor-pointer" role="button" id="dropdownBoardName" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <a href="#"><button type="button" style="color: white; background-color: #4A5151" class="btn" id="choose-board"><i class='feather icon-align-justify mr-50'></i> Tableros</button></a>
+                            </div>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownBoardName" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(23px, 24px, 0px); margin-left: 18%;">
+                                {% for b in ba %}
+                                    {% if b.removed == False %}
+                                        <a class="dropdown-item boards" href="{{b.board_id}}">{{b.name}}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="btn-board">
+                            <h3 class="board-name" {% if board.owner == user.id %} contenteditable="true" {% endif %}>{{board.name}}</h3>
+                            <div style="position: absolute; margin-top: -0.7%;">
+                                <p class="character-counter" style="font-size: 9px; margin-top: -13%; float:left;"></p>
+                                <p class="character-counter-static" style="font-size: 9px; margin-top: -13%; float:left;">/15</p>
+                            </div>
+                        </div>
+                        <div class="btn-board">
+                            <a data-toggle="modal" data-target="#ListModal" href="#"><button type="button" class="btn btn-primary" id="add-list"><i class='feather icon-plus-square mr-50'></i> Añadir lista</button></a>
+                        </div>
+                        {% if board.owner == user.id %}
+                            <div class="btn-board">
+                                <a data-toggle="modal" data-target="#InvitationModal" href="#"><button type="button" class="btn btn-primary" id="add-member"><i class='feather icon-lock mr-50'></i> Acceso</button></a>
+                            </div>
+                        {% endif %}
+                        <div class="avatar-list">
+                            {% for avatar in avatars %}
+                                {% if avatar.removed == False %}
+                                    <div class="avatar avatar_user board-avatar" style="{% if board.owner == avatar.user_id %} box-shadow: 0 0 0 3px #f3ce14; {% endif %} {% if avatar.avatar %} {% else %}color:#f3ce14;{% endif %}" user_id="{{avatar.user_id}}">{% if avatar.avatar %}<img src="{% static 'images/portrait/small/' %}{{avatar.avatar}}">{% else %}{{avatar.first_name|slice:':1'}}{{avatar.last_name|slice:':1'}}{% endif %}</div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="btn-board" style="float: right; margin-top: -3.8%">
+                        <a data-toggle="modal" data-target="#RightMenuModal" href="#"><button type="button" class="btn btn-primary board-menu" style="margin-top:-0.5%;"><i class='feather icon-align-justify mr-50'></i> Mostrar Menú</button></a>
+                    </div>
+
+                    <!-- Modal para menú -->
+                    <div class="modal end fade" id="RightMenuModal" tabindex="-1" role="dialog" aria-labelledby="IncidenceModal" aria-hidden="true" style="height:100vh; overflow: hidden;margin-top:0;padding-top:0;border-radius: 0px !important;">
+                        <div class="modal-dialog" role="document" style="height:100vh; overflow: hidden;margin-top:0;padding-top:0;border-radius: 0px !important;float:right;width:300px;">
+                            <div class="modal-content" style="height:100vh; overflow: hidden;margin-top:0;padding-top:0;border-radius: 0px !important;">
+                                <section class="contact-form" style="height: 100%; margin: 0%;">
+                                    <form method="POST" id="form-incidences_" style="height: 100%;">
+                                        {% csrf_token %}
+                                        <!-- Modal Header -->
+                                        <div class="card" style="height: 100%;">
+                                            <div class="card-content">
+                                                <div class="row modal-header" style="padding: 25px 25px 10px 25px">
+                                                    <div class="col-12">
+                                                        <div class="media">
+                                                            <div class="media-body pt-25">
+                                                                <h3 class="media-heading" style="text-align:center;"><span class="users-view-name prof-modal-head-name"></span><span class="text-muted font-medium-1 prof-modal-head-mail"></span><span class="users-view-username text-muted font-medium-1 "></span>Menú</h3>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>   
+                                                <!-- Modal Body -->
+                                                <div class="modal-body">
+                                                    <div class="card-body" style="padding-bottom:10px; padding-top:10px;">
+                                                        <div class="row">
+                                                            <h5>Herramientas de usuario</h5>
+                                                        </div>
+                                                    </div>
+                                                    <hr>
+                                                    <div class="card-body" style="padding-bottom:10px; padding-top:10px;">
+                                                        <div class="row">
+                                                            {% if board.owner == user.id %}
+                                                                <div class="menu-board">
+                                                                    <a href="#" class="board-delete menu-board"><i class='feather icon-trash-2 mr-50'></i> Borrar tablero</a>
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Crear Lista -->
+                    <div class="modal fade" id="ListModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <section class="contact-form">
+                                    <form method="POST" class="contact-input">
+                                        {% csrf_token %}
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel1" data-i18n="NewBoard">Crear una nueva lista</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input class="board-id" type="hidden" value="{{ board.id }}">
+                                            <fieldset class="form-group col-12">
+                                                <h6>Nombre de la lista</h6>
+                                                <input type="text" class="form-control list-name">
+                                            </fieldset>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <fieldset class="form-group position-relative has-icon-left mb-0">
+                                                <button type="button" data-dismiss="modal" class="btn btn-info add-user-item saveList">
+                                                    <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                                    <span class="d-none d-lg-block" data-i18n="Save">Guardar</span>
+                                                </button>
+                                            </fieldset>
+                                        </div>
+                                    </form>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Invitar Miembro -->
+                    <div class="modal fade" id="InvitationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <section class="contact-form">
+                                    <form method="POST" class="contact-input">
+                                        {% csrf_token %}
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel1" data-i18n="NewBoard">Invitar a tu tablero</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input class="owner-id" type="hidden" value="{{ user.id }}">
+                                            <input class="company-id" type="hidden" value="{{ ca.company_id }}">
+                                            <input class="departament-id" type="hidden" value="{{ ca.departament_id }}">
+                                            <input class="board-owner" type="hidden" value="{{ board.owner }}">
+                                            <fieldset class="form-group position-relative has-icon-left m-0 flex-grow-1">
+                                                <input type="text" class="form-control user-search" id="user-search" placeholder="Buscar usuario...">
+                                                <div class="form-control-position">
+                                                    <i class="feather icon-search"></i>
+                                                </div>
+                                            </fieldset>
+                                            <fieldset class="form-group col-12" style="margin-top: 2%; margin-bottom: 2%;">
+                                                <div style="float: left; margin-left: 62%;" class="div-board-dept">
+                                                    <input type="checkbox" class="switchery all-switch board-dept" data-size="xs" data-switchery="true" style="display: none;">
+                                                    <label for="switcherySize13">Mi departamento</label>
+                                                </div>
+                                            </fieldset>
+                                            <fieldset>
+                                                <ul class="todo-task-list-wrapper list-unstyled" style="overflow: auto; height: 300px;">
+                                                    {% for user in users %}
+                                                        <li class="board-item invitation-list" dept={{user.departament_id}} user={{user.user_id}} {% for boardMember in boardMembers %}{% if user.user_id == boardMember.user_id %} checked='checked' {% endif %}{% endfor %}>
+                                                            <div class="todo-title-wrapper d-flex justify-content-between align-items-center" style="margin-left:23.5%">
+                                                                <div class="todo-title-area d-flex" style="widht: 100%">
+                                                                    <div class="avatar avatar_user invitation-avatar"><img src="{% static 'images/portrait/small/' %}{{user.avatar}}"></div>
+                                                                    <p class="mx-50 m-0 truncate invitation-user" style="width:100%;">{{user.first_name}} {{user.last_name}}</p>
+                                                                </div>
+                                                            </div>
+                                                            {% for boardMember in boardMembers %}
+                                                                {% if user.user_id == boardMember.user_id %}
+                                                                    <i class='feather icon-check mr-50' style='float:left; margin-top: -5%; margin-left: 88%;'></i>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </fieldset>
+                                        </div>
+                                    </form>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Members -->
+                    <div class="modal fade" id="MembersModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true" style="z-index:9999;">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <section class="contact-form">
+                                    <form method="POST" class="contact-input">
+                                        {% csrf_token %}
+                                        <div class="div-members-main">
+                                            <div class="">
+                                                <fieldset class="form-group position-relative has-icon-left m-0 flex-grow-1" style="padding-left: 10px; padding-right: 10px; padding-bottom: 4%; padding-top:8px;">
+                                                    <input type="text" class="form-control user-search" id="member-search" placeholder="Buscar miembro...">
+                                                    <div class="form-control-position" style="padding-top: 6px;">
+                                                        <i class="feather icon-search"></i>
+                                                    </div>
+                                                </fieldset>
+                                                <fieldset class="form-group col-12 fieldset-members" style="height: 230px; overflow: auto;">
+                                                    <div class="div-members">
+
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Deadline -->
+                    <div class="modal fade" id="DeadlineModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true" style="z-index:9999;">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <section class="contact-form">
+                                    <form method="POST" class="contact-input">
+                                        {% csrf_token %}
+                                        <div class="div-deadline-main">
+                                            <div class="todo-task-list-wrapper list-unstyled div-deadline" style="max-height: 180px;">
+                                                <fieldset class="form-group col-12 fieldset-deadline">
+                                                    <h5 style="margin-top: 5%;">Fecha de Vencimiento</h5>
+                                                    <input type="date" class="dataCard-deadline_date">
+                                                    <input type="time" class="dataCard-deadline_hour">
+                                                </fieldset>
+                                                <fieldset class="form-group position-relative has-icon-left mb-0">
+                                                    <button type="button" data-dismiss="modal" class="btn btn-info changeDeadline" style="width: 220px; margin-left: 7%;">
+                                                        <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                                        <span class="d-none d-lg-block" data-i18n="Save">Cambiar Vencimiento</span>
+                                                    </button>
+                                                </fieldset>
+                                                <fieldset class="form-group position-relative has-icon-left mb-0">
+                                                    <button type="button" data-dismiss="modal" class="btn btn-secondary removeDeadline" style="width: 220px; margin-left: 7%; margin-top: 2%;">
+                                                        <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                                        <span class="d-none d-lg-block" data-i18n="Save">Quitar Vencimiento</span>
+                                                    </button>
+                                                </fieldset>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal de Vista Rápida (click del lápiz)-->
+
+                    {% comment %} <div class="modal" id="FastEditModal" tabindex="-1" role="dialog" aria-hidden="true" style="z-index:9999;position:absolute;">
+                        <div class="modal-dialog m-0" role="document">
+                            <div class="modal-content border-0" style="background: transparent !important;">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <textarea class='form-control' name="fast-edit-card-title" id="fast-edit-card-title" cols="50" rows="5">
+                                        </textarea>
+                                        <input class="board-id" type="hidden" value="{{ board.id }}">
+                                    </div>
+                                    <div class="col-5">
+                                        <div class="fast-edit-link-list d-flex flex-column align-items-start">
+                                            <a href="#" data-toggle="modal" data-target='#CardInfoModal' class='fast-edit-link fast-edit-open-card p-1 bg-dark white rounded' style='margin-bottom: 0.5rem !important'><i class="fas fa-credit-card"></i>&nbsp;&nbsp;Abrir tarjeta</a>
+                                            <a href="#" class='fast-edit-link fast-edit-edit-tag p-1 bg-dark white rounded' style='margin-bottom: 0.5rem !important'><i class="fas fa-tag fa-rotate"></i>&nbsp;&nbsp;Editar etiquetas</a>
+                                            <a href="#" class='fast-edit-link fast-edit-change-member p-1 bg-dark white rounded' style='margin-bottom: 0.5rem !important'><i class="fas fa-user"></i>&nbsp;&nbsp;Cambiar miembros</a>
+                                            <a href="#" class='fast-edit-link p-1 bg-dark white rounded' style='margin-bottom: 0.5rem !important'><i class="fas fa-credit-card"></i>&nbsp;&nbsp;Cambiar portada</a>
+                                            <a href="#" class='fast-edit-link p-1 bg-dark white rounded' style='margin-bottom: 0.5rem !important'><i class="fas fa-arrow-right"></i>&nbsp;&nbsp;Mover</a>
+                                            <a href="#" class='fast-edit-link p-1 bg-dark white rounded' style='margin-bottom: 0.5rem !important'><i class="fas fa-credit-card"></i>&nbsp;&nbsp;Copiar</a>
+                                            <a href="#" class='fast-edit-link fast-edit-deadline p-1 bg-dark white rounded' style='margin-bottom: 0.5rem !important'><i class="fas fa-clock"></i>&nbsp;&nbsp;Cambiar fecha de vencimiento</a>
+                                            {% if depManager %}<a href="#" class='fast-edit-link p-1 bg-dark white rounded' style='margin-bottom: 0.5rem !important'><i class="fas fa-archive"></i>&nbsp;&nbsp;Archivar</a>{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> {% endcomment %}
+
+                    <!-- Modal labels -->
+                    <div class="modal fade" id="LabelsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true" style="z-index:9999;">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <section class="contact-form">
+                                    <form method="POST" class="contact-input">
+                                        {% csrf_token %}
+                                        <div class="div-labels-main">
+                                            <div class="todo-task-list-wrapper list-unstyled div-labels">
+                                                <fieldset class="form-group col-12 fieldset-labels">
+                                                    <h5 style="margin-top: 5%; margin-bottom: -3%;width:fit-content;">Etiquetas</h5>
+                                                    <button class="btn addTag position-absolute" style='top:0px;right:0px;'>
+                                                        <i class="fas fa-plus-circle"></i>
+                                                    </button>
+                                                </fieldset>
+                                                {% for label in labels %}
+                                                    <input class="labels" style="cursor:pointer;background-color:{{label.label_color}}; color: white;" type="text" value="{% if label.name %} {{label.name}} {% endif %}" label="{{label.id}}" readonly>
+                                                    <i class="feather icon-edit-2 mr-50 edit-label cursor-pointer" style="float:right; padding-right: 2%; padding-top: 2%;" label="{{label.id}}" color="{{label.label_color}}" name="{% if label.name %} {{label.name}} {% endif %}"></i>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </form>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal para ver y/o editar el contenido de una tarjeta -->
+                    <div class="modal fade" id="CardInfoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content" style="width:750px; margin-left: -17%;">
+                                <section class="contact-form">
+                                    <form method="POST" class="contact-input">
+                                        {% csrf_token %}
+                                        <div class="modal-header">
+                                            <h5 class="modal-title dataCard-issue" style="width:100%; margin-left:2%; outline: 0px solid transparent;" contenteditable="true" id="exampleModalLabel1" data-i18n="CardInfo"></h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true" style='font-size:larger;'>&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="form-group col-8">
+                                                    <input class="dataCard-id" type="hidden">
+                                                    <fieldset class="form-group col-5 dataCard-avatars" style="float:left;">
+                                                        
+                                                    </fieldset>
+                                                    <fieldset class="form-group col-7 dataCard-labels" style="float:left;">
+                                                        
+                                                    </fieldset>
+                                                    <fieldset class="form-group col-12 fieldset-deadline">
+                                                        <h6>Fecha de Vencimiento</h6>
+                                                        <input type="checkbox" class="dataCard-finished" style="float: left; margin-top: 1%; margin-right: 1%;">
+                                                        <input type="text" class="dataCard-deadline" style="outline: 0px solid transparent; border: none; float:left; width:140px;" readonly>
+                                                        <div class="div-state" style="float:left; width: 120px; text-align: center;">
+                                                            
+                                                        </div>
+                                                    </fieldset>
+                                                    <fieldset class="form-group col-12">
+                                                        <h6>Descripción</h6>
+                                                        <textarea class="dataCard-description" placeholder="Pulse para escribir la descripción" style="width:100%; outline: 0px solid transparent; border: none;" cols="30" rows="3"></textarea>
+                                                    </fieldset>
+                                                </div>
+                                                <div class="form-group col-4">
+                                                    <fieldset class="form-group col-12 right-menu">
+                                                        <a data-toggle="modal" data-target="#MembersModal" class="card-members menu-board right-menu_members"><i class='feather icon-users mr-50'></i> Miembros</a>
+                                                    </fieldset>
+                                                    <fieldset class="form-group col-12 right-menu">
+                                                        <a data-toggle="modal" data-target="#LabelsModal" class="card-labels menu-board"><i class='feather icon-tag mr-50'></i> Etiquetas</a>
+                                                    </fieldset>
+                                                    <fieldset class="form-group col-12 right-menu">
+                                                        <a data-toggle="modal" data-target="#DeadlineModal" class="card-calendar menu-board right-menu_deadline"><i class='feather icon-calendar mr-50'></i> Fecha límite</a>
+                                                    </fieldset>
+                                                    <fieldset class="form-group col-12 right-menu">
+                                                        <a class="card-checklist menu-board"><i class='feather icon-check mr-50'></i> Checklist</a>
+                                                    </fieldset>
+                                                    <fieldset class="form-group col-12 right-menu">
+                                                        <a class="card-copy menu-board"><i class='feather icon-copy mr-50'></i> Copiar tarjeta</a>
+                                                    </fieldset>
+                                                    <fieldset class="form-group col-12 right-menu">
+                                                        <a class="card-move menu-board"><i class='feather icon-move mr-50'></i> Mover tarjeta</a>
+                                                    </fieldset>
+                                                    {% if depManager %}
+                                                    <fieldset class="form-group col-12 right-menu">
+                                                        <a class="card-delete menu-board"><i class='feather icon-trash-2 mr-50'></i> Archivar tarjeta</a>
+                                                    </fieldset>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kanban-main" style="overflow: auto;">
+                        <div class="kanban-container">
+                            {% for list in lists %}
+                                {% if list.removed == False %}
+                                    <div class="kanban-board" list_id="{{list.id}}" order_id="{{list.order_id}}" style="width: 250px; margin-left: 15px; margin-right: 15px; float:left; margin-top:2%;min-height:150px;max-height:75vh; overflow-y: auto">
+                                        <header class="kanban-board-header">
+                                            <div class="kanban-title-board line-ellipsis list-new-name" list_id="{{list.id}}" contenteditable="true">{{list.name}}</div>
+                                            <div class="kanban-board-move cursor-pointer" draggable="true" list_id="{{list.id}}" style="margin-right: 3%;"><i class="feather icon-move"></i></div>
+                                            <div class="dropdown">
+                                                <div class="dropdown-toggle cursor-pointer" role="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="feather icon-more-vertical"></i>
+                                                </div>
+                                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton" x-placement="top-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(23px, 24px, 0px);">
+                                                    <a class="dropdown-item" list_id="{{list.id}}"><i class="feather icon-copy mr-50"></i>Copiar Lista</a>
+                                                    <a class="dropdown-item" list_id="{{list.id}}"><i class="feather icon-move mr-50"></i>Mover Lista</a>
+                                                    <a class="dropdown-item list-delete" list_id="{{list.id}}" id="kanban-delete"><i class="feather icon-trash-2 mr-50"></i>Borrar Lista</a>
+                                                </div>
+                                            </div>
+                                        </header>
+                                        <div class="kanban-cards" list_id="{{list.id}}">
+                                            {% for card in cards %}
+                                                {% if list.id == card.list_id %} {% if card.removed == False %}
+                                                    <main class="kanban-drag" list_id="{{list.id}}" card_id="{{card.id}}" order_id="{{card.order_id}}">
+                                                        <div data-toggle="modal" data-target="#CardInfoModal" draggable="true" style="background-color: #f5f7fa;cursor:pointer;" class="kanban-item" data-border="" card_id="{{card.id}}" card_issue="{{card.issue}}" card_description="{{card.description}}" card_deadline="{{card.deadline}}" card_board_id="{{card.board_id}}" card_list_id="{{card.list_id}}" card_labels="{{card.labels}}" card_members="{{card.members}}" card_finished="{{card.finished}}">
+                                                            <div class="info-card-labels">
+                                                            </div>
+                                                            <div class="info-card-issue w-100" style="margin-top: 2%;">
+                                                            </div>
+                                                            <div class="info-card-deadline" style="margin-bottom: -6%; height: 20px; float:left;">
+                                                            </div>
+                                                            <div class="info-card-members" style="margin-bottom: -6%; height: 40px;">
+                                                            </div>
+                                                        </div>
+                                                    </main>
+                                                {% endif %} {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <button class="kanban-title-button btn btn-default btn-xs add-card mt-auto" list_id="{{list.id}}" style="font-weight: bold">Añadir nueva tarjeta</button>
+                                        <button type="button" style="margin-left: 5%;" class="btn btn-info add-user-item saveCard">
+                                            <span class="d-none d-lg-block" data-i18n="Save">Añadir tarjeta</span>
+                                        </button>
+                                        <button style="margin-left: 3%;" class="btn btn-danger btn-xs btn-close"><i class="feather icon-x"></i></button>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    <!-- END: Content-->
+
+{% endblock %}
+
+{% block js %}
+
+    {% include 'appKanban/js/jsKanban.html' %}
+
+{% endblock %}

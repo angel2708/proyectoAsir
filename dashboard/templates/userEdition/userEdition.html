@@ -1,0 +1,290 @@
+{% extends 'general/layout.html' %}
+
+{% load static %}
+{% load filters %}
+
+{% block titlePage %}
+Contactos
+{% endblock %}
+
+{% block css %}
+
+    {% include 'userEdition/css/cssUserEdition.html' %}
+
+{% endblock %}
+
+{% block body %}
+    <body class="vertical-layout vertical-menu-modern 2-columns app-contacts fixed-navbar" data-open="click" data-menu="vertical-menu-modern" data-col="2-columns">
+{% endblock %}
+
+{% block appContent %}
+    <input type="hidden" class="hidden-id" value="{{ user.company_contact_id }}">
+    <input type="hidden" class="hidden-client" value="{{ user.id }}">
+    <!-- BEGIN: Content-->
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="content-wrapper">
+            <div class="card">
+                <div class="card-content">
+                    <div class="card-body" style="padding-bottom:10px;">
+                        <div class="row" style="width:100%;height:120px;overflow-y:hidden;">
+                            <div class="col-12">
+                                <div class="media">
+                                    <div class="avatar bg-primary mr-1" style="height: 50px; width:50px;text-align:center;line-height:60px;">
+                                        <span style="font-size:25px" class="text-avatar">{{ avatar }}</span>
+                                    </div>
+
+                                    <div class="media-body pt-25">
+                                        <h4 class="media-heading"><span class="users-view-name">{{user.first_name }} {{ user.last_name}} | </span><span class="text-muted font-medium-1"> </span><span class="users-view-username text-muted font-medium-1 ">{{ user.email|main }}</span></h4>
+                                        <span>Código de Usuario:</span>
+                                        <span class="users-view-id">{{ user_ca.user_id }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-5 px-0 d-flex justify-content-end align-items-center px-1 mb-2">
+
+                            </div>
+
+                            <div class="col-12" style="width:80% !important;background:silver;height:0.5px;margin-bottom:15px;"></div>
+
+                            <ul class="nav nav-tabs nav-iconfall" role="tablist" style="width:45%; margin-top:-30px;padding-bottom:10px;">
+                                <li class="nav-item" style="margin-right: -500px;">
+                                    <a class="nav-link d-flex align-items-center user-nav-infor active" id="general-tab" data-toggle="tab" href="#general" aria-controls="general" role="tab" aria-selected="true">
+                                        </i><span class="d-none d-sm-block" style="font-size:16px">Informe</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item" style="display:none;">
+                                    <a class="nav-link d-flex align-items-center" id="account-tab" data-toggle="tab" href="#account" aria-controls="account" role="tab" aria-selected="true">
+                                        <span class="d-none d-sm-block" style="font-size:16px">Cuenta</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link d-flex align-items-center" style="width:13% !important;" id="vacation-tab" data-toggle="tab" href="#vacation" aria-controls="vacation" role="tab" aria-selected="true">
+                                        <span class="d-none d-sm-block" style="font-size:16px">Ausencias</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-body">
+                <!-- users edit start -->
+                <section class="users-edit">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-body">                               
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="general" aria-labelledby="general-tab" role="tabpanel">
+                                        <div class="row">
+                                            {% if user_ca.role == 2 and user_ca.phonr != '' %}
+                                            <div class="col-md-12">
+                                                <div style="border:solid 1px gray; border-radius:5px;background-color:WhiteSmoke;padding:15px;padding-top:8px;padding-bottom:0px;">
+                                                    <strong>Total llamadas: <span id="calls-count"></span> </strong>
+
+                                                    <div class="row" style="margin-left:-25px;margin-right:-25px;margin-top:10px !important;padding:10px;">
+                                                        <div class="col-3">
+                                                            <div class="alert alert-success mb-2" role="alert" style="margin-bottom:0 !important;width:100%;">
+                                                                <strong>Contestadas: <span id="calls-answered"></span></strong>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-3">
+                                                            <div class="alert alert-danger mb-2" role="alert" style="margin-bottom:0 !important;width:100%;">
+                                                                <strong>No contestadas: <span id="calls-not-answered"></span></strong>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-3">
+                                                            <div class="alert alert-info mb-2" role="alert" style="margin-bottom:0 !important;width:100%;">
+                                                                <strong>Minutos totales: <span id="calls-total-min"></span></strong>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-3">
+                                                            <div class="alert alert-info mb-2" role="alert" style="margin-bottom:0 !important;width:100%;">
+                                                                <strong>Media minutos: <span id="calls-avg-min"></span></strong>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endif %}                                                 
+                                        </div>  
+                                    </div>
+                                    <div class="tab-pane" id="account" aria-labelledby="account-tab" role="tabpanel">
+                                        <form method="POST" id="form-address" class="contact-input">
+                                        {% csrf_token %}
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="first_name">Nombre</label>
+                                                        <input type="hidden" class="form-control cd-id" name="user_id" value="{{ user.id }}">
+                                                        <input type="hidden" class="form-control cd-company_user_id" name="company_user_id" value="{{ user_ca.company_user_id }}">
+                                                        <input type="text" class="form-control cd-first_name" name="first_name" value="{{ user.first_name }}" {% if not permissions.edit and not permissions == "main_admin"%} readonly {% endif %}>
+                                                    </div>
+                                                </div> 
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="last_name">Apellido</label>
+                                                        <input type="text" class="form-control cd-last_name" name="last_name" value="{{ user.last_name }}" {% if not permissions.edit and not permissions == "main_admin"%} readonly {% endif %}>
+                                                    </div>
+                                                </div>      
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="email">Email</label>
+                                                        <input type="text" class="form-control cd-email" name="email" value="{{ user.email }}" {% if not permissions.edit and not permissions == "main_admin"%} readonly {% endif %}>
+                                                    </div>
+                                                </div>                                                  
+                                            </div>
+                                            {% if user_ca.company_user_id == 1 %}
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <label for="dept">Departamento</label>
+                                                        <select class="custom-select form-control user-profile form-group cd-departament_id" id="user-profile" {% if not permissions.edit and not permissions == "main_admin"%} disabled {% endif %}>
+                                                            {% for departament in departaments %}
+                                                                <option value="{{departament.id}}" {% if departament.id == user_ca.departament_id %} selected="selected" {% endif %} {% if not permissions.edit and not permissions == "main_admin"%} disabled {% endif %}>{{ departament.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>                                                      
+                                                </div>
+                                            {% else %}
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <label for="dept">Departamento</label>
+                                                        <select class="custom-select form-control user-profile form-group cd-departament_id dependentSelect" id="departamento" name="redundant" {% if not permissions.edit and not permissions == "main_admin"%} disabled {% endif %}>
+                                                            {% for departament in departaments %}
+                                                                <option value="{{departament.id}}" {% if departament.id == user_ca.departament_id %} selected="selected" {% endif %} {% if not permissions.edit and not permissions == "main_admin"%} disabled {% endif %}>{{ departament.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="dept">Perfil</label>
+                                                        <select class="custom-select form-control user-profile form-group cd-user_profile" id="perfil" name="redundant" {% if not permissions.edit and not permissions == "main_admin"%} disabled {% endif %}>
+                                                            {% for profile in profiles %}
+                                                                {% if profile.departament_id == user_ca.departament_id %}
+                                                                    <option value="{{profile.id}}" {% if profile.id == user_ca.user_profile %} selected="selected" {% endif %}> {{profile.name}} </option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>                                                     
+                                                </div> 
+                                            {% endif %} 
+                                            <button type="button" class="btn btn-info updateUser">
+                                                <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                                <span class="d-none d-lg-block" data-i18n="Save">Guardar</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="tab-pane" id="vacation" aria-labelledby="vacation-tab" role="tabpanel">
+                                        <form method="POST" id="form-vacation" class="contact-input">
+                                            {% csrf_token %}
+                                            <div class="row">
+                                                <div class="row col-md-3" style="margin-top: -18px;">
+                                                    <div class="col-md-12">
+                                                        <h2 style="margin-top: 5%;">Año anterior</h2>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <label for="last_name" style="font-size: 14px;margin-top: 15px;margin-bottom: 0px;font-weight: 600;">Días pendientes</label>
+                                                        <p class="mcd-pending_days" style="font-size:25px;">{{user.pending_days}} días</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row col-md-9">
+                                                    <div class="col-md-12">
+                                                        <h2>Año actual</h2>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="last_name" style="font-size: 14px;margin-top: 15px;margin-bottom: 0px;font-weight: 600;">Días totales</label>
+                                                        <p class="mcd-total_days" style="font-size:25px;" id="total_days"></p>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="last_name" style="font-size: 14px;margin-top: 15px;margin-bottom: 0px;font-weight: 600;">Días usados</label>
+                                                        <p class="mcd-enjoyed_days" style="font-size:25px;" id="enjoyed_days" >{{user.vacation_days}} días</p>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="last_name" style="font-size: 14px;margin-top: 15px;margin-bottom: 0px;font-weight: 600;">Días disponibles</label>
+                                                        <p class="mcd-remaining_days" style="font-size:25px;" id="remaining_days"></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Vacaciones en Usuarios -->
+    <div class="modal end fade" id="VacationModal" tabindex="-1" role="dialog" aria-labelledby="VacationModal" aria-hidden="true" style="height:100vh; overflow: hidden;margin-top:0;padding-top:0;border-radius: 0px !important;">
+        <div class="modal-dialog" role="document" style="height:100vh; overflow: hidden;margin-top:0;padding-top:0;border-radius: 0px !important;float:right;width:1000px;">
+            <div class="modal-content" style="height:100vh; overflow: hidden;margin-top:0;padding-top:0;border-radius: 0px !important;">
+                <section class="contact-form" style="height: 100%; margin: 0%;">
+                    <form method="POST" id="form-note_u" style="height: 100%;">
+                        {% csrf_token %}
+                        <!-- Modal Header -->
+                        <div class="card" style="height: 100%;">
+                            <div class="card-content">
+                                <div class="row modal-header" style="padding: 25px 25px 10px 25px">
+                                    <div class="col-12">
+                                        <div class="media">
+                                            <div class="media-body pt-25">
+                                                <h2 class="media-heading"><span class="users-view-name prof-modal-head-name"></span><span class="text-muted font-medium-1 prof-modal-head-mail"></span><span class="users-view-username text-muted font-medium-1 "></span></h2>
+                                                <span class="prof-modal-head-cod" style="margin-left:20%; font-size:20px;">Añade vacaciones al Calendario</span>
+                                                <span class="users-view-id"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>   
+                                <!-- Modal Body -->
+                                <div class="modal-body">
+                                    <div class="card-body" style="padding-bottom:10px;">
+                                        <div class="row custom-control form-group col-12" style="margin-bottom: -5px; padding-left: 4%;">
+                                            <div class="form-group">
+                                                <input type="text" id="calendar-title_u" class="border_bottom form-control cal-title_u" name="title" style="margin-bottom: -7px; margin-left: 3%;" placeholder="Añade un título...">
+                                                <input type="hidden" class="form-control cal-id_u" name="user_id" value="{{ user.id }}">
+                                                <input type="hidden" class="form-control cal-company_id_u" name="company_id" value="{{ user_ca.company_id }}">
+                                                <input type="hidden" class="form-control cal-departament_id_u" name="departament_id" value="{{ user_ca.departament_id }}">
+                                            </div>
+                                        </div>   
+                                        <div class="tab-content">
+                                            <div class="" id="holidays" aria-labelledby="holidays-tab">
+                                                <div class="form-group row" style="margin-bottom: 0%; margin-top: -3%;">
+                                                    <h5 class="" style="margin-left:7%; font-size:20px; margin-bottom: -1%;">Tramo de Vacaciones</h5>
+                                                    <input type="hidden" class="form-control hd-vacation_days_u" name="user_vacation_days" value="{{ user.vacation_days }}" id="vacation_days_u">
+                                                    <input type="checkbox" class="hd-day_off" style="display: block; margin-top: 8%; margin-left: 7%; position: absolute;" id="day_off_u" onchange="javascript:showContentHolidaysU(),dayOffU()">
+                                                    <label style="display: block; margin-top: 7.9%; margin-left: -42%;">Sólo es un día libre</label>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="finishDay col-6" style="width: 45%;">
+                                                        <input class="form-control hd-date1_u" style="margin-left: 9%;" type="date" value="" id="date_now2_u" name="start_date">
+                                                    </div>
+                                                    <div class=" col-6 content_day_off" style="width: 45%;" id="content_day_off_u">
+                                                        <input class="form-control hd-date2_u" type="date" value="" id="date_after_u" name="finish_date">
+                                                    </div>
+                                                </div>
+                                                <button type="button" class="btn btn-light saveHolidays_u" style="margin-left: 35%; border-radius: 8px;">
+                                                    <span class="d-none d-lg-block" data-i18n="Save">Añadir Vacaciones</span>
+                                                </button> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}
+
+{% block js %}
+
+{% include 'userEdition/js/jsUserEdition.html' %}
+
+{% endblock %}

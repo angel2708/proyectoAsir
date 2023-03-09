@@ -1,0 +1,571 @@
+{% extends 'general/layout.html' %}
+
+{% load static %}
+{% load filters %}
+
+{% block titlePage %}
+Contactos
+{% endblock %}
+
+{% block css %}
+
+    {% include 'appContacts/css/cssContacts.html' %}
+
+{% endblock %}
+
+{% block body %}
+    <body class="vertical-layout vertical-menu-modern 2-columns app-contacts fixed-navbar" data-open="click" data-menu="vertical-menu-modern" data-col="2-columns">
+{% endblock %}
+
+{% block appContent %}
+
+    <!-- BEGIN: Content-->
+    <input type="hidden" id="user-id" value="{{ user_id }}">
+    <input type="hidden" id="user-role" value="{{ role }}">
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+            </div>
+            <div class="content-detached content-right">
+                <div class="content-body">
+                    <div class="content-overlay"></div>
+
+                <!-- TABLA CLIENTES -->
+                <section class="row all-contacts">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-head">
+                                <div class="card-header">
+                                    <h4 class="card-title">Contactos</h4>
+                                    <div class="heading-elements mt-0">                              
+
+                                        {% if permissions.create or permissions == "main_admin" %}
+                                            <button class="btn btn-primary btn-md lastId" data-toggle="modal" data-target="#AddContactModal"><i class="d-md-none d-block feather icon-plus white"></i>
+                                                <span class="d-md-block d-none">Añadir Contacto</span></button>
+                                        {% endif %}
+ 
+                                            <span class="dropdown">
+                                                <button id="btnSearchDrop1" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="btn btn-warning dropdown-menu-right dropdown-toggle btn-md">
+                                                    <i class="feather icon-download-cloud white"></i></button>
+                                                <span aria-labelledby="btnSearchDrop1" class="dropdown-menu dropdown-menu-right mt-1">
+                                                    <a href="#" class="dropdown-item"><i class="feather icon-upload"></i> Import</a>
+                                                    <a href="#" class="dropdown-item"><i class="feather icon-download"></i> Export</a>
+                                                    <a href="#" class="dropdown-item"><i class="feather icon-shuffle"></i> Find Duplicate</a>
+                                                </span>
+                                            </span>
+                                            <button class="btn btn-default btn-sm"><i class="feather icon-settings white"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <div class="card-body">
+                                        <!-- Task List table -->
+                                        <div class="loading-banner">
+                                            <div class="spinner-border" style="width: 7rem; height: 7rem;font-size: 3rem !important;display:block;margin:0 auto;margin-top:200px;" role="status">
+                                                <span class="sr-only">Loading...</span>
+                                            </div>
+                                            <div style="text-align:center;font-size: 1rem !important;display:block;margin:0 auto;margin-bottom:200px;margin-top:20px;" >
+                                                <span class="">Consultando la base de datos...</span>
+                                            </div>
+                                        </div>
+                                        <table id="users-contacts" class="table table-white-space table-bordered row-grouping display no-wrap icheck table-middle text-center table-responsive" style="display:none">
+                                            <thead>
+                                                <tr>
+                                                    <th><input type="checkbox" class="input-chk" id="check-all" onclick="toggle();"></th>
+                                                    <th>Codigo</th>
+                                                    <th>Nombre</th>
+                                                    <th>Email</th>
+                                                    <th>Tlf</th>
+                                                    <th>Web</th>
+                                                    <th>Favorito</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="contact-table-body">
+                                                {% for contact in contacts %}
+                                                {% csrf_token %}
+                                                    <tr>
+                                                        <td><input type="checkbox" class="input-chk check"></td>
+                                                        <td class="text-center">
+                                                            <a class="id">{{contact.company_contact_id}}</a>
+                                                        </td>
+                                                        <td>
+                                                            <div class="media">
+                                                                <div class="media-left pr-1">
+                                                                    <span class="avatar avatar-sm avatar-away rounded-circle">
+                                                                    <img src="{% static 'images/portrait/small/img_user_not_found.png' %}" alt="avatar">
+                                                                    <i></i>
+                                                                    </span>
+                                                                </div>
+                                                                <div class="media-body media-middle">
+                                                                    <a class="media-heading name prof-modal-trigger" client-id="{{contact.id}}" client-cci="{{contact.company_contact_id}}" data-toggle="modal" href="#" data-target="#UserProfModal">{{contact.name}}</a>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-center">
+                                                        {% if contact.mail %}
+                                                            <a class="email" idCliente="{{contact.id}}">{{ contact.mail|main }}</a>
+                                                        {% else %}
+                                                            <a class="email" idCliente="{{contact.id}}"><i>Sin asignar</i></a>
+                                                        {% endif %}
+                                                        </td>
+                                                        {% if contact.tel %}
+                                                            <td class="phone" idCliente="{{contact.id}}">{{ contact.tel|main }}</td>
+                                                        {% else %}
+                                                            <td class="phone" idCliente="{{contact.id}}"><i>Sin asignar</i></td>
+                                                        {% endif %}
+                                                        {% if contact.web %}
+                                                            <td class="web" idCliente="{{contact.id}}">{{ contact.web }}</td>
+                                                        {% else %}
+                                                            <td class="web" idCliente="{{contact.id}}"><i>Sin asignar</i></td>
+                                                        {% endif %}
+                                                        <td class="text-center">
+                                                            {% if cliente.favorite == True %}
+                                                                <div nombreCliente="{{contact.name}}" idCliente="{{contact.id}}" class="favorite favoriteF active"><i class="feather icon-star"></i></div>
+                                                            {% else %}
+                                                                <div nombreCliente="{{contact.name}}" idCliente="{{contact.id}}" class="favorite favoriteT"><i class="feather icon-star"></i></div>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            <a class="danger delete mr-1" idCliente="{{contact.id}}" nombreCliente="{{contact.name}}"><i class="fas fa-trash-alt"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- TABLA CLIENTES -->
+                </div>
+            </div>
+
+            <div class="sidebar-detached sidebar-left">
+                <div class="sidebar">
+                    <div class="bug-list-sidebar-content">
+
+                        <!-- Predefined Views -->
+                        <div class="card">
+                            <!-- FILTROS CLIENTES -->
+                            <div class="card-body border-top-blue-grey border-top-lighten-5">
+                                <div class="list-group">
+                                    {% if role == 2 or role == 3 %}<a href="#" class="list-group-item see-all">Todos los contactos</a>{% endif %}
+                                    <a href="#" class="list-group-item see-recent">Contactados recientemente</a>
+                                    <!--<a href="#" class="list-group-item">Facturados recientemente</a>-->
+                                    <a href="#" class="list-group-item see-web">Registrados por web</a>
+                                </div>
+                            </div>
+                            <!-- FILTROS CLIENTES -->
+
+                            <!-- Groups-->
+                            <div class="card-body">
+                                <p class="lead">Tipo Contacto</p>
+                                <ul class="list-group">
+                                    {% for ct in client_types %}
+                                        <li class="list-group-item">
+                                            <span class="badge badge-primary badge-pill float-right">{% if ct.c == None %}0{% else %}{{ ct.c }}{% endif %}</span>
+                                            <a class="type-filter" type-id="{{ ct.id }}" href="#">{{ ct.name }}</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <!--/ Groups-->
+
+                            <!--More-->
+                            <div class="card-body ">
+                                <p class="lead">Interesados en:</p>
+                                <ul class="list-group interests-group">
+                                    
+                                </ul>
+                            </div>
+                            <!--/More-->
+
+                        </div>
+                        <!--/ Predefined Views -->
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- END: Content-->
+
+
+
+    <!-- Modal Crear cliente start -->
+    <div class="modal fade" id="AddContactModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="width: 100% !important;">
+            <div class="modal-content">
+                <section class="contact-form">
+                    <form method="POST" id="form-add-contact" class="contact-input">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel1">Añadir Nuevo Contacto</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <fieldset class="form-group col-12">
+                                <input type="text" id="cliente-nombre" class="cliente-nombre form-control" placeholder="Nombre">
+                            </fieldset>
+                            <fieldset class="form-group col-12">
+                                <input type="email" id="cliente-email" class="cliente-email form-control" placeholder="Email">
+                            </fieldset>
+                            <fieldset class="form-group col-12">
+                                <input type="text" id="cliente-telefono" maxlength='9' class="cliente-telefono form-control" placeholder="Télefono">
+                            </fieldset>
+                            <fieldset class="form-group col-12">
+                                <input type="url" id="cliente-web" class="cliente-web form-control" placeholder="Web">
+                            </fieldset>
+                            <fieldset class="form-group col-12">
+                                <input type="checkbox" id="favorite" class="contact-fav input-chk"> Favorito
+                            </fieldset>
+                            <fieldset class="form-group col-12">
+                                <input type="file" class="form-control-file" id="user-image">
+                            </fieldset>
+                        </div>
+                        <div class="modal-footer">
+                            <fieldset class="form-group position-relative has-icon-left mb-0">
+                                <button type="button" class="btn btn-info add-contact-item addCustomer add-contact-item">
+                                    <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                    <span class="d-none d-lg-block">Añadir</span>
+                                </button>
+                            </fieldset>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Crear cliente end -->
+
+    <!-- Modal Perfil -->
+    <div class="modal end fade" id="UserProfModal" tabindex="-1" role="dialog" aria-labelledby="UserProfModal" aria-hidden="true" style="height:100vh; overflow: hidden;margin-top:0;padding-top:0;border-radius: 0px !important;">
+        <div class="modal-dialog" role="document" style="height:100vh; overflow: hidden;margin-top:0;padding-top:0;border-radius: 0px !important;float:right;width:1000px;">
+            <div class="modal-content" style="height:100vh; overflow: hidden;margin-top:0;padding-top:0;border-radius: 0px !important;">
+                <section class="contact-form profile-modal" style="background:#EDEFF3;">
+                    <form method="POST" id="form-note">
+                        {% csrf_token %}
+                        <div class="scroll" style='overflow:hidden scroll;'>
+                            <div class="row mb-2" style="padding: 25px 25px 0 25px">
+                                <div class="col-12">
+                                    <div class="media">
+                                        <div class="avatar bg-primary mr-1" style="height: 50px; width:50px;text-align:center;line-height:60px;margin-left:20px;">
+                                            <span style="font-size:25px" class="prof-modal-av"></span>
+                                        </div>
+                                        <div class="media-body pt-25">
+                                            <h4 class="media-heading"><span class="users-view-name prof-modal-head-name"></span><span class="users-view-username font-medium-1 ml-1"></span><span class="d-none client-id"></span><span class="d-none users-contact-id"></span></h4>
+                                            <span class="prof-modal-head-cod">NIF:</span>
+                                            {% if contact.NIF %}
+                                                <span class="users-view-id"></span>
+                                            {% else %}
+                                                <span class="users-view-id"><i>Sin asignar</i></span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-2 link-row">
+                                <div class="col-2">
+                                    <a class="prof-modal-phone" href="tel:123123123">   
+                                        <i class="fas fa-phone-alt fa-2x" ></i>
+                                    </a>
+                                    <br><p style="margin-top:15px; size:15px">Llamar</p>
+                                </div>
+                                <div class="col-2">
+                                    <a class="prof-modal-mail" href="mailto:a@a.a"><i class="fas fa-envelope fa-2x" ></i></a>
+                                    <br><p style="margin-top:15px; size:15px">Email</p>
+                                </div>
+                                <div class="col-2">
+                                    <a class="prof-modal-web" target="_blank" href="#"><i class="fas fa-globe fa-2x"></i></a>
+                                    <br><p style="margin-top:15px; size:15px">Web</p>
+                                </div>
+                                <div class="col-2 px-0">
+                                    <a target="blank" class="prof-modal-dir" href=""><i class="fas fa-map-marker-alt fa-2x dir_logo" ></i></a>
+                                    <br><p style="margin-top:15px; size:15px">Direccion</p>
+                                </div>
+                                <div class="col-2">
+                                    <a target="blank" class="prof-modal-more" href=""><i class="fas fa-arrow-right fa-2x" ></i></a>
+                                    <br><p style="margin-top:15px; size:15px">Perfil</p>
+                                </div>
+                            </div>
+
+                            <div class="modal-body row">
+                                <div class="col-12">
+                                    <h5 style="float:left"><b>Información de contacto:</b></h5><br>
+                                    <div class="contact-card-adress w-90 mx-auto my-1 p-1 bg-white" style='border-radius:10px'>
+                                        <span class='p-1'>Direccion : </span>
+                                        <strong><span class='float-right pr-1 contact-card-main-address'></span></strong><hr>
+                                        <span class='p-1'>Correo electrónico : </span>
+                                        <strong><span class='float-right pr-1 prof-modal-header-mail'></span></strong><hr>
+                                        <span class='p-1'>Teléfono : </span>
+                                        <strong><span class='float-right pr-1 contact-card-contact'></span></strong><hr>
+                                        <span class='p-1'>Web : </span>
+                                        <strong><span class='float-right pr-1 contact-card-web'></span></strong>
+                                    </div>
+                                </div>
+
+                                <br>
+
+                                <h5 class="col-12"><b>Crear:</b></h5>
+
+                                <div class="col-4 text-center mt-1">
+                                    <button type='button' action='1' class="w-100 btn btn-outline-primary btn-md new-client-note" data-toggle="collapse" data-target="#NoteModal">
+                                        <i class="far fa-sticky-note"></i>&nbsp;Nota</button>
+                                </div>
+                                <div class="col-4 text-center mt-1">
+                                    <button type='button' class="w-100 btn btn-outline-primary btn-md new-client-note" data-toggle="collapse" data-target="">
+                                        <i class="fas fa-eraser"></i>&nbsp;Presupuesto</button>
+                                </div>
+                                <div class="col-4 text-center mt-1">
+                                    <button type='button' class="w-100 btn btn-outline-primary btn-md new-client-note" data-toggle="collapse" data-target="">
+                                        <i class="fas fa-file-invoice"></i>&nbsp;Factura</button>
+                                </div>
+                                <div class="col-4 text-center mt-1">
+                                    <button type='button' class="w-100 btn btn-outline-primary btn-md new-client-note" data-toggle="collapse" data-target="">
+                                        <i class="fas fa-suitcase"></i>Oportunidad</button>
+                                </div>
+                                <div class="col-4 text-center mt-1">
+                                    <button type='button' class="w-100 btn btn-outline-primary btn-md new-client-note" data-toggle="collapse" data-target="">
+                                        <i class="fa fa-chart-line"></i>&nbsp;Actividad</button>
+                                </div>
+                                <div class="col-4 text-center mt-1">
+                                    <button type='button' class="w-100 btn btn-outline-primary btn-md new-client-note" data-toggle="collapse" data-target="">
+                                        <i class="fas fa-shopping-cart"></i>&nbsp;Compra</button>
+                                </div>
+
+                            </div>
+
+                            <div class="modal-footer">
+                                <section class="contact-form collapse mx-auto div_collapse w-100" action='1' id='NoteModal'>
+                                    <hr>
+                                    <form method="POST" id="form-note">
+                                        {% csrf_token %}
+                                        <div class="modal-body py-0">
+                                            <fieldset class="form-group col-12">
+                                                <label for="m-note-title" class='d-none'>Título</label>
+                                                <input type="text" id="m-note-title" class="m-note-title form-control" placeholder="Título de la nota" name="m-note-title">
+                                            </fieldset>
+                                        </div>
+                                        <div class="modal-body py-0">
+                                            <fieldset class="form-group col-12">
+                                                <label for="new-client-type" class='d-none'>Descripción</label>
+                                                <textarea rows="5" class="form-control m-note-description" name="m-note-description" placeholder="Contenido de la nota"></textarea>                            
+                                            </fieldset>
+                                        </div>
+                                        <fieldset>
+                                            <div class="row" style="margin-left:40px;">
+                                                <p style="margin-right:20px;">Color: </p>
+                                                <div class="d-inline-block custom-control custom-radio mr-1">
+                                                    <input type="radio" class="custom-control-input bg-info" name="colorRadio" id="colorRadio1" value="1">
+                                                    <label class="custom-control-label" for="colorRadio1"> </label>
+                                                </div>
+                                                <div class="d-inline-block custom-control custom-radio mr-1">
+                                                    <input type="radio" class="custom-control-input bg-success" name="colorRadio" id="colorRadio2" value="2">
+                                                    <label class="custom-control-label" for="colorRadio2"> </label>
+                                                </div>
+                                                <div class="d-inline-block custom-control custom-radio mr-1">
+                                                    <input type="radio" class="custom-control-input bg-danger" name="colorRadio" id="colorRadio3" value="3">
+                                                    <label class="custom-control-label" for="colorRadio3"> </label>
+                                                </div>
+                                                <div class="d-inline-block custom-control custom-radio mr-1">
+                                                    <input type="radio" class="custom-control-input bg-warning" name="colorRadio" id="colorRadio4" value="4">
+                                                    <label class="custom-control-label" for="colorRadio4"> </label>
+                                                </div>
+                                                <div class="d-inline-block custom-control custom-radio mr-1">
+                                                    <input type="radio" class="custom-control-input bg-secondary" name="colorRadio" id="colorRadio5" value="5">
+                                                    <label class="custom-control-label" for="colorRadio5"> </label>
+                                                </div>
+                                                <fieldset class="form-group position-relative has-icon-left mx-auto mb-0">
+                                                    <button type="button" class="btn btn-info addNote">
+                                                        <i class="fa fa-paper-plane d-block d-md-none"></i> 
+                                                        <span class="d-none d-md-block" data-i18n="Add">Añadir</span>
+                                                    </button>
+                                            </fieldset>
+                                            <div>
+                                        </fieldset>
+                                        
+                                    </form>
+                                    <hr>
+                                </section>
+                                
+                            </div>
+                            <div class="modal-body row">
+                                <div class="col-12">
+                                    <label for='relation'><h5 style="float:left"><b>Contacto:</b></h5><br></label>
+                                    <div class="contact-card-contact-user w-90 mx-auto my-1 p-1 bg-white" style='border: 2px dashed grey; border-radius:10px'>
+                                        <div id="accordion" class='w-100'>
+                                            <div class="card mb-0">
+                                                <div class="card-header p-0 contact-content" id="headingOne">
+                                                <h5 class="mb-0">
+                                                    <button type='button' class="btn btn-light w-100 bg-white m-0" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                                        <strong><span class='float-left'>Añadir relación</span></strong><span class='float-right fas fa-sort-down'></span><br>
+                                                        <span class='float-left'>Selecciona persona de contacto</span>
+                                                    </button>
+                                                </h5>
+                                                </div>
+
+                                                <div id="collapseOne" class="collapse border collapse-contact" aria-labelledby="headingOne" data-parent="#accordion">
+                                                    <div class="card-body">
+                                                        <form action='#' class='form-contacts'>
+                                                            {% csrf_token %}
+                                                            <input class='form-control search-contact' type="text" name="search-contact" autocomplete='off'>
+                                                            <label for="search-contact" class='pt-1 pl-1 label-search-contact'>Empieza a escribir para buscar un contacto</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-body row">
+                                <div class="col-12">
+                                    <label for='relation'><h5 style="float:left"><b>Ventas:</b></h5><br></label>
+                                    <div class="contact-card-sales w-90 mx-auto my-1 p-1 bg-white" style='border-radius:10px'>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Perfil end -->
+
+    <!-- Modal Nota -->
+    <div class="modal fade" id="NoteModal" tabindex="-1" role="dialog" aria-labelledby="NoteModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <section class="contact-form">
+                    <form method="POST" id="form-note">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title">Nota</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <fieldset class="form-group col-12">
+                                <label for="m-note-title">Título</label>
+                                <input type="text" id="m-note-title" class="m-note-title form-control" placeholder="Título" name="m-note-title">
+                            </fieldset>
+                        </div>
+                        <div class="modal-body">
+                            <fieldset class="form-group col-12">
+                                <label for="new-client-type">Descripción</label>
+                                <textarea rows="5" class="form-control m-note-description" name="m-note-description" placeholder=""></textarea>                            
+                            </fieldset>
+                        </div>
+                        <fieldset>
+                            <div class="row" style="margin-left:40px;">
+                                <p style="margin-right:20px;">Color: </p>
+                                <div class="d-inline-block custom-control custom-radio mr-1">
+                                    <input type="radio" class="custom-control-input bg-info" name="colorRadio" id="colorRadio1" value="1">
+                                    <label class="custom-control-label" for="colorRadio1"> </label>
+                                </div>
+                                <div class="d-inline-block custom-control custom-radio mr-1">
+                                    <input type="radio" class="custom-control-input bg-success" name="colorRadio" id="colorRadio2" value="2">
+                                    <label class="custom-control-label" for="colorRadio2"> </label>
+                                </div>
+                                <div class="d-inline-block custom-control custom-radio mr-1">
+                                    <input type="radio" class="custom-control-input bg-danger" name="colorRadio" id="colorRadio3" value="3">
+                                    <label class="custom-control-label" for="colorRadio3"> </label>
+                                </div>
+                                <div class="d-inline-block custom-control custom-radio mr-1">
+                                    <input type="radio" class="custom-control-input bg-warning" name="colorRadio" id="colorRadio4" value="4">
+                                    <label class="custom-control-label" for="colorRadio4"> </label>
+                                </div>
+                                <div class="d-inline-block custom-control custom-radio mr-1">
+                                    <input type="radio" class="custom-control-input bg-secondary" name="colorRadio" id="colorRadio5" value="5">
+                                    <label class="custom-control-label" for="colorRadio5"> </label>
+                                </div>
+                            <div>
+                        </fieldset>
+                        <div class="modal-footer">
+                            <fieldset class="form-group position-relative has-icon-left mb-0">
+                                <button type="button" class="btn btn-info addNote">
+                                    <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                    <span class="d-none d-lg-block" data-i18n="Add">Añadir</span>
+                                </button>
+                            </fieldset>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Crear Tipo cliente end -->
+
+    <div class="modal fade" id="AddAddress" tabindex="-1" role="dialog" aria-labelledby="AddAddress" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <section class="contact-form">
+                    <form method="POST" id="form-address">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title">Añadir direccion</h5>
+                            <span class="d-none address-user-id" aria-hidden='true'></span>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body row">
+                            <fieldset class="form-group col-12">
+                                <label for="address-name">Nombre</label>
+                                <input type="text" id="address-name" class="address-name form-control" name="address-name">
+                            </fieldset>
+                            <fieldset class="form-group col-12">
+                                <label for="address-address">Direccion</label>
+                                <input type="text" id="address-address" class="address-address form-control" name="address-address">
+                            </fieldset>
+                            <fieldset class="form-group col-6">
+                                <label for="address-country">Pais</label>
+                                <select id="address-country" class="address-country form-control" name="address-country">
+                                </select>
+                            </fieldset>
+                            <fieldset class="form-group col-6">
+                                <label for="address-province">Provincia</label>
+                                <select id="address-province" class="address-province form-control" name="address-province">
+                                </select>
+                            </fieldset>
+                            <fieldset class="form-group col-6">
+                                <label for="address-cp">Codigo Postal</label>
+                                <input type="text" id="address-cp" class="address-cp form-control" name="address-cp">
+                            </fieldset>
+                            <fieldset class="form-group col-6">
+                                <label for="address-city">Ciudad</label>
+                                <input type="text" id="address-city" class="address-city form-control" name="address-city">
+                            </fieldset>
+                            
+                        </div>
+                        <div class="modal-footer">
+                            <fieldset class="form-group position-relative has-icon-left mb-0">
+                                <button type="button" class="btn btn-info addAddress">
+                                    <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                    <span class="d-none d-lg-block" data-i18n="Add">Añadir</span>
+                                </button>
+                            </fieldset>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+
+    {% include 'appContacts/js/jsContacts.html' %}
+
+{% endblock %}

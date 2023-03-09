@@ -1,0 +1,223 @@
+{% extends 'general/layout.html' %}
+
+{% load static %}
+{% load filters %}
+
+{% block titlePage %}
+Proveedores
+{% endblock %}
+
+{% block css %}
+
+    {% include 'appSuppliers/css/cssSuppliers.html' %}
+
+{% endblock %}
+
+{% block body %}
+    <body class="vertical-layout vertical-menu-modern 2-columns app-contacts fixed-navbar" data-open="click" data-menu="vertical-menu-modern" data-col="2-columns">
+{% endblock %}
+
+{% block appContent %}
+
+    <!-- BEGIN: Content-->
+    <input type="hidden" class="company_id" value="{{ company_id }}">
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+            </div>
+            <div class="">
+                <div class="content-body">
+                    <div class="content-overlay"></div>
+
+                    <!-- TABLA PROVEEDORES -->
+                    <section class="row all-contacts">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-head">
+                                    <div class="card-header">
+                                        <h4 class="card-title">Proveedores</h4>
+                                        <div class="heading-elements mt-0">                              
+
+                                            {% if permissions.create or permissions == "main_admin" %}
+                                                <button class="btn btn-primary btn-md newSupplier"><i class="d-md-none d-block feather icon-plus white"></i><span class="d-md-block d-none">Añadir Proveedor</span></button>
+                                            {% endif %}
+    
+                                                {% comment %} <span class="dropdown">
+                                                    <button id="btnSearchDrop1" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="btn btn-warning dropdown-menu-right dropdown-toggle btn-md">
+                                                        <i class="feather icon-download-cloud white"></i></button>
+                                                    <span aria-labelledby="btnSearchDrop1" class="dropdown-menu dropdown-menu-right mt-1">
+                                                        <a href="#" class="dropdown-item"><i class="feather icon-upload"></i> Import</a>
+                                                        <a href="#" class="dropdown-item"><i class="feather icon-download"></i> Export</a>
+                                                        <a href="#" class="dropdown-item"><i class="feather icon-shuffle"></i> Find Duplicate</a>
+                                                    </span>
+                                                </span> {% endcomment %}
+                                                {% comment %} <button class="btn btn-default btn-sm"><i class="feather icon-settings white"></i></button> {% endcomment %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-content">
+                                        <div class="card-body">
+                                            <!-- Task List table -->
+                                            <div class="loading-banner">
+                                                <div class="spinner-border" style="width: 7rem; height: 7rem;font-size: 3rem !important;display:block;margin:0 auto;margin-top:200px;" role="status">
+                                                    <span class="sr-only">Loading...</span>
+                                                </div>
+                                                <div style="text-align:center;font-size: 1rem !important;display:block;margin:0 auto;margin-bottom:200px;margin-top:20px;" >
+                                                    <span class="">Consultando la base de datos...</span>
+                                                </div>
+                                            </div>
+                                            <div class="table-responsive table-responsive-contacts" >
+                                                <table id="users-supplier" class="table table-white-space table-bordered row-grouping display no-wrap icheck table-middle text-center" style="display:none;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Código</th>
+                                                            <th>Nombre</th>
+                                                            <th>Email</th>
+                                                            <th>Teléfono</th>
+                                                            <th>Dirección</th>
+                                                            <th>País</th>
+                                                            <th>CIF</th>
+                                                            <th>Contacto</th>
+                                                            <th>Acciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="contact-table-body">
+                                                        <p>{{supplier_list}}</p>
+                                                        {% for supplier in suppliers_list %}
+                                                        {% csrf_token %}
+                                                            <tr class="supplier-data" supplier_id="{{supplier.id}}">
+                                                                <td class="text-center">
+                                                                    <p style="margin-bottom:0;" class="supplier-id">{{supplier.cod_adn}}</p>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <p style="margin-bottom:0;" class="supplier-name">{{supplier.name}}</p>
+                                                                </td>
+
+                                                                <td class="text-center">
+                                                                    <p style="margin-bottom:0;" class="supplier-email">{{supplier.mail}}</p>
+                                                                </td>
+                                                                
+                                                                <td class="text-center">
+                                                                    <p style="margin-bottom:0;" class="supplier-phone">{{supplier.tel}}</p>
+                                                                </td>
+
+                                                                <td class="text-center">
+                                                                    <p style="margin-bottom:0;" class="supplier-address">{{supplier.address}}</p>
+                                                                </td>
+
+                                                                <td class="text-center">
+                                                                    <p style="margin-bottom:0;" class="supplier-country">{{supplier.country}}</p>
+                                                                </td>
+
+                                                                <td class="text-center">
+                                                                    <p style="margin-bottom:0;" class="supplier-cif">{{supplier.cif}}</p>
+                                                                </td>
+
+                                                                <td class="text-center">
+                                                                    <p style="margin-bottom:0;" class="supplier-contact">{{supplier.contact}}</p>
+                                                                </td>
+
+                                                                <td class="text-center">
+                                                                    <i class="fas fa-edit edit-supplier" style="color:#00b5b8; cursor: pointer; font-size: 20px; padding: 5px;" supplier_id="{{supplier.id}}"></i>
+                                                                    <i class="fas fa-trash-alt delete-supplier" style="color:#F55F5F; cursor: pointer; font-size: 20px; padding: 5px;" supplier_id="{{supplier.id}}"></i>
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Contenedor para la creación de un nuevo proveedor -->
+                    <div id="new-supplier" class="card" style="display:none">
+                        <div class="card-head">
+                            <div class="card-header" style="padding-bottom: 0;">
+                                <h4 class="card-title" data-i18n="Departaments-Management">Datos del Proveedor</h4>
+                                <button id="" class="btn btn-secondary btn-md back-supplier" style="float: right;margin-top: -30px;width: 110px;" data-toggle="modal" data-target="#DepartamentModal"><i class="d-md-none d-block feather icon-plus white"></i>
+                                    <span class="d-md-block d-none" data-i18n="Add-Departament"><i class="fas fa-undo-alt"></i> Atrás</span>
+                                </button>
+                            </div>
+                            <div class="card-content">
+                                <div class="card-body" style="padding-left:35px;padding-right:35px;">
+                                    <div class="row" style="background-color:#ededed;border:solid 1px grey;border-radius:15px;padding-top:15px;">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label>Nombre</label>
+                                                        <input type="text" id="input-name" autocomplete="off" class="form-control data-empty">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label>Email</label>
+                                                        <input type="text" id="input-email" autocomplete="off" class="form-control data-empty">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label>Teléfono</label>
+                                                        <input type="number" id="input-phone" autocomplete="off" class="form-control data-empty">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label>CIF</label>
+                                                        <input type="text" id="input-cif" autocomplete="off" class="form-control data-empty">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label>Dirección</label>
+                                                        <input type="text" id="input-address" autocomplete="off" class="form-control data-empty">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label>País</label>
+                                                        <input type="text" id="input-country" autocomplete="off" class="form-control data-empty">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label>Persona de contacto</label>
+                                                        <input type="text" id="input-contact" autocomplete="off" class="form-control data-empty">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="heading-elements mt-0" style="float:right; margin-top: 20px !important;">
+                                                <button id="editSupplier" class="btn btn-primary btn-md" style="margin-bottom: 10px; display:none;"><i class="d-md-none d-block feather icon-plus white" supplier_id=""></i>
+                                                    <span class="d-md-block d-none" data-i18n="Add-Departament">Editar</span>
+                                                </button>
+                                                <button id="addSupplier" class="btn btn-primary btn-md" style="margin-bottom: 10px;"><i class="d-md-none d-block feather icon-plus white"></i>
+                                                    <span class="d-md-block d-none" data-i18n="Add-Departament">Guardar</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- TABLA PROVEEDORES -->
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+
+    {% include 'appSuppliers/js/jsSuppliers.html' %}
+
+{% endblock %}

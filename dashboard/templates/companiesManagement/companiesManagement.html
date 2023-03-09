@@ -1,0 +1,185 @@
+{% extends 'general/layout.html' %}
+
+{% load static %}
+
+{% block titlePage %}
+Compañías
+{% endblock %}
+
+{% block css %}
+
+    {% include 'companiesManagement/css/cssCompaniesManagement.html' %}
+
+{% endblock %}
+
+{% block body %}
+    <body class="vertical-layout vertical-menu-modern 2-columns app-contacts fixed-navbar" data-open="click" data-menu="vertical-menu-modern" data-col="2-columns">
+{% endblock %}
+
+{% block appContent %}
+
+    <!-- BEGIN: Content-->
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="content-wrapper">
+            <div class="content-body">
+                <!-- TABLA USUARIOS -->
+                <section class="row all-contacts">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-head">
+                                <div class="card-header">
+                                    <h4 class="card-title" data-i18n="Departaments-Management">Gestión de compañias</h4>
+                                    <div class="heading-elements mt-0">
+                                        {% if permissions.create or permissions == "main_admin" %}
+                                            <button class="btn btn-primary btn-md company-create" data-toggle="modal" data-target="#CompanyModal"><i class="d-md-none d-block feather icon-plus white"></i>
+                                                <span class="d-md-block d-none" data-i18n="Add-Company">Añadir compañía</span>
+                                            </button>
+                                        {% endif %}                                                                                  
+                                            <span class="dropdown">
+                                                <button id="btnSearchDrop1" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="btn btn-warning dropdown-menu-right dropdown-toggle btn-md">
+                                                    <i class="feather icon-download-cloud white"></i></button>
+                                                <span aria-labelledby="btnSearchDrop1" class="dropdown-menu dropdown-menu-right mt-1">
+                                                    <a href="#" class="dropdown-item" data-i18n="Import"><i class="feather icon-upload"></i> Importar</a>
+                                                    <a href="#" class="dropdown-item" data-i18n="Export"><i class="feather icon-download"></i> Exportar</a>
+                                                    <a href="#" class="dropdown-item" data-i18n="Find-Duplicate"><i class="feather icon-shuffle"></i>Buscar duplicados</a>
+                                                </span>
+                                            </span>
+                                            <button class="btn btn-default btn-sm"><i class="feather icon-settings white"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <div class="card-body">
+                                        <!-- Task List table -->
+                                        <div class="table-responsive">
+                                            <table id="departaments-table" class="table table-white-space table-bordered row-grouping display no-wrap icheck table-middle text-center">
+                                                <thead>
+                                                    <tr>
+                                                        <th><input type="checkbox" class="input-chk" id="check-all" onclick="toggle();"></th>
+                                                        <th data-i18n="Code">Codigo</th>
+                                                        <th data-i18n="Name">Nombre</th>
+                                                        <th data-i18n="User-Number">Nº Usuarios</th>
+                                                        <th>Fecha de creación</th>
+                                                        <th data-i18n="Actions">Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for company in companies %}
+                                                    {% csrf_token %}
+                                                        <tr>
+                                                            <td>
+                                                                <input type="checkbox" class="input-chk check">
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <a class="id index-reference">{{ company.id }}</a>
+                                                            </td>
+                                                            <td>
+                                                                <p class="company-name company-id-{{company.id}} company-view-id">{{company.name}}</p>
+                                                            </td>
+                                                            <td class="users text-center">{{ company.user_number }}</td>
+                                                            <td class="text-center">{{ company.created_at }}</td>   
+                                                            <td>
+                                                                {% if permissions.edit or permissions == "main_admin" %}
+                                                                    <a data-toggle="modal" data-target="#CompanyModalEdit" company-id="{{company.id}}" class="primary edit-departament mr-1"><i class="fa fa-pen"></i></a>
+                                                                {% endif %}
+                                                                {% if permissions.delete or permissions == "main_admin" %}
+                                                                    <a class="danger delete-departament mr-1"><i class="fa fa-trash"></i></a>
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </section>
+                    <!-- TABLA USUSARIOS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Crear Usuario start -->
+    <div class="modal fade" id="CompanyModal" tabindex="-1" role="dialog" aria-labelledby="CompanyModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <section class="contact-form">
+                    <form method="POST" id="form-departament" class="contact-input">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="CompanyModalLabel" data-i18n="Departament-Management">Gestión de la compañía</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <fieldset class="form-group col-12">
+                                <input type="text" id="company-name" class="departament-name form-control company_name" placeholder="Nombre de la compañía">
+                                <span class="d-none company-id"></span>
+                            </fieldset>
+                        </div>
+                        <div class="modal-footer">
+                            <fieldset class="form-group position-relative has-icon-left mb-0">
+                                {% comment %} <button type="button" class="btn btn-info updateCompany">
+                                    <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                    <span class="d-none d-lg-block" data-i18n="Save">Guardar</span>
+                                </button> {% endcomment %}
+                                <button type="button" class="btn btn-info addCompany">
+                                    <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                    <span class="d-none d-lg-block" data-i18n="Add">Añadir</span>
+                                </button>
+                            </fieldset>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Crear cliente end -->
+
+    <!-- Modal editar compañia start -->
+    <div class="modal fade" id="CompanyModalEdit" tabindex="-1" role="dialog" aria-labelledby="CompanyModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <section class="contact-form">
+                    <form method="POST" id="form-departament" class="contact-input">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="CompanyModalLabel" data-i18n="Departament-Management">Gestión de la compañía</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <fieldset class="form-group col-12">
+                                <input type="text" id="company-name" class="departament-name form-control company_name2" placeholder="Nombre de la compañía">
+                                <span class="d-none company-id"></span>
+                            </fieldset>
+                        </div>
+                        <div class="modal-footer">
+                            <fieldset class="form-group position-relative has-icon-left mb-0">
+                                <button type="button" class="btn btn-info updateCompany">
+                                    <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                    <span class="d-none d-lg-block" data-i18n="Save">Actualizar</span>
+                                </button>
+                            </fieldset>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+    <!-- Modal editar compañia end -->  
+
+    <!-- END: Content-->
+
+{% endblock %}
+
+{% block js %}
+
+    {% include 'companiesManagement/js/jsCompaniesManagement.html' %}
+
+{% endblock %}

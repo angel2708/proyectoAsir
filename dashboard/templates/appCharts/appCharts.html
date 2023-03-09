@@ -1,0 +1,126 @@
+{% extends 'general/layout.html' %}
+
+{% load static %}
+{% load filters %}
+
+{% block titlePage %}
+Objetivos Comerciales
+{% endblock %}
+
+{% block css %}
+
+    {% include 'appCharts/css/cssCharts.html' %}
+
+{% endblock %}
+
+{% block body %}
+    <body class="vertical-layout vertical-menu-modern 2-columns app-contacts fixed-navbar" data-open="click" data-menu="vertical-menu-modern" data-col="2-columns">
+{% endblock %}
+
+{% block appContent %}
+
+    <!-- BEGIN: Content-->
+    <input type="hidden" id="user-id" value="{{ user_id }}">
+    <input type="hidden" id="user-role" value="{{ role }}">
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+            </div>
+            <div class="content-detached">
+                <div class="content-body">
+                    <div class="content-overlay"></div>
+
+                <!-- TABLA CLIENTES -->
+                <section class="row all-contacts">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-head">
+                                <div class="card-header">
+                                    <h4 class="card-title">Objetivos de los Comerciales</h4>
+                                    <input class="quarter-to-show" type="hidden">
+                                    <input class="year-to-show" type="hidden">
+                                    <i class="fas fa-eye-slash hide-buttons" style="float:right; color:#00b5b8; margin-right:10px; margin-top:-10px; cursor:pointer;"></i>
+                                    <i class="fas fa-cog objetives-settings" id="objetives_settings" data-toggle="dropdown" style="float:right; color:#00b5b8; margin-right:10px; margin-top:-10px; cursor:pointer;"></i>
+                                    <span aria-labelledby="objetives_settings" class="dropdown-menu dropdown-menu-right mt-1">
+                                        <a href="#" class="dropdown-item change-amount" data-toggle="modal" data-target="#objetives_settings_modal"><i class="fas fa-poll-h"></i> Cambiar objetivos</a>
+                                        <a href="#" class="dropdown-item change-quarter" data-toggle="modal" data-target="#objetives_settings_modal"><i class="fas fa-calendar-day"></i> Cambiar trimestre</a>
+                                    </span>
+                                    <div class="heading-elements">                              
+
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <div class="card-body">
+                                        <button class="btn btn-primary btn-md invoicedAmount"><span class="d-md-block d-none"><i class="fas fa-euro-sign white"></i> Cantidad Facturada</span></button>
+                                        <button class="btn btn-primary btn-md percentage"><span class="d-md-block d-none"><i class="fas fa-percent white"></i> Porcentaje de Objetivos</span></button>
+                                        <button class="btn btn-primary btn-md activeClients"><span class="d-md-block d-none"><i class="fas fa-phone white"></i> Clientes Activos</span></button>
+                                        <button class="btn btn-primary btn-md salesRadar" style="display:none;"><span class="d-md-block d-none"><i class="fas fa-star white"></i> Radar Comerciales</span></button>
+                                        <button class="btn btn-primary btn-md totalDoughnut"><span class="d-md-block d-none"><i class="fas fa-chart-pie white"></i> Total Facturado</span></button>
+                                        <div class="loading-banner" style="display:none;">
+                                            <div class="spinner-border" style="width: 7rem; height: 7rem;font-size: 3rem !important;display:block;margin:0 auto;margin-top:200px;" role="status">
+                                                <span class="sr-only">Loading...</span>
+                                            </div>
+                                            <div style="text-align:center;font-size: 1rem !important;display:block;margin:0 auto;margin-bottom:200px;margin-top:20px;" >
+                                                <span class="">Consultando la base de datos...</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- TABLA CLIENTES -->
+                </div>
+            </div>
+
+            <!-- GRÁFICO DE BARRAS -->
+            <div class="row">
+                <div class="col-3 vacias" style="display:none;"></div>
+                <div class="bar-chart col-12">
+                    <canvas id="myChart">
+                    </canvas>
+                </div>
+                <div class="col-3 vacias" style="display:none;"></div>
+            </div>
+            <!-- GRÁFICO DE BARRAS -->
+
+            <!-- Modal para los settings de los objetivos start -->
+            <div class="modal fade" id="objetives_settings_modal" tabindex="-1" role="dialog" aria-labelledby="AddInterested" aria-hidden="true" style="width: 88%;">
+                <div class="modal-dialog" role="document" style="margin-top: 150px;">
+                    <div class="modal-content" style="width: 800px;">
+                        <section class="contact-form">
+                            <form method="POST" id="form-interested">
+                                {% csrf_token %}
+                                <div class="modal-header">
+                                    <h5 class="modal-title settings-title"></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+
+                                    <div class="row settings-container">
+                                        {% comment %} ... {% endcomment %}
+                                    </div>
+                                    
+                                </div>
+                            </form>
+                        </section>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal para los settings de los objetivos end -->
+
+        </div>
+    </div>
+    <!-- END: Content-->
+
+
+{% endblock %}
+
+{% block js %}
+
+    {% include 'appCharts/js/jsCharts.html' %}
+
+{% endblock %}

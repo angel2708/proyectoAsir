@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Presupuesto Cliente</title>
+</head>
+<body>
+	<h3>Encantados de saludarle {{nombreCliente}}</h3>
+	<h4>Le adjuntamos el presupuesto de reparación de su {{brand}} {{model}}.</h4>
+	<h5>Por favor, marque "Aceptar" si desea que procedamos con la reparación.</h5>
+	<h5>Por el contrario, marque "Rechazar" si no está de acuerdo con el presupuesto.</h5>
+
+	<div style="margin-left: 10%;">
+		<a href="http://{{host}}/sat-acceptance/true/{{encrypt}}"><button style="text-decoration: none;padding: 10px;font-weight: 600;font-size: 20px;color: black;background-color: #7CFB97;border-radius: 6px;border: 2px solid black; cursor:pointer;" type="button" class="btn btn-dark">Aceptar</button></a>
+		<a href="http://{{host}}/sat-acceptance/false/{{encrypt}}"><button style="text-decoration: none;padding: 10px;font-weight: 600;font-size: 20px;color: black;background-color: #FF6767;border-radius: 6px;border: 2px solid black; cursor:pointer;" type="button" class="btn btn-dark">Rechazar</button></a>
+	</div>
+
+	<br>
+	<h3>Gracias por confiar en <a href="https://www.esmovil.es">esMóvil</a></h3>
+    <br>
+
+	<div>
+		<img src="https://blog.esmovil.es/wp-content/uploads/2021/02/Logo-es.png" style="width:400px;"/>
+		<p style="font-family: Gotham, 'Helvetica Neue', Helvetica, Arial, 'sans-serif'; font-size: 11px; color: gray; text-align: justify">En cumplimiento con el artículo 13 del Reglamento (UE) 679/2016, relativo a la protección de las personas físicas en lo que respecta al tratamiento de datos personales, se le informa que los datos personales que nos ha proporcionado serán tratados y conservados por EINTEGRA TECHNOLOGY CONSULTING 2020 S.L., con la única finalidad de proporcionarle información sobre la materia tratada en el asunto del mail. Si quiere dejar de recibir mensajes envíe un mail a info@esmovil.es
+		Si lo desea, puede ejercer sus derechos de acceso, rectificación, supresión, oposición y/o limitación en referencia al tratamiento de sus datos personales mediante escrito al Responsable del Tratamiento de Datos en C/ Huetor Vega 5C - 5C, Pol. Ind. Juncaril Albolote (Granada), incluyendo fotocopia de su DNI o NIF o bien mediante mail a info@esmovil.es
+		<br><strong>Advertencia:</strong> Este mensaje y cualquier anexo se dirigen exclusivamente a su destinatario y contiene información CONFIDENCIAL sometida al secreto profesional. Si no es el destinatario final de este mensaje, le rogamos que nos lo comunique inmediatamente por esta misma vía y proceda a su destrucción. Queda notificado que su uso, distribución, impresión, copia y difusión por cualquier medio está tipificada como delito en el artículo 197 s.s. y 278 del vigente Código Penal.
+		</p>
+	</div>
+</body>
+</html>

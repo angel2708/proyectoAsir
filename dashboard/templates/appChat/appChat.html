@@ -1,0 +1,344 @@
+{% extends 'general/layout.html' %}
+
+{% load static %}
+
+{% block css %}
+
+    {% include 'appChat/css/cssAppChat.html' %}
+
+{% endblock %}
+
+{% block titlePage %}
+Chat
+{% endblock %}
+
+{% block body %}
+<body class="vertical-layout vertical-menu-modern content-left-sidebar chat-application fixed-navbar" data-open="click" data-menu="vertical-menu-modern" data-col="content-left-sidebar">
+{% endblock %}
+
+{% block appContent %}
+
+    <!-- BEGIN: Content-->
+    <div class="app-content content">
+        <div class="sidebar-left">
+            <div class="sidebar">
+                <!-- app chat user profile left sidebar start -->
+                <div class="chat-user-profile">
+                    <header class="chat-user-profile-header text-center border-bottom">
+                        <span class="chat-profile-close">
+                            <i class="feather icon-x"></i>
+                        </span>
+                        <div class="my-2">
+                            <img src="{% static 'images/portrait/small/' %}{{request.user.avatar}}" class="round mb-1" alt="user_avatar" height="100" width="100">
+                            <h5 class="user-name mb-0">{{request.user.first_name}} {{request.user.last_name}}</h5>
+                            <span class="user-profile"></span>
+                        </div>
+                    </header>
+                    <div class="chat-user-profile-content">
+                        <div class="chat-user-profile-scroll">
+                            <h6 class="text-uppercase mb-1">PUESTO</h6>
+                            <p class="mb-2">Aquí añadiremos el puesto que desempeña dentro de la empresa y/o el departamento</p>
+                            <h6>INFORMACIÓN PERSONAL</h6>
+                            <ul class="list-unstyled mb-2">
+                                <li class="user-email">email@gmail.com</li>
+                                <li class="user-phone">+1(789) 950 -7654</li>
+                            </ul>
+                            <h6 class="text-uppercase mb-1">GRUPOS</h6>
+                            <ul class="list-unstyled mb-2">
+                                <li><a href="javascript:void(0);"># Devlopers</a></li>
+                                <li><a href="javascript:void(0);"># Designers</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- app chat user profile left sidebar ends -->
+                <!-- app chat sidebar start -->
+                <div class="chat-sidebar card">
+                    <div class="chat-sidebar-search" style="background-color: #f6f6f6;">
+                        <div class="d-flex align-items-center" style="margin-top: 2%;">
+                            <div class="user-info">
+                                <div class="avatar">
+                                    <img src="{% static 'images/portrait/small/' %}{{request.user.avatar}}" height="36" width="36">
+                                </div>
+                            </div>
+                            <fieldset class="form-group position-relative has-icon-left mx-75 mb-0">
+                                <input type="text" class="form-control round" id="chat-search" placeholder="Buscar...">
+                                <div class="form-control-position">
+                                    <i class="feather icon-search text-dark"></i>
+                                </div>
+                            </fieldset>
+                            <i class="create-group feather icon-more-vertical float-right cursor-pointer"></i>
+                        </div>
+                    </div>
+                    <div class="chat-sidebar-list-wrapper pt-2">
+                        <input class="user_id" type="hidden" value="{{request.user.id}}">
+                        <h6 class="px-2 pb-25 mb-0">GRUPOS<i class="create-group feather icon-plus float-right cursor-pointer add-group"></i></h6>
+                        {% comment %} LISTA DE GRUPOS {% endcomment %}
+                        <ul class="chat-sidebar-list">
+                            {% for group in groups %}
+                                {% if user_id in group.members %}
+                                    <li>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar m-0 mr-50"><img src="dashboard/media/group_logo/{{group.logo}}" height="36" width="36">
+                                                {% comment %} <i></i> {% endcomment %}
+                                            </div>
+                                            <div class="chat-sidebar-name pl-1">
+                                                <h6 class="mb-0">{{group.title}}</h6>
+                                            </div>
+                                        </div>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                        <h6 class="px-2 pt-2 pb-25 mb-0">CHATS<i class="create-chat feather icon-plus float-right cursor-pointer add-chat"></i></h6>
+                        {% comment %} LISTA DE CHATS ABIERTOS {% endcomment %}
+                        <ul class="chat-sidebar-list">
+                            {% for chat in chats %}
+                                {% if user_id in chat.members %}
+                                    <li class="conversation" user_id={{user_id}} members={{chat.members}}>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar m-0 mr-50 chat-avatar">
+                                            </div>
+                                            <div class="chat-sidebar-name pl-1 chat-name">
+                                                
+                                            </div>
+                                        </div>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <!-- app chat sidebar ends -->
+            </div>
+        </div>
+        <div class="content-right">
+            <div class="content-overlay"></div>
+            <div class="content-wrapper">
+                <div class="content-header row">
+                </div>
+                <div class="content-body">
+                    <!-- app chat overlay -->
+                    <div class="chat-overlay"></div>
+                    <!-- app chat window start -->
+                    <section class="chat-window-wrapper">
+                        <div class="chat-start">
+                            <span class="feather icon-message-square chat-start-icon font-large-3 p-3 mb-1" style="cursor: default;"></span>
+                            <h4 class="d-none d-lg-block py-50 text-bold-500">Selecciona un contacto para empezar a chatear</h4>
+                        </div>
+                        <div class="chat-area d-none">
+                            <div class="chat-header">
+                                <header class="d-flex justify-content-between align-items-center px-1 py-75">
+                                    <div class="d-flex align-items-center">
+                                        <div class="chat-sidebar-toggle d-block d-lg-none mr-1">
+                                            <i class="feather icon-menu font-large-1 cursor-pointer"></i>
+                                        </div>
+                                        <div class="current-conv-avatar avatar avatar-busy chat-profile-toggle m-0 mr-1">
+                                            <img src="../../../app-assets/images/portrait/small/avatar-s-26.png" alt="avatar" height="36" width="36" />
+                                            <i></i>
+                                        </div>
+                                        <h6 class="current-conv-name mb-0"></h6>
+                                    </div>
+                                    <div class="chat-header-icons">
+                                        <i class="chat-icon-favorite">
+                                            <i class="feather icon-star font-medium-4 cursor-pointer"></i>
+                                        </i>
+                                        <span class="dropdown">
+                                            <i class="feather icon-more-vertical font-medium-4 ml-25 cursor-pointer dropdown-toggle nav-hide-arrow cursor-pointer" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="menu">
+                                            </i>
+                                            <span class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                                <a class="dropdown-item" href="JavaScript:void(0);"><i class="feather icon-tag mr-25"></i> Pin to top</a>
+                                                <a class="dropdown-item" href="JavaScript:void(0);"><i class="feather icon-trash-2 mr-25"></i> Delete
+                                                    chat</a>
+                                                <a class="dropdown-item" href="JavaScript:void(0);"><i class="feather icon-x-circle mr-25"></i> Block</a>
+                                            </span>
+                                        </span>
+                                    </div>
+                                </header>
+                            </div>
+                            <!-- chat card start -->
+                            <div class="card chat-wrapper shadow-none mb-0">
+                                <div class="card-content">
+                                    <div class="card-body chat-container">
+                                        <div class="chat-content">
+                                            <div class="chat">
+                                                <div class="chat-avatar">
+                                                    <a class="avatar m-0">
+                                                        <img src="../../../app-assets/images/portrait/small/avatar-s-11.png" alt="avatar" height="36" width="36" />
+                                                    </a>
+                                                </div>
+                                                <div class="chat-body">
+                                                    <div class="chat-message">
+                                                        <p>How can we help? We're here for you! 😄</p>
+                                                        <span class="chat-time">7:45 AM</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="chat chat-left">
+                                                <div class="chat-avatar">
+                                                    <a class="avatar m-0">
+                                                        <img src="../../../app-assets/images/portrait/small/avatar-s-26.png" alt="avatar" height="36" width="36" />
+                                                    </a>
+                                                </div>
+                                                <div class="chat-body">
+                                                    <div class="chat-message">
+                                                        <p>Hey John, I am looking for the best admin template.</p>
+                                                        <p>Could you please help me to find it out? 🤔</p>
+                                                        <span class="chat-time">7:50 AM</span>
+                                                    </div>
+                                                    <div class="chat-message">
+                                                        <p>It should be Bootstrap 4 🤩 compatible.</p>
+                                                        <span class="chat-time">7:58 AM</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="badge badge-pill badge-light-secondary my-1">Yesterday</div>
+                                            <div class="chat">
+                                                <div class="chat-avatar">
+                                                    <a class="avatar m-0">
+                                                        <img src="../../../app-assets/images/portrait/small/avatar-s-11.png" alt="avatar" height="36" width="36" />
+                                                    </a>
+                                                </div>
+                                                <div class="chat-body">
+                                                    <div class="chat-message">
+                                                        <p>Absolutely!</p>
+                                                        <span class="chat-time">8:00 AM</span>
+                                                    </div>
+                                                    <div class="chat-message">
+                                                        <p>Stack admin is the responsive bootstrap 4 admin template.</p>
+                                                        <span class="chat-time">8:01 AM</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="chat chat-left">
+                                                <div class="chat-avatar">
+                                                    <a class="avatar m-0">
+                                                        <img src="../../../app-assets/images/portrait/small/avatar-s-26.png" alt="avatar" height="36" width="36" />
+                                                    </a>
+                                                </div>
+                                                <div class="chat-body">
+                                                    <div class="chat-message">
+                                                        <p>Looks clean and fresh UI. 😃</p>
+                                                        <span class="chat-time">10:12 AM</span>
+                                                    </div>
+                                                    <div class="chat-message">
+                                                        <p>It's perfect for my next project.</p>
+                                                        <span class="chat-time">10:15 AM</span>
+                                                    </div>
+                                                    <div class="chat-message">
+                                                        <p>How can I purchase 🤑 it?</p>
+                                                        <span class="chat-time">10:18 AM</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="chat">
+                                                <div class="chat-avatar">
+                                                    <a class="avatar m-0">
+                                                        <img src="../../../app-assets/images/portrait/small/avatar-s-11.png" alt="avatar" height="36" width="36" />
+                                                    </a>
+                                                </div>
+                                                <div class="chat-body">
+                                                    <div class="chat-message">
+                                                        <p>Thanks 🤝 , from ThemeForest.</p>
+                                                        <span class="chat-time">10:20 AM</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="chat chat-left">
+                                                <div class="chat-avatar">
+                                                    <a class="avatar m-0">
+                                                        <img src="../../../app-assets/images/portrait/small/avatar-s-26.png" alt="avatar" height="36" width="36" />
+                                                    </a>
+                                                </div>
+                                                <div class="chat-body">
+                                                    <div class="chat-message">
+                                                        <p>I will purchase it for sure. 👍</p>
+                                                        <span class="chat-time">3:32 PM</span>
+                                                    </div>
+                                                    <div class="chat-message">
+                                                        <p>Thanks.</p>
+                                                        <span class="chat-time">3:33 PM</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="chat">
+                                                <div class="chat-avatar">
+                                                    <a class="avatar m-0">
+                                                        <img src="../../../app-assets/images/portrait/small/avatar-s-11.png" alt="avatar" height="36" width="36" />
+                                                    </a>
+                                                </div>
+                                                <div class="chat-body">
+                                                    <div class="chat-message">
+                                                        <p>Great, Feel free to get in touch on</p>
+                                                        <span class="chat-time">3:34 AM</span>
+                                                    </div>
+                                                    <div class="chat-message">
+                                                        <p>https://pixinvent.ticksy.com/</p>
+                                                        <span class="chat-time">3:35 AM</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer chat-footer px-2 py-1 pb-0">
+                                    <form class="d-flex align-items-center" onsubmit="chatMessagesSend();" action="javascript:void(0);">
+                                        <i class="feather icon-user cursor-pointer"></i>
+                                        <i class="feather icon-paperclip ml-1 cursor-pointer"></i>
+                                        <input type="text" class="form-control chat-message-send mx-1" placeholder="Type your message here...">
+                                        <button type="submit" class="btn btn-primary glow send d-lg-flex"><i class="feather icon-play"></i>
+                                            <span class="d-none d-lg-block mx-50">Send</span></button>
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- chat card ends -->
+                        </div>
+                    </section>
+                    <!-- app chat window ends -->
+                    <!-- app chat profile right sidebar start -->
+                    <section class="chat-profile">
+                        <header class="chat-profile-header text-center border-bottom">
+                            <span class="chat-profile-close">
+                                <i class="feather icon-x"></i>
+                            </span>
+                            <div class="my-2">
+
+                                <img src="../../../app-assets/images/portrait/small/avatar-s-26.png" class="round mb-1" alt="chat avatar" height="100" width="100">
+
+                                <h5 class="app-chat-user-name mb-0">Deabeth Elliott</h5>
+                                <span>Devloper</span>
+                            </div>
+                        </header>
+                        <div class="chat-profile-content p-2">
+                            <h6 class="mt-1">ABOUT</h6>
+                            <p>It is a long established fact that a reader will be distracted by the readable content.</p>
+                            <h6 class="mt-2">PERSONAL INFORMATION</h6>
+                            <ul class="list-unstyled">
+                                <li class="mb-25">email@gmail.com</li>
+                                <li>+1(789) 950-7654</li>
+                            </ul>
+                        </div>
+                    </section>
+                    <!-- app chat profile right sidebar ends -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END: Content-->
+
+{% endblock %}
+
+
+{% comment %} {% block appContent %}
+
+    {% include 'general/mantenimiento/mantenimiento-default.html' %}
+
+{% endblock %} {% endcomment %}
+
+
+{% block js %}
+
+    {% include 'appChat/js/jsAppChat.html' %}
+
+{% endblock %}

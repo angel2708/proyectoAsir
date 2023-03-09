@@ -1,0 +1,145 @@
+{% extends 'general/layout.html' %}
+
+{% load static %}
+
+{% block titlePage %}
+Kanban
+{% endblock %}
+
+{% block css %}
+
+    {% include 'appKanban/css/cssKanban.html' %}
+
+{% endblock %}
+
+{% block body %}
+    <body class="vertical-layout vertical-menu-modern content-left-sidebar todo-application  fixed-navbar" data-open="click" data-menu="vertical-menu-modern" data-col="content-left-sidebar">
+{% endblock %}
+
+{% block appContent %}
+
+    <!-- BEGIN: Content-->
+    <div class="app-content content">
+        <div class="sidebar-left">
+            <div class="sidebar">
+                <div class="todo-sidebar d-flex">
+                    <span class="sidebar-close-icon">
+                        <i class="feather icon-x"></i>
+                    </span>
+                    <!-- todo app menu -->
+                    <div class="todo-app-menu">
+                        <div class="form-group text-center add-task">
+                            <!-- new task button -->
+                            <a style="color: white;" data-toggle="modal" data-target="#BoardModal" href="#"><button type="button" class="btn btn-danger btn-glow add-task-btn btn-block my-1"><i class="feather icon-plus"></i> Añadir Tablero</button></a>
+                        </div>
+                        <!-- sidebar list start -->
+                        <div class="sidebar-menu-list">
+                            <label class="filter-label mt-2 mb-1 pt-25">Filtros</label>
+                            {% for b in ba %}
+                                <input type="hidden" value="{{b.user_id}}">
+                                <input type="hidden" value="{{b.board_id}}">
+                            {% endfor %}
+                            <div class="filter-board">
+                                <div class="list-group">
+                                    <a href="#" class="list-group-item border-0 filtro filter-all active" board=0>
+                                        <span class="fonticon-wrap mr-50">
+                                            <i class="feather icon-align-justify"></i>
+                                        </span>
+                                        <span> Todos los tableros</span>
+                                    </a>
+                                    <a href="#" class="list-group-item border-0 filtro filter-myboard" board=1>
+                                        <span class="fonticon-wrap mr-50">
+                                            <i class="feather icon-user"></i>
+                                        </span>
+                                        <span>Soy el dueño</span>
+                                    </a>
+                                    <a href="#" class="list-group-item border-0 filtro filter-member" board=2>
+                                        <span class="fonticon-wrap mr-50">
+                                            <i class="feather icon-users"></i>
+                                        </span>
+                                        <span>Soy miembro</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- sidebar list end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-right">
+            <div class="content-overlay"></div>
+            <div class="content-wrapper">
+                <div class="content-header row">
+                </div>
+                <div class="content-body">
+                    <div class="todo-app-area">
+                        <!-- Modal Crear Tablero -->
+                        <div class="modal fade" id="BoardModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <section class="contact-form">
+                                        <form method="POST" id="form-user" class="contact-input">
+                                            {% csrf_token %}
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel1" data-i18n="NewBoard">Crear un nuevo Tablero</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <input class="board-user_id" type="hidden" value="{{ user.id }}">
+                                                <input class="board-company_id" type="hidden" value="{{ ca.company_id }}">
+                                                <fieldset class="form-group col-12">
+                                                    <h6>Nombre del tablero</h6>
+                                                    <input type="text" class="form-control board-name">
+                                                </fieldset>
+                                                <fieldset class="form-group col-12" style="margin-top: -3%; margin-bottom: 3%;">
+                                                    <input type="checkbox" id="all-switch" class="switchery all-switch board-all" data-size="xs" data-switchery="true" style="display: none;">
+                                                    <label for="switcherySize13">Todo el departamento</label>
+                                                </fieldset>
+                                                <fieldset class="form-group col-12">
+                                                    <h6>Fondo</h6>
+                                                    <form name="subir-fondo" type="POST" enctype="multipart/formdata" >
+                                                        <input class="board-background" type="file" name="Fondo" />
+                                                    </form>
+                                                </fieldset>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <fieldset class="form-group position-relative has-icon-left mb-0">
+                                                    <button type="button" data-dismiss="modal" class="btn btn-info add-user-item saveBoard">
+                                                        <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                                        <span class="d-none d-lg-block" data-i18n="Save">Guardar</span>
+                                                    </button>
+                                                </fieldset>
+                                            </div>
+                                        </form>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row board-list">
+                            {% for board in boards %}
+                                {% if board.removed == False %}
+                                    <a href="{{board.id}}" style="width: 250px;margin-right: 2%;margin-top: 2%;">
+                                        <div class="board-item board" style="background-color: #E4EBEB; width: 100%;" boardId="{{board.id}}" owner="{{board.owner}}">
+                                            <p class="board-n">{{board.name}}</p>
+                                        </div>
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END: Content-->
+
+{% endblock %}
+
+{% block js %}
+
+    {% include 'appKanban/js/jsKanban.html' %}
+
+{% endblock %}

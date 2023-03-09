@@ -1,0 +1,1656 @@
+{% extends 'general/layout.html' %}
+
+{% load static %}
+{% load filters %}
+
+{% block titlePage %}
+Clients
+{% endblock %}
+
+{% block css %}
+
+    {% include 'appClients/css/cssClients.html' %}
+
+{% endblock %}
+
+{% block body %}
+    <body class="vertical-layout vertical-menu-modern 2-columns app-contacts fixed-navbar" data-open="click" data-menu="vertical-menu-modern" data-col="2-columns">
+{% endblock %}
+
+{% block appContent %}
+
+    <!-- BEGIN: Content-->
+    <input type="hidden" id="c_type" value="{{ c_type }}">
+    <input type="hidden" id="c_id" value="{{ c_id }}">
+    <input type="hidden" id="user-id" value="{{ user_id }}">
+    <input type="hidden" id="user-role" value="{{ role }}">
+    <input type="hidden" id="mirror-name" value="{{ mirror }}">
+    <input type="hidden" id="user-role" value="{{ role }}">
+
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+            </div>
+            <div class="content-detached content-right">
+                <div class="content-body">
+                    <div class="content-overlay"></div>
+
+                <!-- TABLA CLIENTES -->
+                <section class="row all-contacts">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-head">
+                                <div class="card-header">
+                                    <h4 class="card-title">Clientes {% if c_type == 'pre-catchment' %}pre-captación{% elif c_type == 'catchment' %}{% if role != 4 %}en captación{% else %}Pendientes{% endif %}{% elif company == 1 %}{% if role != 4 %}ADN{% else %}Registrados{% endif %}{% else %}adquiridos{% endif %}</h4>
+                                    <div class="heading-elements mt-0">     
+                                        {% if c_type == 'pre-catchment' %}
+                                        {% if permissions.create or permissions == "main_admin" %}
+                                            <button class="btn btn-primary btn-md lastId" data-toggle="modal" data-target="#AddContactModal"><i class="d-md-none d-block feather icon-plus white"></i>
+                                                <span class="d-md-block d-none">Añadir Cliente</span></button>
+                                        {% endif %}
+                                        {% endif %}
+ 
+                                            <span class="dropdown">
+                                                <button id="btnSearchDrop1" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="btn btn-warning dropdown-menu-right dropdown-toggle btn-md">
+                                                    <i class="feather icon-download-cloud white"></i></button>
+                                                <span aria-labelledby="btnSearchDrop1" class="dropdown-menu dropdown-menu-right mt-1">
+                                                    <a href="#" id="excelExport" class="dropdown-item" data-i18n="Export-Excel"><i class="fa fa-file-excel-o"></i> Exportar a Excel</a>
+                                                    <a href="#" id="csvExport" class="dropdown-item" data-i18n="Export-Csv"><i class="fa fa-file-text-o"></i> Exportar a Csv</a>
+                                                    <a href="#" id="pdfExport" class="dropdown-item" data-i18n="Export-Pdf"><i class="fa fa-file-pdf-o"></i> Exportar a Pdf</a>
+                                                </span>
+                                            </span>
+                                            <button class="btn btn-default btn-sm"><i class="feather icon-settings white"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <div class="card-body">
+                                        <!-- Task List table -->
+                                        <div class="loading-banner">
+                                            <div class="spinner-border" style="width: 7rem; height: 7rem;font-size: 3rem !important;display:block;margin:0 auto;margin-top:200px;" role="status">
+                                                <span class="sr-only">Loading...</span>
+                                            </div>
+                                            <div style="text-align:center;font-size: 1rem !important;display:block;margin:0 auto;margin-bottom:200px;margin-top:20px;" >
+                                                <span class="">Consultando la base de datos...</span>
+                                            </div>
+                                        </div>
+                                        <table id="users-contacts" class="table table-white-space table-bordered row-grouping display no-wrap icheck table-middle text-center table-responsive" style="display:none">
+                                            <thead>
+                                                <tr>
+                                                    <th>Seg.</th>
+                                                    <th>Codigo</th>
+                                                    <th>Nombre</th>
+                                                    <th>Email</th>
+                                                    <th>Tlf</th>
+                                                    <th>Web</th>
+                                                    <th>Último contacto</th>
+                                                    <th>Provincia</th>
+                                                    <th>C.P.</th>
+                                                    <th>Comercial</th>
+                                                    <th>Pais</th>
+                                                    <th>Fec. Alta</th>
+                                                    <th>Última factura</th>
+                                                    <th>Favorito</th>
+                                                    <th>Acciones</th>
+                                                    <th>TC</th>
+                                                    <th>I</th>
+                                                    <th>LC</th>
+                                                    <th>WR</th>
+                                                    <th>T</th>
+                                                    <th>B</th>
+                                                    <th>AP</th>
+                                                    <th>RE</th>
+                                                    <th>PART</th>
+                                                    <th>NOTES</th>
+                                                    <th>ML</th>
+                                                    <th>ST</th>
+                                                    <th>HCSF</th>
+                                                    <th>NIVA</th>
+                                                    <th>NIINT</th>
+                                                    <th>TARIFA</th>
+                                                    <th>DIR.PRIN.</th>
+                                                    <th>DIR.FAC.</th>
+                                                    <th>SUP</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="contact-table-body">
+                                                {% for cliente in clientes %}
+                                                {% csrf_token %}
+                                                    <tr {% if role == 4 %} {% if cliente.registered %} style="background-color:rgb(200, 230, 201);" {% elif cliente.aproved %} style="background-color:rgb(128, 222, 234);" {% endif %} {% endif%}>
+                                                        <td><input type="checkbox" class="input-chk-track check" client-id="{{ cliente.id }}" {% if cliente.tracked %}checked="checked"{% endif %}></td>
+                                                        {% if c_type == 'acquired' %}
+                                                        <td class="text-center">
+                                                            {% if cliente.ADN_code != None %}
+                                                            <a class="id">{{cliente.ADN_code}}</a>
+                                                            {% else %}
+                                                            <a class="id">0</a>
+                                                            {% endif %}
+                                                        </td>
+                                                        {% else %}
+                                                        <td class="text-center">
+                                                            <a class="id">{{cliente.company_contact_id}}</a>
+                                                        </td>
+                                                        {% endif %}
+                                                        
+                                                        <td>
+                                                            <div class="media">
+                                                                <div class="media-left pr-1">
+                                                                    <span class="avatar avatar-sm avatar-away rounded-circle">
+                                                                    <img src="{% static 'images/portrait/small/img_user_not_found.png' %}" alt="avatar">
+                                                                    <i></i>
+                                                                    </span>
+                                                                </div>
+                                                                <div class="media-body media-middle">
+                                                                    <a class="media-heading name prof-modal-trigger" client-id="{{cliente.id}}" client-cci="{{cliente.company_contact_id}}" data-toggle="modal" href="#" data-target="#UserProfModal">{{cliente.name|upper}}</a>
+                                                                </div>
+
+                                                            </div>
+                                                        </td>
+
+                                                            {% comment %}{% if cliente.contact_pc == None %} style="color:red" {% endif %}{% endcomment %} 
+                                                        
+                                                        {% if  cliente.mail%}
+                                                            <td class="text-center">
+                                                                <a class="email" idCliente="{{cliente.id}}">{{ cliente.mail|main|upper }}</a>
+                                                            </td>
+                                                        {% else %}
+                                                            <td class="text-center">
+                                                                <a class="email" idCliente="{{cliente.id}}"><i>Sin asignar</i></a>
+                                                            </td>
+                                                        {% endif %}
+                                                        {% if cliente.tel %}
+                                                            <td class="phone" idCliente="{{cliente.id}}">{{ cliente.tel|main }}</td>
+                                                        {% else %}
+                                                            <td class="phone" idCliente="{{cliente.id}}"><i>Sin asignar</i></td>
+                                                        {% endif %}
+                                                        {% if cliente.web %}
+                                                            <td class="web" idCliente="{{cliente.id}}">{{cliente.web}}</td>
+                                                        {% else %}
+                                                            <td class="web" idCliente="{{cliente.id}}"><i>Sin asignar</i></td>
+                                                        {% endif %}
+                                                        <td>{% if cliente.last_note_date != None %}{{ cliente.last_note_date|dateFormatOrderable}}{% else %}Sin registros{% endif %}</td>
+                                                        <td class="state">{% if cliente.province_name != None %}{{cliente.province_name}}{% else %}Sin asignar{% endif %}</td>
+                                                        <td class="postal_code">{% if cliente.contact_pc != None %}{{cliente.contact_pc}}{% elif cliente.main_pc != None %}{{cliente.main_pc}}{% else %}Sin asignar{% endif %}</td>
+                                                        <td class="commercial-asigned">{% if cliente.first_name != None %}{{cliente.first_name}} {{ cliente.last_name }}{% else %}Sin asignar{% endif %}</td>
+                                                        <td class="country">{% if cliente.cname != None %}{{cliente.cname}}{% else %}Sin asignar{% endif %}</td>
+                                                        <td>{% if cliente.created_at != None %}{{ cliente.created_at|dateFormatOrderableAdn }}{% else %}Sin registros{% endif %}</td>
+                                                        <td>{% if cliente.last_bill_date != None %}{{ cliente.last_bill_date|dateFormatOrderableAdn }}{% else %}Sin registros{% endif %}</td>
+                                                        <td class="text-center">
+                                                            {% if cliente.favorite == True %}
+                                                                <div nombreCliente="{{cliente.name}}" idCliente="{{cliente.id}}" class="favorite favoriteF active"><i class="feather icon-star"></i></div>
+                                                            {% else %}
+                                                                <div nombreCliente="{{cliente.name}}" idCliente="{{cliente.id}}" class="favorite favoriteT"><i class="feather icon-star"></i></div>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if cliente.main_address %}
+                                                                {% if role == 3 or permissions == 'main_admin' %}
+                                                                    <a data-toggle="modal" client-id="{{cliente.id}}" data-target="#VisitModal" class="primary edit mr-1 create-visit"><i class="fas fa-map-marker-alt"></i></a>
+                                                                {% else %}
+                                                                    <a data-toggle="modal" client-id="{{cliente.id}}" data-target="#VisitModal" class="primary edit mr-1 request-visit"><i class="fas fa-map-marker-alt"></i></a>
+                                                                {% endif %}
+                                                            {% else %}
+                                                                <a data-toggle="tooltip" data-placement='bottom' client-id="{{cliente.id}}" data-title="Se requiere de direccion para crear visita" class="secondary edit mr-1"><i class="fas fa-map-marker-alt"></i></a>
+                                                            {% endif %}
+
+                                                            {% if c_type == 'acquired' %}
+                                                            {% else %}
+                                                            <a class="danger delete mr-1" idCliente="{{cliente.id}}" nombreCliente="{{cliente.name}}"><i class="fas fa-trash-alt"></i></a>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{cliente.client_type}}</td>
+                                                        <td>{{cliente.interested}}</td>
+                                                        <td>{% if cliente.last_note_date != None %}{% if cliente.recent > 15 %}m15{% else %};{{ cliente.recent }};{% endif %}{% else %}None{% endif %}</td>
+                                                        <td>{{cliente.web_register}}</td>
+                                                        <td>{{cliente.tracked}}</td>
+                                                        <td>{{cliente.brands}}</td>
+                                                        <td>{% if not cliente.registered %}{{cliente.aproved}}{% else %}False{% endif %}</td>
+                                                        <td>{{cliente.registered}}</td>
+                                                        <td>{{cliente.particular}}</td>
+                                                        <td>{{cliente.cont}}</td>
+                                                        <td>{% if cliente.no_mailing %}mailing yes{% else %}mailing no{% endif %}</td>
+                                                        <td>{{cliente.status_pre_catchment}}</td>
+                                                        <td>,{{cliente.sfd}},</td>
+                                                        <td>{{ cliente.buys_no_iva }}</td>
+                                                        <td>{{ cliente.not_interested }}</td>
+                                                        <td>
+                                                        {% if c_type == 'acquired' %}
+                                                            {% if cliente.tariff_id == 1 %}
+                                                            Top nacional
+                                                            {% elif cliente.tariff_id == 2 %}
+                                                            Distribucion
+                                                            {% elif cliente.tariff_id == 3 %}
+                                                            Especial
+                                                            {% elif cliente.tariff_id == 4 %}
+                                                            Captacion
+                                                            {% elif cliente.tariff_id == 5 %}
+                                                            Internacional
+                                                            {% elif cliente.tariff_id == 6 %}
+                                                            Media Markt
+                                                            {% elif cliente.tariff_id == 7 %}
+                                                            The phone house
+                                                            {% endif %}
+                                                        {% else %}
+                                                        Sin asignar
+                                                        {% endif %}
+                                                        </td>
+                                                        <td>{{ cliente.adr_m }}</td>
+                                                        <td>{{ cliente.adr_b }}</td>
+                                                        <td>{{ cliente.suppliers }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- TABLA CLIENTES -->
+                </div>
+            </div>
+            <div class="sidebar-detached sidebar-left">
+                <div class="sidebar">
+                    <div class="bug-list-sidebar-content" style="max-height:850px;overflow:auto;">
+
+                        <!-- Predefined Views -->
+                        <div class="card">
+                            <div class="card-body border-top-blue-grey border-top-lighten-5">
+                                <div class="list-group" style="{% if c_id != '0' %} display:none; {% else %} display:block; {% endif %}">
+                                    <a href="#" class="list-group-item clear-filters">Limpiar filtros</a>
+                                </div>
+                                <div class="list-group" style="{% if c_id == '0' %} display:none; {% else %} display:block; {% endif %}">
+                                    <a href="{% url 'clients-list' 'catchment' '0' %}" class="list-group-item clear-filters">Ver todos</a>
+                                </div>
+                            </div>
+
+                            {% comment %} {% if role == 4 %}
+                                <p class="lead" style="margin-left: 21px;">Registros web</a></p>
+                                <div class="card-body border-top-blue-grey border-top-lighten-5">
+                                    <div class="list-group">
+                                        <a href="#" class="list-group-item static-filter-item see-pendant">Pendientes de comercial</a>
+                                        <a href="#" class="list-group-item static-filter-item see-aproved">Aprobados por comercial</a>
+                                        <a href="#" class="list-group-item static-filter-item see-registered">Cliente dado de alta</a>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="card-body border-top-blue-grey border-top-lighten-5">
+                                    <div class="list-group">
+                                        {% if c_type == 'catchment' %}
+                                            <a href="#" class="list-group-item static-filter-item see-web">Registros web</a>
+                                        {% endif %}
+                                        <a href="#" class="list-group-item static-filter-item see-pendant" style="display:none">Pendientes de comercial</a>
+                                        <a href="#" class="list-group-item static-filter-item see-aproved" style="display:none">Aprobados por comercial</a>
+                                        <a href="#" class="list-group-item static-filter-item see-registered" style="display:none">Cliente dado de alta</a>
+                                    </div>
+                                </div>
+                            {% endif %} {% endcomment %}
+
+                            {% if role != 4 %}
+                                <!-- FILTROS CLIENTES -->
+                                <div class="card-body border-top-blue-grey border-top-lighten-5">
+                                    <div class="list-group">
+                                        {% if role == 2 or permissions == "main_admin" %}
+                                            <a href="#" class="list-group-item static-filter-item my-customer">Mis Clientes</a>
+                                        {% endif %}
+                                        {% if role == 2 or permissions == "main_admin" %}
+                                            {% if mirror != '' %}
+                                                <a href="#" class="list-group-item static-filter-item mirror-customers">Clientes espejo</a>
+                                            {% endif %}
+                                        {% endif %}
+                                        <a href="#" class="list-group-item static-filter-item see-mailing">Mailing</a>
+                                        <a href="#" class="list-group-item static-filter-item see-particular" style="display:none;">Particulares</a>
+                                        {% if role == 5 or is_manager == 1 or role == 3 or permissions == "main_admin" %}
+                                            <a href="#" class="list-group-item static-filter-item see-tracked">En seguimiento</a>
+                                        {% endif %}
+                                        <a href="#" class="list-group-item static-filter-item see-buys-no-iva">Compra sin IVA</a>
+                                        {% if c_type == 'pre-catchment' %}<a href="#" class="list-group-item static-filter-item see-not-interested">No interesado</a>{% endif %}
+                                    </div>
+                                </div>
+                                <!-- FILTROS CLIENTES -->
+                                
+                                {% if c_type == 'pre-catchment' %}
+                                <!-- Groups-->
+                                <div class="card-body border-top-blue-grey border-top-lighten-5">
+                                    <p class="lead"><a class="pre-catchment-contact-groups filter-item see-nc"><i class="fa fa-plus-square primary"></i> Pre-Captación</a></p>
+                                    <div class="list-group pc-group" style="display:none;">
+                                        <a href="#" class="list-group-item pre-contact-filter filter-item see-without-call">Sin contactar</a>
+                                        <a href="#" class="list-group-item pre-contact-filter filter-item see-lost-call">No lo cogen</a>
+                                        <a href="#" class="list-group-item pre-contact-filter filter-item see-later-call">Llamar más tarde</a>
+                                    </div>
+                                </div>
+                                <!--/ Groups-->
+                                {% endif %}
+
+                                <!-- Groups-->
+                                {% if c_type != 'pre-catchment' %}
+                                <div class="card-body">
+                                {% if c_type == 'catchment' %}
+                                    <p class="lead"><a class="last-contact-groups"><i class="fa fa-plus-square primary"></i> Captación</a></p>
+                                {% elif c_type == 'acquired' %}
+                                    <p class="lead"><a class="last-contact-groups"><i class="fa fa-plus-square primary"></i> Último contacto</a></p>
+                                {% endif %}
+                                    <div class="list-group lc-group" style="display:none;">
+                                        {% if c_type == 'catchment' %}
+                                            <a href="#" class="list-group-item filter-item see-send-mail">Envío Email/Whatsapp</a>
+                                        {% endif %}
+                                        <a href="#" class="list-group-item last-contact-filter filter-item see-l7">Menos de 7 días</a>
+                                        <a href="#" class="list-group-item last-contact-filter filter-item see-b715">Entre 7 y 15 días</a>
+                                        <a href="#" class="list-group-item last-contact-filter filter-item see-m15" style="color:red;">Más de 15 días</a>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                <!--/ Groups-->
+
+
+                                <!-- Groups-->
+                                {% if c_type == 'acquired' %}
+                                <div class="card-body">
+                                    <p class="lead"><a class="tariff_groups"><i class="fa fa-plus-square primary"></i> Tarifas</a></p>
+                                    <div class="list-group tf-group" style="display:none;">
+                                        <a href="#" class="list-group-item filter-item tariff1">Top Nacional</a>
+                                        <a href="#" class="list-group-item filter-item tariff2">Distribución</a>
+                                        <a href="#" class="list-group-item filter-item tariff3">Especial</a>
+                                        <a href="#" class="list-group-item filter-item tariff4">Captación</a>
+                                        <a href="#" class="list-group-item filter-item tariff5">Internacional</a>
+                                        <a href="#" class="list-group-item filter-item tariff6">Media Markt</a>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                <!--/ Groups-->
+
+                                <!-- Groups-->
+                                <div class="card-body">
+                                    <p class="lead"><a class="type-groups"><i class="fa fa-plus-square primary"></i> Tipo Cliente</a></p>
+                                    <ul class="list-group type-group" style="display:none;">
+                                        {% for ct in client_types %}
+                                            <li class="list-group-item">
+                                                <span class="badge badge-primary badge-pill float-right">{% if ct.c == None %}0{% else %}{{ ct.c }}{% endif %}</span>
+                                                <a class="type-filter filter-item" type-id="{{ ct.id }}" href="#">{{ ct.name }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <!--/ Groups-->
+
+                                <!--More-->
+                                <div class="card-body ">
+                                    <p class="lead"><a class="interest-groups"><i class="fa fa-plus-square primary"></i> Intereses</a></p>
+                                    <ul class="list-group interests-group" style="display:none;">
+                                        
+                                    </ul>
+                                </div>
+                                <!--/More-->
+
+                                <!--More-->
+                                <div class="card-body ">
+                                    <p class="lead"><a class="brands-groups"><i class="fa fa-plus-square primary"></i> Marcas</a></p>
+                                    <ul class="list-group brands-group" style="display:none;">
+                                        
+                                    </ul>
+                                </div>
+                                <!--/More-->
+
+                                 <!--More-->
+                                <div class="card-body ">
+                                    <p class="lead"><a class="suppliers-groups"><i class="fa fa-plus-square primary"></i> Proveedores</a></p>
+                                    <ul class="list-group suppliers-group" style="display:none;">
+                                        
+                                    </ul>
+                                </div>
+                                <!--/More-->
+                            {% endif %}
+
+                            <div class="card-body" style="display:none;">
+                                <p class="lead"><a class="hcost-groups"><i class="fa fa-plus-square primary"></i> Vamos caros</a></p>
+                                <ul class="list-group hcost-group" style="display:none;">
+                                    <li class="list-group-item" >
+                                        <a class="hcost-sup-filter filter-item"     hcost-sup-id="-1" href="#">Todos</a>
+                                        <a class="hcost-clear-sup" style="float:right;  display:none"><i class="fa fa-close"></i></a>
+                                    </li>
+                                    <li class="list-group-item" >
+                                        <a class="hcost-sup-filter filter-item"     hcost-sup-id="0" href="#">Desconocido</a>
+                                        <a class="hcost-clear-sup" style="float:right;  display:none"><i class="fa fa-close"></i></a>
+                                    </li>
+                                        
+                                    {% for hcs in sup_hcost %}
+                                        <li class="list-group-item" >
+                                            <a class="hcost-sup-filter filter-item" hcost-sup-id="{{ hcs.id }}" href="#">{{ hcs.name }}</a>
+                                            <a class="hcost-clear-sup" style="float:right;display:none"><i class="fa fa-close"></i></a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+
+                                <ul class="list-group hcost-fam-group" style="display:none;margin-top:10px;">
+                                </ul>
+                            </div>
+
+                        </div>
+                        <!--/ Predefined Views -->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END: Content-->
+
+    {% if role != 3 %}
+
+    <!-- Modal Crear cliente start -->
+    <div class="modal fade" id="AddContactModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="width: 100% !important;">
+            <div class="modal-content">
+                <section class="contact-form">
+                    <form method="POST" id="form-add-contact" class="contact-input">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel1">Añadir Nuevo Cliente</h5>
+                            <button type="button" class="close close-new-client" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" class="cliente-company" value="{{company}}">
+                            <fieldset class="form-group col-12">
+                                <span>Nombre</span><label style="color:#BD2020;">*</label>
+                                <input type="text" autocomplete="off" id="cliente-nombre" class="cliente-nombre form-control">
+                            </fieldset>
+                            <fieldset class="form-group col-12">
+                                <span>Contacto</span>
+                                <input type="text" autocomplete="off" id="cliente-contacto" class="cliente-contacto form-control">
+                            </fieldset>
+                            <fieldset class="form-group col-12">
+                                <span>Email</span>
+                                <input type="text" autocomplete="off" id="cliente-email" class="cliente-email form-control">
+                            </fieldset>
+                            <fieldset class="form-group col-12">
+                                <span>Teléfono</span><label style="color:#BD2020;">*</label>
+                                <input type="number" autocomplete="off" id="cliente-telefono" class="cliente-telefono form-control">
+                            </fieldset>
+                            <fieldset class="form-group col-12">
+                                <span>Código Postal</span><label style="color:#BD2020;">*</label>
+                                <input type="text" autocomplete="off" id="cliente-pc-m" class="cliente-cliente-pc-m form-control" >
+                            </fieldset>
+                            <fieldset class="form-group col-12" style="display:none;">
+                                <input type="text" autocomplete="off" id="cliente-web" class="cliente-web form-control" placeholder="Web">
+                            </fieldset>
+                            <fieldset class="form-group col-12" style="display:none">
+                                <input type="checkbox" autocomplete="off" id="favorite" class="contact-fav input-chk"> Favorito
+                            </fieldset>
+                            <fieldset class="form-group col-12" style="display:none">
+                                <input type="file" autocomplete="off" class="form-control-file" id="user-image">
+                            </fieldset>
+                        </div>
+                        <div class="modal-footer">
+                            <fieldset class="form-group position-relative has-icon-left mb-0">
+                                <button type="button" class="btn btn-info add-contact-item addCustomer add-contact-item">
+                                    <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                    <span class="d-none d-lg-block">Añadir</span>
+                                </button>
+                            </fieldset>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Crear cliente end -->
+
+    {% else %}
+    
+    <!-- Modal Crear cliente start -->
+    <div class="modal fade" id="AddContactModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document" style="width: 100% !important;">
+            <div class="modal-content">
+                <section class="contact-form">
+                    <form method="POST" id="form-add-contact" class="contact-input">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel1">Añadir Nuevo Cliente</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <h4 style="margin-left:15px;">Datos generales</h4>
+                            <div class="row">
+                                <div class="col-6 order-1">
+                                    <fieldset class="form-group col-12">
+                                        <input type="hidden" class="cext-cliente-company" value="{{company}}">
+                                        <label>Nombre</label>
+                                        <input type="text" id="cext-client-name" class="form-control cext-empty" placeholder="Nombre">
+                                    </fieldset>
+                                    <fieldset class="form-group col-12">
+                                        <label>Tipo de cliente</label>
+                                        <select class="custom-select block cext-index"  id="cext-client-type">
+                                            <option value="0">Tipo de cliente<option>
+                                            {% for ct in cts %}
+                                                <option value="{{ ct.id }}">{{ ct.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </fieldset>
+                                    <fieldset class="form-group col-12">
+                                        <label>Interesado </label>
+                                        <select class="select2-bg form-control cd-suppliers" id="cext-client-interest" multiple="multiple" style="width: 100%;" data-bgcolor="success" data-bgcolor-variation="lighten-3" data-text-color="white">
+                                            {% for i in interests %}
+                                                <option value="{{ i.id }}">{{ i.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </fieldset>
+                                    <fieldset class="form-group col-12">
+                                        <label>Marcas</label>
+                                        <select class="select2-bg form-control cd-suppliers" id="cext-client-brands" multiple="multiple" style="width: 100%;" data-bgcolor="success" data-bgcolor-variation="lighten-3" data-text-color="white">
+                                            {% for b in brands %}
+                                                <option value="{{ b.id }}">{{ b.name }} </option>
+                                            {% endfor %}
+                                        </select>
+                                    </fieldset>  
+                                    <fieldset class="form-group col-12">
+                                        <label>Proveedores</label>
+                                        <select class="select2-bg form-control cd-suppliers" id="cext-client-suppliers" multiple="multiple" style="width: 100%;" data-bgcolor="success" data-bgcolor-variation="lighten-3" data-text-color="white">
+                                            {% for s in suppliers %}
+                                                <option value="{{ s.id }}">{{ s.name }} </option>
+                                            {% endfor %}
+                                        </select>
+                                    </fieldset>                                   
+                                    <fieldset class="form-group col-12">
+                                        <label>Comercial</label>
+                                        <select class="custom-select block cext-index" id="cext-client-commercial">
+                                            <option value="0">Seleccionar Comercial<option>
+                                            {% for c in commercials %}
+                                                <option value="{{ c.id }}">{{ c.first_name }} {{ c.last_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </fieldset>
+                                </div>
+                                <div class="col-6 border-left order-2">
+                                    <fieldset class="form-group col-12">
+                                        <label>Contacto</label>
+                                        <input type="text" id="cext-client-contact" class="form-control cext-empty" placeholder="Contacto">
+                                    </fieldset>
+                                    <fieldset class="form-group col-12">
+                                        <label>Teléfono 1</label>
+                                        <input type="text" id="cext-client-tlf1" class="form-control cext-empty" placeholder="Télefono 1">
+                                    </fieldset>
+                                    <fieldset class="form-group col-12">
+                                        <label>Teléfono 2</label>
+                                        <input type="text" id="cext-client-tlf2" class="form-control cext-empty" placeholder="Télefono 2">
+                                    </fieldset>
+                                    <fieldset class="form-group col-12">
+                                        <label>Email 1</label>
+                                        <input type="text" id="cext-client-mail1" class="form-control cext-empty" placeholder="Email 1">
+                                    </fieldset>
+                                    <fieldset class="form-group col-12">
+                                        <label>Email 2</label>
+                                        <input type="text" id="cext-client-mail2" class="form-control cext-empty" placeholder="Email 2">
+                                    </fieldset>
+                                    <fieldset class="form-group col-12">
+                                        <div class="custom-control custom-checkbox" style="margin-top:40px;">
+                                            <input type="checkbox" class="custom-control-input cext-activate-track" id="cext-activate-track" name="cext-activate-track">
+                                            <label class="custom-control-label" for="cext-activate-track">Activar seguimiento</label>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <fieldset class="form-group col-12">
+                                        <label>Nota</label>
+                                        <textarea rows="4" class="form-control m-note-description cext-empty" id="cext-client-note" name="m-note-description" placeholder="Contenido de la nota"></textarea>                            
+                                    </fieldset>
+                                </div>
+                            </div>
+
+                            <h4 style="margin-left:15px;">Dirección</h4>
+                            <div class="row">                                    
+                                <div class="col-6 order-1">
+                                    <div class="row col-12">
+                                        <fieldset class="form-group col-12">
+                                            <label>Pais</label>
+                                            <select class="custom-select block" id="cext-client-country">
+                                                <option value="6">España<option>
+                                            </select> 
+                                        </fieldset>
+
+                                        <fieldset class="form-group col-8">                                            
+                                            <label>Provincia</label>
+                                            <select class="custom-select block cext-index" id="cext-client-state">
+                                                <option value="0">Seleccionar Provincia<option>
+                                                {% for s in states %}
+                                                    <option value="{{ s.id }}">{{ s.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </fieldset>
+                                        <fieldset class="form-group col-4">
+                                            <label>C.P.</label>
+                                            <input type="text" id="cext-client-pc" class="form-control cext-empty" placeholder="CP">
+                                        </fieldset>
+                                    </div>
+                                </div>
+                                <div class="col-6 border-left order-2">
+                                    <fieldset class="form-group col-12">
+                                        <label>Ciudad</label>
+                                        <input type="text" id="cext-client-city" class="form-control cext-empty" placeholder="Ciudad">
+                                    </fieldset>
+                                    <fieldset class="form-group col-12">
+                                        <label>Direccón</label>
+                                        <input type="text" id="cext-client-address" class="form-control cext-empty" placeholder="Direccion">
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <fieldset class="form-group position-relative has-icon-left mb-0">
+                                <button type="button" class="btn btn-info add-contact-item addCustomer add-contact-item">
+                                    <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                    <span class="d-none d-lg-block">Añadir</span>
+                                </button>
+                            </fieldset>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Crear cliente end -->
+    
+    {% endif %}
+
+    <!-- Modal Perfil -->
+    <div class="modal end fade" id="UserProfModal" tabindex="-1" role="dialog" aria-labelledby="UserProfModal" aria-hidden="true" style="height:100vh; overflow: hidden;margin-top:0;padding-top:0;border-radius: 0px !important;">
+        <div class="modal-dialog" role="document" style="height:100vh;margin-top:0;padding-top:0;border-radius: 0px !important;float:right;width:1000px;">
+            <div class="modal-content" style="height:100vh;margin-top:0;padding-top:0;border-radius: 0px !important;">
+                <section class="contact-form profile-modal" style="background:#EDEFF3;">
+                    <form method="POST" id="">
+                        {% csrf_token %}
+                        <div class="scroll" style='overflow:hidden scroll;'>
+                            <div class="row mb-2" style="padding: 25px 25px 0 25px">
+                                <div class="col-12">
+                                    <div class="media">
+                                        <div class="avatar bg-primary mr-1" style="height: 50px; width:50px;text-align:center;line-height:60px;margin-left:20px;">
+                                            <span style="font-size:25px" class="prof-modal-av"></span>
+                                        </div>
+                                        <div class="media-body pt-25">
+                                            <button style="float:right;" type="button" class="btn btn-primary" data-dismiss="modal"> <i class="fa fa-close"></i> Cerrar</button>
+                                            <h4 style="width:260px;;" class="media-heading"><span class="users-view-name prof-modal-head-name"></span><span class="users-view-username font-medium-1 ml-1"></span><span class="d-none client-id"></span><span class="d-none users-contact-id"></span></h4>
+                                            <span class="prof-modal-head-cod">NIF:</span>
+                                            <span class="users-view-id"></span><br>
+                                            <span class="prof-modal-head-cod">CODIGO:</span>
+                                            <span class="users-view-code"></span>
+                                            <input type="hidden" class="client-id-hidden" value="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-2 link-row">
+                                <div class="col-2">
+                                    <a class="prof-modal-phone">   
+                                        <i class="fas fa-phone-alt fa-2x" ></i>
+                                    </a>
+                                    <br><p style="margin-top:15px; size:15px">Llamar</p>
+                                </div>
+                                <div class="col-2">
+                                    <a class="prof-modal-mail"><i class="fas fa-envelope fa-2x" ></i></a>
+                                    <br><p style="margin-top:15px; size:15px">Email</p>
+                                </div>
+                                <div class="col-2">
+                                    <a class="prof-modal-web" target="_blank" href="#"><i class="fas fa-globe fa-2x"></i></a>
+                                    <br><p style="margin-top:15px; size:15px">Web</p>
+                                </div>
+                                <div class="col-2 px-0">
+                                    <a target="blank" class="prof-modal-dir" href=""><i class="fas fa-map-marker-alt fa-2x dir_logo" ></i></a>
+                                    <br><p style="margin-top:15px; size:15px">Direccion</p>
+                                </div>
+                                {% if c_type != 'pre-catchment' %}
+                                <div class="col-2">
+                                    <a target="blank" class="prof-modal-more" href=""><i class="fas fa-arrow-right fa-2x" ></i></a>
+                                    <br><p style="margin-top:15px; size:15px">Perfil</p>
+                                </div>
+                                {% endif %}
+
+                            </div>
+                            <div class="col-12">
+                                <div class="list-group" id="phone-list-container">
+                                </div>
+                            </div>
+
+                            <div class="modal-body row">
+                                <div class="col-12 hidden-email" style="display:none;">
+                                    <h5 style="float:left"><b>Enviar correo electrónico:</b></h5><br>
+                                    <div class="w-90 mx-auto my-1 p-1 bg-white" style='border-radius:10px; min-height:280px !important; height: auto !important;'>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label>Correo electrónico</label>
+                                                    <input type="text" class="form-control contact-email" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label>Asunto</label>
+                                                    <input type="text" class="form-control contact-subject">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label>Mensaje:</label>
+                                                    <input type="textarea" style="" name="contact-message" class="form-control contact-message">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-bottom: 15px;">
+                                        <div class="col-2" style="margin-top:10px;">
+                                            <button type='button' class="w-100 btn btn-outline-danger btn-md close-email-modal">
+                                                <i class="fa fa-times"></i></button>
+                                        </div>
+                                        <div class="col-10" style="margin-top:10px;">
+                                            <button type='button' class="w-100 btn btn-outline-primary btn-md send-email">
+                                                Enviar correo electrónico</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <h5 style="float:left"><b>Información de contacto:</b></h5><br>
+                                    <div class="contact-card-adress w-90 mx-auto my-1 p-1 bg-white" style='border-radius:10px; min-height:280px !important; height: auto !important;'>
+                                        <span class='p-1'>Correo electrónico : </span>
+                                        <strong><span class='float-right pr-1 prof-modal-header-mail'></span></strong><hr>
+                                        <span class='p-1'>Contacto: </span>
+                                        <strong><span class='float-right pr-1 contact-card-cname'></span></strong><hr>
+                                        <span class='p-1'>Teléfono 1: </span>
+                                        <strong><span class='float-right pr-1 contact-card-contact'></span></strong><hr>
+                                        <span class='p-1'>Teléfono 2: </span>
+                                        <strong><span class='float-right pr-1 contact-card-contact2'></span></strong><hr>
+                                        <span class='p-1'>Web: </span>
+                                        <strong><span class='float-right pr-1 contact-card-web'></span></strong><hr>
+                                        <div class="row" style="height:80px;">
+                                            <div class="col-5" style="margin-top: 10px;">
+                                                <span class='p-1'>D. Facturación: </span>
+                                            </div>
+                                            <div class="col-7">
+                                                <strong><span class='float-right pr-1 contact-card-billing-address'></span></strong>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row" style="height:80px;">
+                                            <div class="col-5" style="margin-top: 10px;">
+                                                <span class='p-1'>D. Envío: </span>
+                                            </div>
+                                            <div class="col-7">
+                                                <strong><span class='float-right pr-1 contact-card-main-address'></span></strong>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        {% if role == 4 or role == 2 %}
+                                            <span class='p-1'>Tarifa: </span>
+                                            <strong><span class='float-right pr-1 contact-card-tariff'></span></strong><hr>
+                                        {% endif %}
+                                        <span class='p-1'>NIF: </span>
+                                        <strong><span class='float-right pr-1 contact-card-nif'></span></strong><hr>
+                                        {% if role == 4 or role == 2 %}
+                                            <span class='p-1'>Contraseña: </span>
+                                            <strong><span class='float-right pr-1 contact-card-password'></span></strong>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% if c_type == 'pre-catchment' %}
+                                <h5 class="col-12" id="documents-header" style="margin-top:20px;"><b>Pre-Captación:</b></h5>
+
+                                <div class="col-4 text-center mt-1">
+                                    <div class="custom-control custom-checkbox" style="margin-left: 25px">
+                                        <input type="checkbox" class="custom-control-input lost-call clear-status" id="lost-call">
+                                        <label data-toggle="tooltip" data-placement='bottom' data-title="Con este check se generara un recordatorio de llamada, al día siguiente a la misma hora en la que marcaste esta opción" class="custom-control-label" for="lost-call">No lo coge</label>
+                                    </div> 
+                                </div>
+                                <div class="col-4 text-center mt-1" style="margin-top10px;">
+                                    <div class="custom-control custom-checkbox" style="margin-left: 25px">
+                                        <input type="checkbox" class="custom-control-input later-call clear-status" id="later-call">
+                                        <label class="custom-control-label" for="later-call">Llamar más tarde</label>
+                                    </div> 
+                                </div>
+                                <div class="col-4 text-center mt-1">
+                                    <div class="custom-control custom-checkbox" style="margin-left: 25px cursor: pointer;">
+                                        <input type="checkbox" class="custom-control-input send-mail clear-status" id="send-mail">
+                                        <label data-toggle="tooltip" data-placement='bottom' data-title="Una vez marcada esta opción el cliente desaparecera de Pre-Captación, y lo podras encontrarar en Captación" class="custom-control-label" for="send-mail">Envío Email/Whatsapp</label>
+                                    </div> 
+                                </div>
+
+                                <div class="col-1 text-center mt-1"></div>
+
+                                <div sytle="margin-left:25px !important;">
+                                    <div class="custom-control custom-checkbox form-control" style="background-color:transparent;border-color:transparent;">
+                                        <input type="checkbox" class="custom-control-input set-not-interested" id="set-not-interested" name="set-not-interested">
+                                        <label class="custom-control-label" for="set-not-interested">No interesado</label>
+                                    </div> 
+                                </div>
+
+                                {% endif %}
+
+                                {% if role != 4 %}
+                                <h5 class="col-12" id="documents-header" style="margin-top:20px;"><b>Aviso de llamada:</b></h5>
+
+                                <div class="col-12">
+                                    <div style="margin-top:0px;padding:10px;">
+                                        <div class="row">  
+                                            <div class="col-6" style="margin-bottom:20px;">
+                                                <label>Fecha</label>
+                                                <input type="datetime-local" class="form-control call-schedule-date recall" placeholder="Fecha recordatorio">
+                                            </div>
+                                            <div class="col-6">
+                                                <label>Motivo</label>
+                                                <select class="custom-select block call-schedule-cause" name="visit-hour">
+                                                    <option value="-1">Seleccionar motivo<option>  
+
+                                                    {% for cause in causes %}
+                                                        <option value="{{ cause.id }}">{{ cause.cause }}<option>  
+                                                    {% endfor %}
+
+                                                    <option value="0">Otro<option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-12 PSCause" id="PSCause1" style="display:none">
+                                                <div class="form-group">
+                                                    <label for="suppliers">Proveedores</label>
+                                                    <select class="select2-bg form-control call-schedule-suppliers" multiple="multiple" style="width: 100%;" data-bgcolor="success" data-bgcolor-variation="lighten-3" data-text-color="white">
+                                                        {% for supplier in suppliers  %}
+                                                            <option value="{{ supplier.id }}">{{ supplier.name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="PSCause row" id="PSCause2" style="display:none;width:100%;margin-left:0px;">
+                                                <div class="col-6">
+                                                    <div class="form-group">
+                                                        <label for="suppliers">Proveedor</label>
+                                                        <select class="form-control call-schedule-supplier">
+                                                            <option value="0">Elegir proveedor</option>
+                                                            {% for supplier in suppliers  %}
+                                                                <option value="{{ supplier.id }}">{{ supplier.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-6">
+                                                    <div class="form-group">
+                                                        <label for="suppliers">Familias</label>
+                                                        <select class="select2-bg form-control call-schedule-families" multiple="multiple" style="width: 100%;" data-bgcolor="success" data-bgcolor-variation="lighten-3"      data-text-color="white"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 PSCause" id="PSCause0" style="display:none">
+                                                <div class="form-group">
+                                                    <label>Motivo</label>
+                                                    <input class="form-control call-schedule-other" type="text">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12" style="margin-top:10px;">
+                                                <button type='button' class="w-100 btn btn-outline-primary btn-md new-call-schedule">
+                                                    Añadir aviso</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                {% if c_type == 'catchment' %}
+
+                                <h5 class="col-12" id="documents-header" style="margin-top:20px;"><b>Dar de alta al cliente:</b></h5>
+
+                                <div class="col-4 text-center mt-1" style="display:none">
+                                    <div class="custom-control custom-checkbox" style="margin-left: 25px">
+                                        <input type="checkbox" style="z-index:9999" class="custom-control-input cd-particular" id="cd-particular" name="blocked" {% if role == 4 %}onclick="return false;"{% endif %}>
+                                        <label class="custom-control-label" for="cd-particular">Particular</label>
+                                    </div> 
+                                </div>
+                                <div class="col-6 text-center mt-1" style="margin-top10px;">
+                                    <div class="custom-control custom-checkbox" style="margin-left: 25px; padding-left: 0 !important;">
+                                        <input type="checkbox" style="z-index:9999; margin-left: 28px;" class="custom-control-input cd-aproved" id="cd-aproved" name="blocked" {% if role == 4 %}onclick="return false;"{% endif %}>
+                                        <label class="custom-control-label" for="cd-aproved">Aprobado</label>
+                                    </div> 
+                                </div>
+                                <div class="col-6 text-center mt-1">
+                                    <div class="custom-control custom-checkbox" style="padding-left: 0 !important;">
+                                        <input type="checkbox" style="z-index:9999; margin-left: 10px;" class="custom-control-input cd-registered" id="cd-registered" name="cd-registered" {% if role == 2 %}onclick="return false;"{% endif %}>
+                                        <input type="hidden" value="{{role}}">
+                                        <label class="custom-control-label" for="cd-registered">Cliente dado de alta</label>
+                                    </div> 
+                                </div>
+                                <div class="row col-12 div_client_adn_code" style="margin-left:10px; display:none;">
+                                    <div class="col-12 mt-1" style="margin-top10px; float-right">
+                                        <p>Código de ADN<input type="text" style="" class="form-control client_adn_code"></p>
+                                    </div>
+                                </div>
+
+                                {% endif %}
+
+                                <!--<div class="col-12">
+                                    <div style="margin-top:10px;padding:10px;">
+                                        <div class="row">  
+                                            <div class="col-12" style="margin-top:10px;">
+                                                <button type='button' class="w-100 btn btn-outline-primary btn-md new-call-schedule">
+                                                    Pasar a Captación</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>-->
+
+                                <h5 class="col-12" id="web-documents-header" style="margin-top:20px;"><b>Documentos Registro Web:</b></h5>
+
+                                <div class="col-6 text-center mt-1">
+                                    <a type='button' class="w-100 btn btn-outline-primary btn-md rsl-doc" href="" target="_blank">
+                                        Revendedor</a>
+                                </div>
+                                <div class="col-6 text-center mt-1">
+                                    <a type='button' class="w-100 btn btn-outline-primary btn-md 036-doc" href="" target="_blank">
+                                        036</a>
+                                </div>
+
+                                <h5 class="col-12" id="documents-header-2" style="margin-top:20px;"><b>Documentos:</b> <span style="float:right"><button style="margin-top:-10px;" type="button" class="btn btn-outline-primary btn-md" id="toggle-new-doc"><i class="fa fa-file"></i> Nuevo documento</button></span></h5>
+
+                                <div id="new-doc-container" style="margin-top:20px;border:solid 1px black;border-radius:5px;background-color:WhiteSmoke;padding:10px;margin-top:0px;margin-left:20px;width:440px;">
+                                    <div class="row">
+                                        <div class="col-10">
+                                            <input type="file" multiple id="contact-uploaded-files" style="width:100%">
+                                        </div>
+                                        <div class="col-2">
+                                            <button type="button" class="w-100 btn btn-outline-primary btn-md" id="upload-client-docs" style="padding:5px !important;"><i class="fa fa-arrow-up"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12" style="margin:15px;margin-left:5px;">
+                                    <div id="document-list-container" style="max-height:150px;overflow-y:auto;overflow-x:hidden;">
+                                    </div>
+                                </div>
+
+                                <br>
+
+                                <h5 class="col-12" style="margin-top:20px;"><b>Crear:</b></h5>
+
+                                <div class="col-4 text-center mt-1">
+                                    <button type='button' action='1' class="w-100 btn btn-outline-primary btn-md new-client-note">
+                                        <i class="far fa-sticky-note"></i>&nbsp;Nota</button>
+                                </div>
+                                <div class="col-4 text-center mt-1" style="display:none">
+                                    <button type='button' class="w-100 btn btn-outline-primary btn-md" data-toggle="collapse" data-target="">
+                                        <i class="fas fa-eraser"></i>&nbsp;Presupuesto</button>
+                                </div>
+                                <div class="col-4 text-center mt-1" style="display:none">
+                                    <button type='button' class="w-100 btn btn-outline-primary btn-md" data-toggle="collapse" data-target="">
+                                        <i class="fas fa-file-invoice"></i>&nbsp;Factura</button>
+                                </div>
+                                <div class="col-4 text-center mt-1" style="display:none">
+                                    <button type='button' class="w-100 btn btn-outline-primary btn-md" data-toggle="collapse" data-target="">
+                                        <i class="fas fa-suitcase"></i>&nbsp;Oportunidad</button>
+                                </div>
+                                <div class="col-4 text-center mt-1" style="display:none">
+                                    <button type='button' class="w-100 btn btn-outline-primary btn-md" data-toggle="collapse" data-target="">
+                                        <i class="fa fa-chart-line"></i>&nbsp;Actividad</button>
+                                </div>
+                                <div class="col-4 text-center mt-1" style="display:none">
+                                    <button type='button' class="w-100 btn btn-outline-primary btn-md" data-toggle="collapse" data-target="">
+                                        <i class="fas fa-shopping-cart"></i>&nbsp;Compra</button>
+                                </div>
+
+                            </div>
+
+                            <div class="modal-footer">
+                                <section class="contact-form collapse mx-auto div_collapse w-100 note-container" action='1'>
+                                    <hr>
+                                    <form method="POST" id="form-note">
+                                        {% csrf_token %}
+                                        <div class="modal-body py-0">
+                                            <fieldset class="form-group col-12">
+                                                <label for="m-note-title" class='d-none'>Título</label>
+                                                <input type="text" id="m-note-title" class="m-note-title form-control" placeholder="Título de la nota" name="m-note-title">
+                                            </fieldset>
+                                        </div>
+                                        <div class="modal-body py-0">
+                                            <fieldset class="form-group col-12">
+                                                <label for="new-client-type" class='d-none'>Descripción</label>
+                                                <textarea rows="5" class="form-control m-note-description" name="m-note-description" placeholder="Contenido de la nota"></textarea>                            
+                                            </fieldset>
+                                        </div>
+                                        <fieldset>
+                                            <div class="row" style="margin-left:40px;">
+                                                <p style="margin-right:20px;">Color: </p>
+                                                <div class="d-inline-block custom-control custom-radio mr-1">
+                                                    <input type="radio" class="custom-control-input bg-info" name="colorRadio" id="colorRadio1" value="1">
+                                                    <label class="custom-control-label" for="colorRadio1"> </label>
+                                                </div>
+                                                <div class="d-inline-block custom-control custom-radio mr-1">
+                                                    <input type="radio" class="custom-control-input bg-success" name="colorRadio" id="colorRadio2" value="2">
+                                                    <label class="custom-control-label" for="colorRadio2"> </label>
+                                                </div>
+                                                <div class="d-inline-block custom-control custom-radio mr-1">
+                                                    <input type="radio" class="custom-control-input bg-danger" name="colorRadio" id="colorRadio3" value="3">
+                                                    <label class="custom-control-label" for="colorRadio3"> </label>
+                                                </div>
+                                                <div class="d-inline-block custom-control custom-radio mr-1">
+                                                    <input type="radio" class="custom-control-input bg-warning" name="colorRadio" id="colorRadio4" value="4">
+                                                    <label class="custom-control-label" for="colorRadio4"> </label>
+                                                </div>
+                                                <div class="d-inline-block custom-control custom-radio mr-1">
+                                                    <input type="radio" class="custom-control-input bg-secondary" name="colorRadio" id="colorRadio5" value="5">
+                                                    <label class="custom-control-label" for="colorRadio5"> </label>
+                                                </div>
+                                                <fieldset class="form-group position-relative has-icon-left mx-auto mb-0">
+                                                    <button type="button" class="btn btn-info addNote">
+                                                        <i class="fa fa-paper-plane d-block d-md-none"></i> 
+                                                        <span class="d-none d-md-block" data-i18n="Add">Añadir</span>
+                                                    </button>
+                                            </fieldset>
+                                            <div>
+                                        </fieldset>
+                                        
+                                    </form>
+                                    <p style="padding-left: 40px;
+                                            padding-right: 40px;
+                                            padding-top: 18px;">* La nota actualizará la fecha del último contacto.</p>
+                                    <hr>
+                                </section>
+                                
+                            </div>
+                            <div class="modal-body row">
+                                <div class="col-12">
+                                    <label for='relation'><h5 style="float:left"><b>Notas:</b></h5>
+                                        <div style="width:200px;float:left;margin-left: 200px;margin-top:-20px;">
+                                            <div class="custom-control custom-checkbox form-control" style="background-color:transparent;border-color:transparent;">
+                                                <input type="checkbox" class="custom-control-input hide-phone-notes" id="hide-phone-notes" name="hide-phone-notes" checked>
+                                                <label class="custom-control-label" for="hide-phone-notes">Ocultar llamadas</label>
+                                            </div> 
+                                        </div>
+                                    </label>
+                                    <br>
+                                    <div class="contact-card-notes w-90 mx-auto my-1" style='max-height:300px;overflow-y:auto;overflow-x:hidden;'>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-body row">
+                                <div class="col-12">
+                                    <label for='relation'><h5 style="float:left"><b>Comercial:</b></h5><br></label>
+                                    <div class="contact-card-commercial w-90 mx-auto my-1 p-1 bg-white" style='border: 2px dashed grey; border-radius:10px'>
+                                        <div id="accordion" class='w-100'>
+                                            <div class="card mb-0">
+                                                <div class="card-header p-0 commercial-content" id="headingOne">
+                                                    <h5 class="mb-0">
+                                                        <button type='button' class="btn btn-light w-100 bg-white m-0" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                                            <strong><span class='float-left'>Añadir relación</span></strong><span class='float-right fas fa-sort-down'></span><br>
+                                                            <span class='float-left'>Selecciona comercial</span>
+                                                        </button>
+                                                    </h5>
+                                                </div>
+
+                                                <div id="collapseOne" class="collapse border collapse-commercial" aria-labelledby="headingOne" data-parent="#accordion">
+                                                    <div class="card-body">
+                                                        <form action='#' class='form-commercials'>
+                                                            <input class='form-control search-commercial' type="text" name="search-contact" autocomplete='off'>
+                                                            <label for="search-contact" class='pt-1 pl-1 label-search-commercial'>Empieza a escribir para buscar un comercial</label>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-body row">
+                                <div class="col-12">
+                                    <label for='relation'><h5 style="float:left"><b>Ventas:</b></h5><br></label>
+                                    <div class="contact-card-sell w-90 mx-auto my-1 p-1 bg-white" style='border-radius:10px'>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Perfil end -->
+
+{% if role == 3 or role == 'main-admin'%}
+<div class="modal fade text-left show" id="VisitModal" tabindex="-1" role="dialog" aria-labelledby="VisitModal" aria-hidden="true">
+    <div class="modal-dialog modal-xl mt-1 mb-0" role="document">
+        <div class="modal-content">
+            <div class="card" style="margin:0; padding:15px;">
+            	<section id="pagina-nueva-visita">
+            		<div class="row">
+            			<!-- left menu section -->
+            			<div class="col-md-3" style="background-color:rgb(237, 239, 243); margin-top:-15px;margin-bottom:-15px;">
+                            <div class="card profile-card-with-stats h-100 rounded" style="margin:0 auto !important;padding:10px;background: transparent !important">
+                                <div class="prof-visit-header p-1">
+                                    <h3 class='align-left w-100 visit-name-id'></h3>
+                                    <h5 class="visit-cci mt-1 mb-0"></h5>
+                                </div><hr>
+                                <div class="prof-visit-body p-1 bg-white">
+                                    <h6>Correo:<strong><span class='visit-mail float-right'></span></strong></h6><hr>
+                                    <h6>CIF:<strong><span class="visit-cif float-right"></span></strong></h6><hr>
+                                    <h6>Contacto:<strong><span class="visit-contact float-right"></span></strong></h6><hr>
+                                    <h6>Web:<strong><span class="visit-web float-right"></span></strong></h6><hr>
+                                    <h6>Teléfono:<strong><span class="visit-phone float-right"></span></strong></h6><hr>
+                                    <h6>Comercial:<strong><span class="visit-commercial float-right"></span></strong></h6>
+                                </div>
+                                <div class="prof-visit-footer">
+                                    <h5>Dirección:</h5>
+                                    <h6 class="visit-address"></h6>
+                                    <h6 class="visit-location"></h6>
+                                    <h6 class="visit-city"></h6>
+                                </div>
+                            </div>
+
+                            <div style="height:100px"></div>
+
+                            
+            			</div>
+            			<!-- right content section -->
+            			<div class="col-md-9" style="padding:25px; padding-right:50px;">
+                            <span style="right:20px;top:10px;margin-top:-6px;position:absolute"><a data-toggle="modal" data-target="#VisitModal"><i class="fa fa-close"></i></a></span>
+                            <div class="row">
+                                <div class="col-3">
+                                    <div class="form-group">
+                                        <label for="visit-date">Día de visita</label>
+                                        <input type="date" id="visit-date" class="visit-date form-control" placeholder="Día visita">
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="form-group">
+                                        <label for="visit-hour">Horario</label>
+                                        <select class="custom-select block visit-hour" name="visit-hour">
+                                            <option value="0">Seleccionar<option>
+                                            <option value="1">Mañana</option>
+                                            <option value="2">Tarde<option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="form-group">
+                                        <label for="visit-client-type">Tipo de cliente <a data-toggle="modal" data-target="#AddClientType" class="primary add-client-type mr-1"><i class="feather icon-plus-circle"></i></a></label>
+                                        <select class="custom-select block visit-client-type" name="visit-client-type">
+                                        <option value="0">Seleccionar tipo</option>
+                                            {% for client_type in client_types %}
+                                                <option value="{{ client_type.id }}">{{ client_type.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="form-group">
+                                        <label for="visit-workers-n">Nº de trabajadores</label>
+                                        <input type="number" id="visit-workers-n" class="visit-workers-n form-control" placeholder="Nº de trabajadores">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="visit-observations">Observaciones</label>
+                                        <textarea rows="5" class="form-control visit-observations" name="observations" placeholder="Observaciones"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-6">                                  
+                                    <div class="form-group" style="margin: 0 auto;margin-bottom:7px;">
+                                        <fieldset>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input visit-showcase-check" id="visit-showcase-check" name="visit-showcase-check">
+                                                <label class="custom-control-label" for="visit-showcase-check">Escaparate</label>
+                                            </div> 
+                                        </fieldset>
+                                    </div>
+                                    <div class="form-group">
+                                        <textarea rows="5" class="form-control visit-showcase" name="observations" placeholder="Descripción del escaparate"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="suppliers">Proveedores habituales <a data-toggle="modal" data-target="#AddSupplier" class="primary add-supplier mr-1"><i class="feather icon-plus-circle"></i></a></label>
+                            			<select class="select2-bg form-control visit-regular-suppliers" multiple="multiple" style="width: 100%;" data-bgcolor="success" data-bgcolor-variation="lighten-3" data-text-color="white">
+                            			    {% for supplier in suppliers %}
+                                                <option value="{{ supplier.id }}">{{ supplier.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="visit-offert">Oferta y promoción en visita <a data-toggle="modal" data-target="#AddOffert" class="primary add-supplier mr-1"><i class="feather icon-plus-circle"></i></a></label>
+                            			<select class="select2-bg form-control visit-offert" multiple="multiple" style="width: 100%;" data-bgcolor="success" data-bgcolor-variation="lighten-3" data-text-color="white">
+                            			    {% for offert in offerts %}
+                                                <option value="{{ offert.id }}">{{ offert.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="visit-interested">Interesado <a data-toggle="modal" data-target="#AddInterested" class="primary add-supplier mr-1"><i class="feather icon-plus-circle"></i></a></label>
+                            			<select class="select2-bg form-control visit-interested" multiple="multiple" style="width: 100%;" data-bgcolor="success" data-bgcolor-variation="lighten-3" data-text-color="white">
+                            			    {% for interest in interests %}
+                                                <option value="{{ interest.id }}">{{ interest.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="visit-internal-observations">Observaciones internas</label>
+                                        <textarea rows="5" class="form-control visit-internal-observations" name="observations" placeholder="Observaciones internas"{% if depManager or role == 3 or permissions == "main_admin" %} {% else %}readonly disabled{% endif %}></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="visit-commercial-observations">Observaciones del comercial</label>
+                                        <textarea rows="5" class="form-control visit-commercial-observations" name="observations" placeholder="Observaciones del comercial"{% if depManager %} {% else %} readonly{% endif %}></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="visit-stock">Nivel de stock</label>
+                                        <input type="text" id="visit-stock" class="visit-stock form-control" placeholder="Nivel de stock">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="user-id">Volumen de negocio</label>
+                                        <input type="text" id="visit-volume" class="visit-volume form-control" placeholder="Volumen de negocio">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="padding:20px">
+                                <div style="width:calc(100% / 5)">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input visit-public" id="visit-public" name="visit-public">
+                                        <label class="custom-control-label" for="visit-public">Venta al público</label>
+                                    </div> 
+                                </div>
+                                <div style="width:calc(100% / 5)">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input visit-workshop" id="visit-workshop" name="visit-workshop">
+                                        <label class="custom-control-label" for="visit-workshop">Taller</label>
+                                    </div>
+                                </div>
+                                <div style="width:calc(100% / 5)">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input visit-concerted" id="visit-concerted" name="visit-concerted">
+                                        <label class="custom-control-label" for="visit-concerted">Visita concertada</label>
+                                    </div>
+                                </div>
+                                <div style="width:calc(100% / 5)">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input visit-tracking" id="visit-tracking" name="visit-tracking">
+                                        <label class="custom-control-label" for="visit-tracking">Seguimiento del comercial</label>
+                                    </div> 
+                                </div>
+                                <div style="width:calc(100% / 5)">
+                                    <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input visit-supervisor" id="visit-supervisor" name="visit-supervisor" {% if depManager %} {% else %} disabled{% endif %}>
+                                    <label class="custom-control-label" for="visit-supervisor">Check del supervisor</label>
+                                </div> 
+                            </div>
+                            <fieldset class="form-group position-relative has-icon-left mb-0 ml-auto" style="margin-top:40px;padding-left:7px;padding-right:7px;">
+                                <button type="button" class="btn btn-info saveVisit" style="float:left" data-dismiss="modal">
+                                    <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                    <span class="d-none d-lg-block">Guardar</span>
+                                </button>
+                                <button type="button" class="btn btn-info endVisit ml-2" style="float:right">
+                                    <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                    <span class="d-none d-lg-block">Finalizar</span>
+                                </button>
+                            </fieldset>
+            			</div>
+            		</div>
+                </section>	
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="modal fade text-left show" id="VisitModal" tabindex="-1" role="dialog" aria-labelledby="VisitModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <section class="contact-form">
+                <form method="POST" id="form-interested">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title" style="text-align:left;width:100%;">Solicitar visita<span style="float:right;">Cliente: 1</span></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <fieldset class="form-group col-12">
+                            <label for="new-interested">Motivo de la solcitud</label>
+                            <textarea rows="5" class="form-control visit-request-desc" name="observations" placeholder="Descripción del escaparate"></textarea>
+                        </fieldset>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="visit-ext-commercial">Comercial externo</label>
+                                <select class="custom-select block visit-ext-commercial" name="visit-ext-commercial">
+                                    <option value="0">Elegir comercial externo</option>
+                                    {% for ec in ext_commercials %}
+                                        <option value="{{ ec.id }}">{{ ec.first_name }} {{ ec.last_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <fieldset class="form-group position-relative has-icon-left mb-0">
+                            <button type="button" class="btn btn-info newVisitRequest">
+                                <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                <span class="d-none d-lg-block" data-i18n="Add">Solicitar</span>
+                            </button>
+                        </fieldset>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+    <!-- Modal Crear Interesado start -->
+    <div class="modal fade" id="AddInterested" tabindex="-1" role="dialog" aria-labelledby="AddInterested" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <section class="contact-form">
+                    <form method="POST" id="form-interested">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title">Añadir interesado</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <fieldset class="form-group col-12">
+                                <label for="new-interested">Interesado</label>
+                                <input type="text" id="new-interested" class="new-interested form-control" placeholder="Interesado" name="new-interested">
+                            </fieldset>
+                        </div>
+                        <div class="modal-footer">
+                            <fieldset class="form-group position-relative has-icon-left mb-0">
+                                <button type="button" class="btn btn-info addInterested">
+                                    <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                    <span class="d-none d-lg-block" data-i18n="Add">Añadir</span>
+                                </button>
+                            </fieldset>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Crear Interesado end -->
+
+    <!-- Modal Crear Direccion start -->
+    <div class="modal fade" id="AddAddress" tabindex="-1" role="dialog" aria-labelledby="AddAddress" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <section class="contact-form">
+                    <form method="POST" id="form-address">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title">Añadir dirección</h5>
+                            <span class="d-none address-user-id" aria-hidden='true'></span>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body row">
+                            <fieldset class="form-group col-12">
+                                <label for="address-name">Alias</label>
+                                <input type="text" id="address-name" class="address-name form-control" name="address-name">
+                            </fieldset>
+                            <fieldset class="form-group col-12">
+                                <label for="address-address">Direccion</label>
+                                <input type="text" id="address-address" class="address-address form-control" name="address-address">
+                            </fieldset>
+                            <fieldset class="form-group col-6">
+                                <label for="address-country">Pais</label>
+                                <select id="address-country" class="address-country form-control" name="address-country">
+                                </select>
+                            </fieldset>
+                            <fieldset class="form-group col-6">
+                                <label for="address-province">Provincia</label>
+                                <select id="address-province" class="address-province form-control" name="address-province">
+                                </select>
+                            </fieldset>
+                            <fieldset class="form-group col-6">
+                                <label for="address-cp">Codigo Postal</label>
+                                <input type="text" id="address-cp" class="address-cp form-control" name="address-cp">
+                            </fieldset>
+                            <fieldset class="form-group col-6">
+                                <label for="address-city">Ciudad</label>
+                                <input type="text" id="address-city" class="address-city form-control" name="address-city">
+                            </fieldset>
+                            
+                        </div>
+                        <div class="modal-footer">
+                            <fieldset class="form-group position-relative has-icon-left mb-0">
+                                <button type="button" class="btn btn-info addAddress" address_type="">
+                                    <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                    <span class="d-none d-lg-block" data-i18n="Add">Añadir</span>
+                                </button>
+                            </fieldset>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Crear Direccion end -->
+
+    <!-- Modal Crear Proveedores start -->
+    <div class="modal fade" id="AddOffert" tabindex="-1" role="dialog" aria-labelledby="AddOffert" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <section class="contact-form">
+                    <form method="POST" id="form-supplier">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title">Añadir oferta</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <fieldset class="form-group col-12">
+                                <label for="new-offert">Oferta</label>
+                                <input type="text" id="new-offert" class="new-offert form-control" placeholder="Ofertas" name="new-offert">
+                            </fieldset>
+                        </div>
+                        <div class="modal-footer">
+                            <fieldset class="form-group position-relative has-icon-left mb-0">
+                                <button type="button" class="btn btn-info addOffert">
+                                    <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                    <span class="d-none d-lg-block" data-i18n="Add">Añadir</span>
+                                </button>
+                            </fieldset>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Crear Proveedores end -->
+
+    <!-- Modal Crear Tipo cliente start -->
+    <div class="modal fade" id="AddClientType" tabindex="-1" role="dialog" aria-labelledby="AddClientType" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <section class="contact-form">
+                    <form method="POST" id="form-client-type">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title">Añadir tipo de cliente</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <fieldset class="form-group col-12">
+                                <label for="new-client-type">Tipo de cliente</label>
+                                <input type="text" id="new-client-type" class="new-client-type form-control" placeholder="Tipo de cliente" name="new-client-type">
+                            </fieldset>
+                        </div>
+                        <div class="modal-footer">
+                            <fieldset class="form-group position-relative has-icon-left mb-0">
+                                <button type="button" class="btn btn-info addClientType">
+                                    <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                    <span class="d-none d-lg-block" data-i18n="Add">Añadir</span>
+                                </button>
+                            </fieldset>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Crear Tipo cliente end -->
+
+    <!-- Modal Crear Proveedores start -->
+    <div class="modal fade" id="AddSupplier" tabindex="-1" role="dialog" aria-labelledby="AddSupplier" aria-hidden="true" style='z-index:1051'>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <section class="contact-form">
+                    <form method="POST" id="form-supplier">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title">Añadir proveedor</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <fieldset class="form-group col-12">
+                                <label for="new-supplier">Prooveedor</label>
+                                <input type="text" id="new-supplier" class="new-supplier form-control" placeholder="Proveedor" name="new-supplier">
+                            </fieldset>
+                        </div>
+                        <div class="modal-footer">
+                            <fieldset class="form-group position-relative has-icon-left mb-0">
+                                <button type="button" class="btn btn-info addSupplier">
+                                    <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                    <span class="d-none d-lg-block" data-i18n="Add">Añadir</span>
+                                </button>
+                            </fieldset>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Crear Proveedores end -->
+
+        <!-- Modal Nota -->
+    {% comment %} <div class="modal fade" id="NoteModal" tabindex="-1" role="dialog" aria-labelledby="NoteModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <section class="contact-form">
+                    <form method="POST" id="form-note">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title">Nota</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <fieldset class="form-group col-12">
+                                <label for="m-note-title">Título</label>
+                                <input type="text" id="m-note-title" class="m-note-title form-control" placeholder="Tipo de cliente" name="m-note-title">
+                            </fieldset>
+                        </div>
+                        <div class="modal-body">
+                            <fieldset class="form-group col-12">
+                                <label for="new-client-type">Descripción</label>
+                                <textarea rows="5" class="form-control m-note-description" name="m-note-description" placeholder=""></textarea>                            
+                            </fieldset>
+                        </div>
+                        <fieldset>
+                            <div class="row" style="margin-left:40px;">
+                                <p style="margin-right:20px;">Color: </p>
+                                <div class="d-inline-block custom-control custom-radio mr-1">
+                                    <input type="radio" class="custom-control-input bg-info" name="colorRadio" id="colorRadio1" value="1">
+                                    <label class="custom-control-label" for="colorRadio1"> </label>
+                                </div>
+                                <div class="d-inline-block custom-control custom-radio mr-1">
+                                    <input type="radio" class="custom-control-input bg-success" name="colorRadio" id="colorRadio2" value="2">
+                                    <label class="custom-control-label" for="colorRadio2"> </label>
+                                </div>
+                                <div class="d-inline-block custom-control custom-radio mr-1">
+                                    <input type="radio" class="custom-control-input bg-danger" name="colorRadio" id="colorRadio3" value="3">
+                                    <label class="custom-control-label" for="colorRadio3"> </label>
+                                </div>
+                                <div class="d-inline-block custom-control custom-radio mr-1">
+                                    <input type="radio" class="custom-control-input bg-warning" name="colorRadio" id="colorRadio4" value="4">
+                                    <label class="custom-control-label" for="colorRadio4"> </label>
+                                </div>
+                                <div class="d-inline-block custom-control custom-radio mr-1">
+                                    <input type="radio" class="custom-control-input bg-secondary" name="colorRadio" id="colorRadio5" value="5">
+                                    <label class="custom-control-label" for="colorRadio5"> </label>
+                                </div>
+                            <div>
+                        </fieldset>
+                        <div class="modal-footer">
+                            <fieldset class="form-group position-relative has-icon-left mb-0">
+                                <button type="button" class="btn btn-info addNote">
+                                    <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                    <span class="d-none d-lg-block" data-i18n="Add">Añadir</span>
+                                </button>
+                            </fieldset>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div> {% endcomment %}
+    <!-- Modal Crear Tipo cliente end -->
+
+    <!-- Modal Ver Nota -->
+    <div class="modal fade" id="NoteMoreModal" tabindex="-1" role="dialog" aria-labelledby="NoteMoreModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <section class="contact-form">
+                    <div class="modal-header">
+                        <h5 class="modal-note-title"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">                        
+                        <div style="padding:15px;display:block;max-height:500px;overflow-y:scroll;overflow-wrap:break-word;" class="more-note-content"></div>
+                        <div style="padding:15px;" class="row"><div class="more-note-author col-6"></div><div style="text-align:end" class="more-note-date col-6"></div></div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Ver Nota end -->
+
+
+{% endblock %}
+
+{% block js %}
+
+    {% include 'appClients/js/jsClients.html' %}
+
+{% endblock %}
