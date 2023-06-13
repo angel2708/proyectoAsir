@@ -1,0 +1,157 @@
+.departament-container b{
+    margin-top: 50px !important;
+}
+
+.profile-list-item{
+    padding: 15px;
+    margin-left: 10px;
+}
+
+.profile-list-item{
+    padding: 15px;
+    padding-left: 5px;
+}
+
+.editing-date {
+    width: 147px;
+    outline: 0px solid transparent;
+    border: none;
+    height: 40px;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 10%);
+    float: left;
+}
+
+.editing-avatar {
+    float: left;
+    margin-left: -6%;
+}
+
+.filter-preview-user {
+    color:#404e67;
+}
+
+.filter-preview-user:hover {
+    color:#008385;
+}
+
+.filter-preview-dept {
+    color:#404e67;
+}
+
+.filter-preview-dept:hover {
+    color:#008385;
+}
+
+.div-preview {
+    height: 150px;
+    float: left;
+    margin-top: 2%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.current-year {
+    font-weight: bold;
+    margin-left: 3%;
+    margin-right: 3%; 
+    text-align: center;
+    width: 50px;
+    border:none;
+    background-color: #f7f7f7;
+}
+
+.tooltip-data {
+    width:220px;
+    display:none;
+    background: #FFFFFF;
+    border:3px solid #dadada;
+    position: absolute;
+    word-wrap:break-word;
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+    border-radius:5px;
+}
+
+/* .head-user-div {
+    background-color: #0097a7;
+    color:white;
+    display: flex;
+    padding: 2px !important;
+} */
+
+/* .head-user-data {
+    background-color: #0097a7;
+    color: white;
+    display: inline-block;
+    text-align: center;
+    font-size: 19px;
+} */
+
+/* .cliente,.agente {
+    text-align: left;
+} */
+
+/* .th-user-data {
+    text-align: center;
+    font-size: 17px;
+    padding: 2px !important;
+} */
+
+/* .user-data {
+    text-align: center;
+    font-size: 15px;
+    padding: 2px !important;
+} */
+
+/* .card-header {
+    align-items: center;
+    display: flex;
+} */
+
+/* .rep_id,.client,.empty-search {
+    display: none;
+} */
+
+/* #title {
+    font-size: 22px;
+} */
+
+/* #mirror,#user {
+    margin-left: auto;
+    display: none;
+} */
+
+/* #search {
+    font-size: 16px;
+    text-align: center;
+    display: none;
+} */
+
+/* .loading-banner {
+    display: block;
+} */
+
+/* .empty-search-text,.error-api {
+    text-align: center;
+    font-size: 25px !important;
+    margin: 0 auto;
+    margin-bottom: 200px;
+    margin-top: 20px;
+} */
+
+/* .total {
+    font-weight: normal;
+    font-style: oblique;
+} */
+
+/* .error-api {
+    width: 50%;
+    margin-bottom: 50px;
+} */
+
+/* #error-api {
+    white-space: normal;
+} */

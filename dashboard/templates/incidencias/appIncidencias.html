@@ -1,0 +1,394 @@
+{% extends 'general/layout.html' %}
+{% load static %}
+{% load filters %}
+
+{% block titlePage %}
+Incidencias
+{% endblock %}
+
+{% block css %}
+
+    {% include 'incidencias/css/cssIncidencias.html' %}
+
+{% endblock %}
+
+{% block body %}
+    <body class="vertical-layout vertical-menu-modern content-left-sidebar todo-application  fixed-navbar" data-open="click" data-menu="vertical-menu-modern" data-col="content-left-sidebar">
+{% endblock %}
+
+{% comment %} {% getFirstPosition departament as dp %} {% endcomment %}
+
+{% block appContent %}
+
+    <!-- BEGIN: Content-->
+    <div class="app-content content">
+        <div class="sidebar-left">
+            <div class="sidebar">
+                <div class="todo-sidebar d-flex">
+                    <span class="sidebar-close-icon">
+                        <i class="feather icon-x"></i>
+                    </span>
+                    <!-- todo app menu -->
+                    <div class="todo-app-menu">
+                        <div class="form-group text-center add-task">
+                            <!-- new task button -->
+                            <a style="color: white;" data-toggle="modal" data-target="#IncidenceModal" href="#"><button type="button" class="btn btn-danger btn-glow add-task-btn btn-block my-1"><i class="feather icon-plus"></i> Añadir Incidencia</button></a>
+                        </div>
+                        <!-- sidebar list start -->
+                        <div class="sidebar-menu-list">
+                            <label class="filter-label mt-2 mb-1 pt-25">Estados</label>
+                            <div class="filter-main">
+                                <div class="list-group">
+                                    <a href="#" class="list-group-item border-0 filtro filter-all active" mainFilter=0>
+                                        <span class="fonticon-wrap mr-50">
+                                            <i class="fas fa-list-ul"></i>
+                                        </span>
+                                        <span> Todas las incidencias</span>
+                                    </a>
+                                    <a href="#" class="list-group-item border-0 filtro filter-pending" mainFilter=1>
+                                        <span class="fonticon-wrap mr-50">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                        </span>
+                                        <span>Pendientes</span>
+                                    </a>
+                                    <a href="#" class="list-group-item border-0 filtro filter-data" mainFilter=5>
+                                        <span class="fonticon-wrap mr-50">
+                                            <i class="fas fa-file-excel-o"></i>
+                                        </span>
+                                        <span>Faltan Datos</span>
+                                    </a>
+                                    <a href="#" class="list-group-item border-0 filtro filter-inprogress" mainFilter=2>
+                                        <span class="fonticon-wrap mr-50">
+                                            <i class="fa fa-spinner"></i>
+                                        </span>
+                                        <span>En curso</span>
+                                    </a>
+                                    <a href="#" class="list-group-item border-0 filtro filter-test" mainFilter=4>
+                                        <span class="fonticon-wrap mr-50">
+                                            <i class="fas fa-vial"></i>
+                                        </span>
+                                        <span>Testeo</span>
+                                    </a>
+                                    <a href="#" class="list-group-item border-0 filtro filter-finish" mainFilter=3>
+                                        <span class="fonticon-wrap mr-50">
+                                            <i class="fas fa-check"></i>
+                                        </span>
+                                        <span>Resueltas</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <label class="filter-label mt-2 mb-1 pt-25">Prioridad</label>
+                            <div class="filter-priority">
+                                <div class="list-group">
+                                    <a href="#" class="list-group-item border-0 d-flex align-items-center justify-content-between filtro priority-low" priorityFilter=0>
+                                        <span>Baja</span>
+                                        <span class="bullet bullet-sm bullet-success"></span>
+                                    </a>
+                                    <a href="#" class="list-group-item border-0 d-flex align-items-center justify-content-between filtro priority-medium" priorityFilter=1>
+                                        <span>Media</span>
+                                        <span class="bullet bullet-sm bullet-warning"></span>
+                                    </a>
+                                    <a href="#" class="list-group-item border-0 d-flex align-items-center justify-content-between filtro priority-high" priorityFilter=2>
+                                        <span>Alta</span>
+                                        <span class="bullet bullet-sm bullet-danger"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- sidebar list end -->
+                    </div>
+                </div>
+
+                <!-- Modal para información de las incidencias -->
+                <div class="modal end fade" id="IncidenceInfoModal" tabindex="-1" role="dialog" aria-labelledby="IncidenceInfoModal" aria-hidden="true" style="height:100vh; overflow: hidden;margin-top:0;padding-top:0;border-radius: 0px !important;">
+                    <div class="modal-dialog" role="document" style="height:100vh; overflow: hidden;margin-top:0;padding-top:0;border-radius: 0px !important;float:right;width:1000px;">
+                        <div class="modal-content" style="height:100vh; overflow: hidden;margin-top:0;padding-top:0;border-radius: 0px !important;">
+                            <section class="contact-form" style="height: 100%; margin: 0%;">
+                                <form method="POST" id="form-incidences_info" style="height: 100%;">
+                                    {% csrf_token %}
+                                    <!-- Modal Header -->
+                                    <div class="card" style="height: 100%; background-color: #EDEFF3">
+                                        <div class="card-content">
+                                            <div class="row modal-header" style="padding: 25px 25px 10px 25px">
+                                                <div class="col-12">
+                                                    <div class="media">
+                                                        <div class="media-body pt-25">
+                                                            <h2 class="media-heading"><span class="users-view-name prof-modal-head-name"></span><span class="text-muted font-medium-1 prof-modal-head-mail"></span><span class="users-view-username text-muted font-medium-1 "></span></h2>
+                                                            <span class="prof-modal-head-cod" style="margin-left:22%; font-size:20px;">Información de la incidencia</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>   
+                                            <!-- Modal Body -->
+                                            <div class="modal-body">
+                                                <div class="card-body" style="padding-bottom:10px; padding-top:10px;">
+                                                    <div class="row" style="height: 60px;">
+                                                        <input type="hidden" class="form-control user_id" name="user_id" value="{{ ca.user_id }}">
+                                                        <input type="hidden" class="form-control inc-id" name="user_id" value="{{ user.id }}">
+                                                        <input type="hidden" class="form-control inc-company_id" name="company_id" value="{{ ca.company_id }}">
+                                                        <input type="hidden" class="form-control inc-source_departament" name="departament_id" value="{{ ca.departament_id }}" id="incidences_source_departament_info">
+                                                        <input type="hidden" class="form-control inc-info-id">
+                                                        <input type="hidden" class="form-control inc-avatar" value="{{request.user.avatar}}">
+                                                        <div class="col-md-6">
+                                                            <h5>Fecha Inicio</h5><span class="badge badge-primary badge-pill ml-25 inc-start_date" style="display: block;"></span>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <h5>Fecha Fin</h5><span class="badge badge-primary badge-pill ml-25 inc-finish_date" style="display: block;"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row" style="margin-top:2%; height: 60px;">
+                                                        <div class="col-md-6">
+                                                            <h5>Estado</h5><span class="badge badge-primary badge-pill ml-25 inc-state" style="display: block;"></span>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <h5>Asignada a</h5><span class="badge badge-primary badge-pill ml-25 inc-assign" style="display: block;"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row" style="margin-top:2%; height: 60px;">
+                                                        <div class="col-md-6">
+                                                            <h5>Puesta por</h5><span class="badge badge-light badge-pill ml-25 inc-author" style="display: block; background-color: #B4B4B4;"></span>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <h5>Prioridad</h5><span class="badge badge-pill ml-25 inc-priority_info" style="display: block;"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row" style="margin-top:2%; height: 60px;">
+                                                        <div class="col-md-12" style="margin-top: 2%;">
+                                                            <h5 class="" style="font-size:16px; font-weight: bold;">Asunto<a class="ml-50 btn-edit_issue"><i class="feather icon-edit"></i></a></h5>
+                                                            <p class="inc-issue_info" style="display:block;"></p>
+                                                            <input type="text" class="border_bottom form-control inc-issue_edit" name="issue" style="margin-bottom: -7px; border-radius: 5px; border: solid 1px #e2e3e4; display: none;" placeholder="Sobre que es la incidencia">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row" style="margin-top: 2%;">
+                                                        <div class="col-md-12" style="margin-top: 3%;">
+                                                            <h5 class="" style="font-size:16px; font-weight: bold;">Descripción<a class="ml-50 btn-edit_description"><i class="feather icon-edit"></i></a></h5>
+                                                            <p class="inc-description_info" style="display:block; margin-bottom: 0;"></p>
+                                                            <textarea class="border_bottom form-control inc-description_edit" name="description" cols="30" rows="4" style="margin-bottom: -7px; border-radius: 5px; border: solid 1px #e2e3e4; display: none; min-heigt:40px;" placeholder="Explica detalládamente la incidencia"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <button type="button" class="btn btn-primary updateIncidence" style="margin-left: 32%; border-radius: 5px; margin-top: 4%; display: none;">
+                                                        <span class="d-none d-lg-block" data-i18n="Save">Modificar Incidencia</span>
+                                                    </button>
+                                                    <div class="row img-container">
+                                                        
+                                                    </div>
+                                                </div>
+                                                {% comment %} <div class="commentaries" id="commentaries">
+                                                    <div class="card-body commentaries_list">
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="py-1">
+                                                    <input type="text" class="form-control inc-comment" style="float: left; width: 72%;" placeholder="Comentario a añadir...">
+                                                    <button type="button" class="btn btn-primary glow send d-lg-flex saveComment" style="float: right;">
+                                                        <span class="d-none d-lg-block mx-50" data-i18n="Save">Comentar</span>
+                                                    </button>
+                                                </div> {% endcomment %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-right">
+            <div class="content-overlay"></div>
+            <div class="content-wrapper">
+                <div class="content-header row">
+                </div>
+                <div class="content-body">
+                    <div class="app-content-overlay"></div>
+                    <div class="todo-app-area">
+                        <div class="todo-app-list-wrapper">
+                            <div class="todo-app-list">
+                                <div class="todo-fixed-search d-flex justify-content-between align-items-center">
+                                    <div class="sidebar-toggle d-block d-lg-none">
+                                        <i class="feather icon-menu"></i>
+                                    </div>
+                                    <fieldset class="form-group position-relative has-icon-left m-0 flex-grow-1 pl-2">
+                                        <input type="text" class="form-control inc-search" id="inc-search" placeholder="Buscar incidencia...">
+                                        <div class="form-control-position">
+                                            <i class="feather icon-search"></i>
+                                        </div>
+                                    </fieldset>
+                                    <div class="todo-sort dropdown mr-1">
+                                        <button class="btn dropdown-toggle sorting" type="button" id="sortDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="feather icon-filter"></i>
+                                            <span>Ordenar por</span>
+                                        </button>
+                                        <div class="sort-priority">
+                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="sortDropdown">
+                                                <a class="dropdown-item filtro sort-less" sort=0 href="#">Menor prioridad</a>
+                                                <a class="dropdown-item filtro sort-higher" sort=1 href="#">Mayor prioridad</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="todo-task-list list-group">
+                                    <!-- task list start -->
+                                    <ul class="inc-container todo-task-list-wrapper list-unstyled incidences_list" id="incidences_list" style="background-color:#f5f7fa;">
+                                        {% for incidence in incidences %}
+
+                                            {% if ca.departament_id == 2 and incidence.removed == False %}
+                                                <li class="todo-item {% if incidence.checked == True %} completed {% endif %}" inc="{{incidence.id}}" priority={{incidence.priority}} user={{incidence.user_id}} issue={{incidence.issue}} state="{{incidence.state}}">
+                                                    <div class="todo-title-wrapper d-flex justify-content-between align-items-center">
+                                                        <span class="badge badge-primary badge-pill ml-25" style="width:40px; margin-right:1%">{{incidence.id}}</span>
+                                                        <div class="todo-title-area d-flex">
+                                                            <div class="custom-control custom-checkbox">
+                                                                <input type="checkbox" {% if incidence.checked == True %} checked {% endif %} class="custom-control-input inc-checkbox" inc="{{incidence.id}}" style="z-index:9999">
+                                                                <label class="custom-control-label"></label>
+                                                            </div>
+                                                            <p class="todo-title mx-50 m-0 truncate" inc="{{incidence.id}}" state="{{incidence.state}}" data-toggle="modal" data-target="#IncidenceInfoModal" style="width:100%; margin-left: -1% !important;">{{incidence.issue}}</p>
+                                                        </div>
+                                                        <div class="todo-item-action d-flex align-items-center">
+                                                            <span class="badge badge-primary badge-pill ml-25 badge-state" style="width:100px" inc="{{incidence.id}}" state="{{incidence.state}}">{% if incidence.state == 0 %}Pendiente{% elif incidence.state == 1 %}En curso{% elif incidence.state == 2 %}Testeo{% elif incidence.state == 3 %}Resuelta{% elif incidence.state == 4 %}Faltan Datos{% endif %}</span>
+                                                            <span class="badge badge-light badge-pill ml-25" style="width:180px; background-color: #B4B4B4;">{{incidence.first_name}} {{incidence.last_name}}</span>
+                                                            <input type="hidden" class="inc-sort-priority" value="{{incidence.priority}}">
+                                                            <span class="badge {% if incidence.priority == 0 %} badge-success {% elif incidence.priority == 1 %} badge-warning {% elif incidence.priority == 2 %} badge-danger {% endif %} badge-pill ml-25" style="width:70px;">{% if incidence.priority == 0 %} BAJA {% elif incidence.priority == 1 %} MEDIA {% elif incidence.priority == 2 %} ALTA {% endif %}</span>
+                                                            {% if ca.departament_id == 2 %}<a class="todo-item-assign ml-50" inc="{{incidence.id}}" state="{{incidence.state}}" assigned="{{incidence.assigned}}"><i class="feather icon-plus" data-toggle="modal" data-target="#incidences_settings_modal" inc="{{incidence.id}}"></i></a>{% endif %}
+                                                            <a class="todo-item-delete ml-50" style="color:red" inc="{{incidence.id}}"><i class="feather icon-trash-2"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            {% else %}
+                                                {% if ca.departament_id == incidence.source_departament_id and incidence.removed == False %}
+                                                    <li class="todo-item {% if incidence.checked == True %} completed {% endif %}" inc="{{incidence.id}}" priority={{incidence.priority}} user={{incidence.user_id}} issue={{incidence.issue}} state="{{incidence.state}}">
+                                                        <div class="todo-title-wrapper d-flex justify-content-between align-items-center" style="">
+                                                            <span class="badge badge-primary badge-pill ml-25" style="width:40px; margin-right:1%">{{incidence.id}}</span>
+                                                            <div class="todo-title-area d-flex">
+                                                                <div class="custom-control custom-checkbox">
+                                                                    <input type="checkbox" {% if incidence.checked == True %} checked {% endif %} class="custom-control-input inc-checkbox" inc="{{incidence.id}}" style="z-index:9999">
+                                                                    <label class="custom-control-label"></label>
+                                                                </div>
+                                                                <p class="todo-title mx-50 m-0 truncate" inc="{{incidence.id}}" state="{{incidence.state}}" data-toggle="modal" data-target="#IncidenceInfoModal" style="width:100%; margin-left: -1% !important;">{{incidence.issue}}</p>
+                                                            </div>
+                                                            <div class="todo-item-action d-flex align-items-center">
+                                                                <span class="badge badge-primary badge-pill ml-25 badge-state" style="width:100px" inc="{{incidence.id}}" state="{{incidence.state}}">{% if incidence.state == 0 %}Pendiente{% elif incidence.state == 1 %}En curso{% elif incidence.state == 2 %}Testeo{% elif incidence.state == 3 %}Resuelta{% elif incidence.state == 4 %}Faltan Datos{% endif %}</span>
+                                                                <span class="badge badge-light badge-pill ml-25" style="width:180px; background-color: #B4B4B4;">{{incidence.first_name}} {{incidence.last_name}}</span>
+                                                                <input type="hidden" class="inc-sort-priority" value="{{incidence.priority}}">
+                                                                <span class="badge {% if incidence.priority == 0 %} badge-success {% elif incidence.priority == 1 %} badge-warning {% elif incidence.priority == 2 %} badge-danger {% endif %} badge-pill ml-25" style="width:70px;">{% if incidence.priority == 0 %} BAJA {% elif incidence.priority == 1 %} MEDIA {% elif incidence.priority == 2 %} ALTA {% endif %}</span>
+                                                                {% comment %} {% if ca.departament_id == 2 %}<a class="todo-item-assign ml-50" inc="{{incidence.id}}"><i class="feather icon-plus" data-toggle="modal" data-target="#incidences_settings_modal" inc="{{incidence.id}}"></i></a>{% endif %} {% endcomment %}
+                                                                {% if incidence.user_id == ca.user_id %}<a class="todo-item-delete ml-50" style="color:red" inc="{{incidence.id}}"><i class="feather icon-trash-2"></i></a>{% else %}<a class="ml-50" style="visibility: hidden;"><i class="feather icon-trash-2"></i></a>{% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                {% endif %}
+                                            {% endif %}
+
+                                        {% endfor %}    
+                                    </ul>
+                                    <!-- task list end -->
+                                    <div class="no-results">
+                                        <h5>No Items Found</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para los settings de las incidencias start -->
+        <div class="modal fade" id="incidences_settings_modal" tabindex="-1" role="dialog" aria-labelledby="AddInterested" aria-hidden="true" style="width: 88%;">
+            <div class="modal-dialog" role="document" style="margin-top: 150px;">
+                <div class="modal-content" style="width: 800px;">
+                    <section class="contact-form">
+                        <form method="POST" id="form-interested">
+                            {% csrf_token %}
+                            <div class="modal-header">
+                                <h5 class="modal-title settings-title"></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row settings-container">
+                                    <div class="col-1">
+									</div>
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label>Estado</label>
+                                                <select id="select-state" class="pres_consult_type form-control">
+                                                    <option class="new-state" value="0">Pendiente</option>
+                                                    <option class="new-state" value="4">Faltan Datos</option>
+                                                    <option class="new-state" value="1">En curso</option>
+                                                    <option class="new-state" value="2">Testeo</option>
+                                                    <option class="new-state" value="3">Resuelta</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label>Asignar a</label>
+                                                <select id="select-assigned" class="pres_consult_type form-control">
+													{% for user in users%}
+                                                        <option class="new-assigned" value="{{user.id}}">{{user.first_name}} {{user.last_name}}</option>
+													{% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <button type="button" id="modify_incidence" class="btn btn-primary btn-md" style="margin-top: 15%;" data-toggle="modal" data-target="#objetives_settings_modal" inc=" ">
+                                                <span class="d-md-block d-none">Guardar cambios</span>
+                                            </button>
+                                        </div>
+                                        <div class="col-1">
+                                        </div>
+                                        <div class="col-10">
+                                            <div class="form-group">
+                                                <label>Comentario</label>
+                                                <input type="text" class="incidence-comm form-control">
+                                            </div>
+                                        </div>
+                                </div>
+                                
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <!-- Modal para los settings de las incidencias end -->
+
+        <!-- Modal para las imagenes de las incidencias start -->
+        <div class="modal fade" id="img_modal" tabindex="-1" role="dialog" aria-labelledby="AddInterested" aria-hidden="true" style="width: 85%;">
+            <div class="modal-dialog" role="document" style="">
+                <div class="modal-content" style="width:800px">
+                    <section class="contact-form">
+                        <form method="POST" id="form-interested">
+                            {% csrf_token %}
+                            <div class="modal-header">
+                                <h5 class="modal-title image-title"></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+
+                                <div class="row img-modal-container">
+                                    {% comment %} ... {% endcomment %}
+                                </div>
+                                
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <!-- Modal para las imagenes de las incidencias end -->
+
+    </div>
+    <!-- END: Content-->
+
+{% endblock %}
+
+{% block js %}
+
+    {% include 'incidencias/js/jsIncidencias.html' %}
+
+{% endblock %}

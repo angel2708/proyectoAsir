@@ -1,0 +1,548 @@
+<!-- IMPORTANTE!! -> SI SE VA A USAR ESTE TEMPLATE PARA USAR EL MODAL DE CLIENTES EN OTRO TEMPLATE LOS SIGUIENTES INPUT SE DEBEN PEGAR EN EL MODAL NUEVO Y SE LE DEBE DAR VALOR
+A LOS QUE SU VIEW NO SE LO ESTÉ DANDO -->
+{% comment %} <input type="hidden" id="c_type" value="{{ c_type }}">
+<input type="hidden" id="c_id" value="{{ c_id }}">
+<input type="hidden" id="user-id" value="{{ user_id }}">
+<input type="hidden" id="user-role" value="{{ role }}">
+<input type="hidden" id="mirror-name" value="{{ mirror }}">
+<input type="hidden" id="user-role" value="{{ role }}">{% endcomment %}
+
+<!-- Modal Perfil -->
+<div class="modal end fade" id="UserProfModal" tabindex="-1" role="dialog" aria-labelledby="UserProfModal" aria-hidden="true" style="height:100vh; overflow: hidden;margin-top:0;padding-top:0;border-radius: 0px !important;">
+    <div class="modal-dialog" role="document" style="height:100vh;margin-top:0;padding-top:0;border-radius: 0px !important;float:right;width:1000px;">
+        <div class="modal-content" style="height:100vh;margin-top:0;padding-top:0;border-radius: 0px !important;">
+            <section class="contact-form profile-modal" style="background:#EDEFF3;">
+                <form method="POST" id="">
+                    {% csrf_token %}
+                    <div class="scroll" style='overflow:hidden scroll;'>
+                        <div class="row mb-2" style="padding: 25px 25px 0 25px">
+                            <div class="col-12">
+                                <div class="media">
+                                    <div class="avatar bg-primary mr-1" style="height: 50px; width:50px;text-align:center;line-height:60px;margin-left:20px;">
+                                        <span style="font-size:25px" class="prof-modal-av"></span>
+                                    </div>
+                                    <div class="media-body pt-25">
+                                        <button style="float:right;" type="button" class="btn btn-primary" data-dismiss="modal"> <i class="fa fa-close"></i> Cerrar</button>
+                                        <h4 style="width:260px;;" class="media-heading"><span class="users-view-name prof-modal-head-name"></span><span class="users-view-username font-medium-1 ml-1"></span><span class="d-none client-id"></span><span class="d-none users-contact-id"></span></h4>
+                                        <span class="prof-modal-head-cod">NIF:</span>
+                                        <span class="users-view-id"></span><br>
+                                        <span class="prof-modal-head-cod">CODIGO:</span>
+                                        <span class="users-view-code"></span>
+                                        <input type="hidden" class="client-id-hidden" value="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-2 link-row">
+                            <div class="col-2">
+                                <a class="prof-modal-phone">   
+                                    <i class="fas fa-phone-alt fa-2x" ></i>
+                                </a>
+                                <br><p style="margin-top:15px; size:15px">Llamar</p>
+                            </div>
+                            <div class="col-2">
+                                <a class="prof-modal-mail"><i class="fas fa-envelope fa-2x" ></i></a>
+                                <br><p style="margin-top:15px; size:15px">Email</p>
+                            </div>
+                            <div class="col-2">
+                                <a class="prof-modal-web" target="_blank" href="#"><i class="fas fa-globe fa-2x"></i></a>
+                                <br><p style="margin-top:15px; size:15px">Web</p>
+                            </div>
+                            <div class="col-2 px-0">
+                                <a target="blank" class="prof-modal-dir" href=""><i class="fas fa-map-marker-alt fa-2x dir_logo" ></i></a>
+                                <br><p style="margin-top:15px; size:15px">Direccion</p>
+                            </div>
+                            {% if c_type != 'pre-catchment' %}
+                            <div class="col-2">
+                                <a target="blank" class="prof-modal-more" href=""><i class="fas fa-arrow-right fa-2x" ></i></a>
+                                <br><p style="margin-top:15px; size:15px">Perfil</p>
+                            </div>
+                            {% endif %}
+
+                        </div>
+                        <div class="col-12">
+                            <div class="list-group" id="phone-list-container">
+                            </div>
+                        </div>
+
+                        <div class="modal-body row">
+                            <div class="col-12 hidden-email" style="display:none;">
+                                <h5 style="float:left"><b>Enviar correo electrónico:</b></h5><br>
+                                <div class="w-90 mx-auto my-1 p-1 bg-white" style='border-radius:10px; min-height:280px !important; height: auto !important;'>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Correo electrónico</label>
+                                                <input type="text" class="form-control contact-email" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Asunto</label>
+                                                <input type="text" class="form-control contact-subject">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Mensaje:</label>
+                                                <input type="textarea" style="" name="contact-message" class="form-control contact-message">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom: 15px;">
+                                    <div class="col-2" style="margin-top:10px;">
+                                        <button type='button' class="w-100 btn btn-outline-danger btn-md close-email-modal">
+                                            <i class="fa fa-times"></i></button>
+                                    </div>
+                                    <div class="col-10" style="margin-top:10px;">
+                                        <button type='button' class="w-100 btn btn-outline-primary btn-md send-email">
+                                            Enviar correo electrónico</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <h5 style="float:left"><b>Información de contacto:</b></h5><br>
+                                <div class="contact-card-adress w-90 mx-auto my-1 p-1 bg-white" style='border-radius:10px; min-height:280px !important; height: auto !important;'>
+                                    <span class='p-1'>Correo electrónico : </span>
+                                    <strong><span class='float-right pr-1 prof-modal-header-mail'></span></strong><hr>
+                                    <span class='p-1'>Contacto: </span>
+                                    <strong><span class='float-right pr-1 contact-card-cname'></span></strong><hr>
+                                    <span class='p-1'>Teléfono 1: </span>
+                                    <strong><span class='float-right pr-1 contact-card-contact'></span></strong><hr>
+                                    <span class='p-1'>Teléfono 2: </span>
+                                    <strong><span class='float-right pr-1 contact-card-contact2'></span></strong><hr>
+                                    <span class='p-1'>Web: </span>
+                                    <strong><span class='float-right pr-1 contact-card-web'></span></strong><hr>
+                                    <div class="row" style="height:80px;">
+                                        <div class="col-5" style="margin-top: 10px;">
+                                            <span class='p-1'>D. Facturación: </span>
+                                        </div>
+                                        <div class="col-7">
+                                            <strong><span class='float-right pr-1 contact-card-billing-address'></span></strong>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row" style="height:80px;">
+                                        <div class="col-5" style="margin-top: 10px;">
+                                            <span class='p-1'>D. Envío: </span>
+                                        </div>
+                                        <div class="col-7">
+                                            <strong><span class='float-right pr-1 contact-card-main-address'></span></strong>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    {% if role == 4 or role == 2 %}
+                                        <span class='p-1'>Tarifa: </span>
+                                        <strong><span class='float-right pr-1 contact-card-tariff'></span></strong><hr>
+                                    {% endif %}
+                                    <span class='p-1'>NIF: </span>
+                                    <strong><span class='float-right pr-1 contact-card-nif'></span></strong><hr>
+                                    {% if role == 4 or role == 2 %}
+                                        <span class='p-1'>Contraseña: </span>
+                                        <strong><span class='float-right pr-1 contact-card-password'></span></strong>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% if c_type == 'pre-catchment' %}
+                            <h5 class="col-12" id="documents-header" style="margin-top:20px;"><b>Pre-Captación:</b></h5>
+
+                            <div class="col-4 text-center mt-1">
+                                <div class="custom-control custom-checkbox" style="margin-left: 25px">
+                                    <input type="checkbox" class="custom-control-input lost-call clear-status" id="lost-call">
+                                    <label data-toggle="tooltip" data-placement='bottom' data-title="Con este check se generara un recordatorio de llamada, al día siguiente a la misma hora en la que marcaste esta opción" class="custom-control-label" for="lost-call">No lo coge</label>
+                                </div> 
+                            </div>
+                            <div class="col-4 text-center mt-1" style="margin-top10px;">
+                                <div class="custom-control custom-checkbox" style="margin-left: 25px">
+                                    <input type="checkbox" class="custom-control-input later-call clear-status" id="later-call">
+                                    <label class="custom-control-label" for="later-call">Llamar más tarde</label>
+                                </div> 
+                            </div>
+                            <div class="col-4 text-center mt-1">
+                                <div class="custom-control custom-checkbox" style="margin-left: 25px cursor: pointer;">
+                                    <input type="checkbox" class="custom-control-input send-mail clear-status" id="send-mail">
+                                    <label data-toggle="tooltip" data-placement='bottom' data-title="Una vez marcada esta opción el cliente desaparecera de Pre-Captación, y lo podras encontrarar en Captación" class="custom-control-label" for="send-mail">Envío Email/Whatsapp</label>
+                                </div> 
+                            </div>
+
+                            <div class="col-1 text-center mt-1"></div>
+
+                            <div sytle="margin-left:25px !important;">
+                                <div class="custom-control custom-checkbox form-control" style="background-color:transparent;border-color:transparent;">
+                                    <input type="checkbox" class="custom-control-input set-not-interested" id="set-not-interested" name="set-not-interested">
+                                    <label class="custom-control-label" for="set-not-interested">No interesado</label>
+                                </div> 
+                            </div>
+
+                            {% endif %}
+
+                            {% if role != 4 %}
+                            <h5 class="col-12" id="documents-header" style="margin-top:20px;"><b>Aviso de llamada:</b></h5>
+
+                            <div class="col-12">
+                                <div style="margin-top:0px;padding:10px;">
+                                    <div class="row">  
+                                        <div class="col-6" style="margin-bottom:20px;">
+                                            <label>Fecha</label>
+                                            <input type="datetime-local" class="form-control call-schedule-date recall" placeholder="Fecha recordatorio">
+                                        </div>
+                                        <div class="col-6">
+                                            <label>Motivo</label>
+                                            <select class="custom-select block call-schedule-cause" name="visit-hour">
+                                                <option value="-1">Seleccionar motivo<option>  
+
+                                                {% for cause in causes %}
+                                                    <option value="{{ cause.id }}">{{ cause.cause }}<option>  
+                                                {% endfor %}
+
+                                                <option value="0">Otro<option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-12 PSCause" id="PSCause1" style="display:none">
+                                            <div class="form-group">
+                                                <label for="suppliers">Proveedores</label>
+                                                <select class="select2-bg form-control call-schedule-suppliers" multiple="multiple" style="width: 100%;" data-bgcolor="success" data-bgcolor-variation="lighten-3" data-text-color="white">
+                                                    {% for supplier in suppliers  %}
+                                                        <option value="{{ supplier.id }}">{{ supplier.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="PSCause row" id="PSCause2" style="display:none;width:100%;margin-left:0px;">
+                                            <div class="col-6">
+                                                <div class="form-group">
+                                                    <label for="suppliers">Proveedor</label>
+                                                    <select class="form-control call-schedule-supplier">
+                                                        <option value="0">Elegir proveedor</option>
+                                                        {% for supplier in suppliers  %}
+                                                            <option value="{{ supplier.id }}">{{ supplier.name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6">
+                                                <div class="form-group">
+                                                    <label for="suppliers">Familias</label>
+                                                    <select class="select2-bg form-control call-schedule-families" multiple="multiple" style="width: 100%;" data-bgcolor="success" data-bgcolor-variation="lighten-3"      data-text-color="white"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 PSCause" id="PSCause0" style="display:none">
+                                            <div class="form-group">
+                                                <label>Motivo</label>
+                                                <input class="form-control call-schedule-other" type="text">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12" style="margin-top:10px;">
+                                            <button type='button' class="w-100 btn btn-outline-primary btn-md new-call-schedule">
+                                                Añadir aviso</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            {% if c_type == 'catchment' %}
+
+                            <h5 class="col-12" id="documents-header" style="margin-top:20px;"><b>Dar de alta al cliente:</b></h5>
+
+                            <div class="col-4 text-center mt-1" style="display:none">
+                                <div class="custom-control custom-checkbox" style="margin-left: 25px">
+                                    <input type="checkbox" style="z-index:9999" class="custom-control-input cd-particular" id="cd-particular" name="blocked" {% if role == 4 %}onclick="return false;"{% endif %}>
+                                    <label class="custom-control-label" for="cd-particular">Particular</label>
+                                </div> 
+                            </div>
+                            <div class="col-6 text-center mt-1" style="margin-top10px;">
+                                <div class="custom-control custom-checkbox" style="margin-left: 25px; padding-left: 0 !important;">
+                                    <input type="checkbox" style="z-index:9999; margin-left: 28px;" class="custom-control-input cd-aproved" id="cd-aproved" name="blocked" {% if role == 4 %}onclick="return false;"{% endif %}>
+                                    <label class="custom-control-label" for="cd-aproved">Aprobado</label>
+                                </div> 
+                            </div>
+                            <div class="col-6 text-center mt-1">
+                                <div class="custom-control custom-checkbox" style="padding-left: 0 !important;">
+                                    <input type="checkbox" style="z-index:9999; margin-left: 10px;" class="custom-control-input cd-registered" id="cd-registered" name="cd-registered" {% if role == 2 %}onclick="return false;"{% endif %}>
+                                    <input type="hidden" value="{{role}}">
+                                    <label class="custom-control-label" for="cd-registered">Cliente dado de alta</label>
+                                </div> 
+                            </div>
+                            <div class="row col-12 div_client_adn_code" style="margin-left:10px; display:none;">
+                                <div class="col-12 mt-1" style="margin-top10px; float-right">
+                                    <p>Código de ADN<input type="text" style="" class="form-control client_adn_code"></p>
+                                </div>
+                            </div>
+
+                            {% endif %}
+
+                            <!--<div class="col-12">
+                                <div style="margin-top:10px;padding:10px;">
+                                    <div class="row">  
+                                        <div class="col-12" style="margin-top:10px;">
+                                            <button type='button' class="w-100 btn btn-outline-primary btn-md new-call-schedule">
+                                                Pasar a Captación</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>-->
+
+                            <h5 class="col-12" id="web-documents-header" style="margin-top:20px;"><b>Documentos Registro Web:</b></h5>
+
+                            <div class="col-6 text-center mt-1">
+                                <a type='button' class="w-100 btn btn-outline-primary btn-md rsl-doc" href="" target="_blank">
+                                    Revendedor</a>
+                            </div>
+                            <div class="col-6 text-center mt-1">
+                                <a type='button' class="w-100 btn btn-outline-primary btn-md 036-doc" href="" target="_blank">
+                                    036</a>
+                            </div>
+
+                            <h5 class="col-12" id="documents-header-2" style="margin-top:20px;"><b>Documentos:</b> <span style="float:right"><button style="margin-top:-10px;" type="button" class="btn btn-outline-primary btn-md" id="toggle-new-doc"><i class="fa fa-file"></i> Nuevo documento</button></span></h5>
+
+                            <div id="new-doc-container" style="margin-top:20px;border:solid 1px black;border-radius:5px;background-color:WhiteSmoke;padding:10px;margin-top:0px;margin-left:20px;width:440px;">
+                                <div class="row">
+                                    <div class="col-10">
+                                        <input type="file" multiple id="contact-uploaded-files" style="width:100%">
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="w-100 btn btn-outline-primary btn-md" id="upload-client-docs" style="padding:5px !important;"><i class="fa fa-arrow-up"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12" style="margin:15px;margin-left:5px;">
+                                <div id="document-list-container" style="max-height:150px;overflow-y:auto;overflow-x:hidden;">
+                                </div>
+                            </div>
+
+                            <br>
+
+                            <h5 class="col-12" style="margin-top:20px;"><b>Crear:</b></h5>
+
+                            <div class="col-4 text-center mt-1">
+                                <button type='button' action='1' class="w-100 btn btn-outline-primary btn-md new-client-note">
+                                    <i class="far fa-sticky-note"></i>&nbsp;Nota</button>
+                            </div>
+                            <div class="col-4 text-center mt-1" style="display:none">
+                                <button type='button' class="w-100 btn btn-outline-primary btn-md" data-toggle="collapse" data-target="">
+                                    <i class="fas fa-eraser"></i>&nbsp;Presupuesto</button>
+                            </div>
+                            <div class="col-4 text-center mt-1" style="display:none">
+                                <button type='button' class="w-100 btn btn-outline-primary btn-md" data-toggle="collapse" data-target="">
+                                    <i class="fas fa-file-invoice"></i>&nbsp;Factura</button>
+                            </div>
+                            <div class="col-4 text-center mt-1" style="display:none">
+                                <button type='button' class="w-100 btn btn-outline-primary btn-md" data-toggle="collapse" data-target="">
+                                    <i class="fas fa-suitcase"></i>&nbsp;Oportunidad</button>
+                            </div>
+                            <div class="col-4 text-center mt-1" style="display:none">
+                                <button type='button' class="w-100 btn btn-outline-primary btn-md" data-toggle="collapse" data-target="">
+                                    <i class="fa fa-chart-line"></i>&nbsp;Actividad</button>
+                            </div>
+                            <div class="col-4 text-center mt-1" style="display:none">
+                                <button type='button' class="w-100 btn btn-outline-primary btn-md" data-toggle="collapse" data-target="">
+                                    <i class="fas fa-shopping-cart"></i>&nbsp;Compra</button>
+                            </div>
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <section class="contact-form collapse mx-auto div_collapse w-100 note-container" action='1'>
+                                <hr>
+                                <form method="POST" id="form-note">
+                                    {% csrf_token %}
+                                    <div class="modal-body py-0">
+                                        <fieldset class="form-group col-12">
+                                            <label for="m-note-title" class='d-none'>Título</label>
+                                            <input type="text" id="m-note-title" class="m-note-title form-control" placeholder="Título de la nota" name="m-note-title">
+                                        </fieldset>
+                                    </div>
+                                    <div class="modal-body py-0">
+                                        <fieldset class="form-group col-12">
+                                            <label for="new-client-type" class='d-none'>Descripción</label>
+                                            <textarea rows="5" class="form-control m-note-description" name="m-note-description" placeholder="Contenido de la nota"></textarea>                            
+                                        </fieldset>
+                                    </div>
+                                    <fieldset>
+                                        <div class="row" style="margin-left:40px;">
+                                            <p style="margin-right:20px;">Color: </p>
+                                            <div class="d-inline-block custom-control custom-radio mr-1">
+                                                <input type="radio" class="custom-control-input bg-info" name="colorRadio" id="colorRadio1" value="1">
+                                                <label class="custom-control-label" for="colorRadio1"> </label>
+                                            </div>
+                                            <div class="d-inline-block custom-control custom-radio mr-1">
+                                                <input type="radio" class="custom-control-input bg-success" name="colorRadio" id="colorRadio2" value="2">
+                                                <label class="custom-control-label" for="colorRadio2"> </label>
+                                            </div>
+                                            <div class="d-inline-block custom-control custom-radio mr-1">
+                                                <input type="radio" class="custom-control-input bg-danger" name="colorRadio" id="colorRadio3" value="3">
+                                                <label class="custom-control-label" for="colorRadio3"> </label>
+                                            </div>
+                                            <div class="d-inline-block custom-control custom-radio mr-1">
+                                                <input type="radio" class="custom-control-input bg-warning" name="colorRadio" id="colorRadio4" value="4">
+                                                <label class="custom-control-label" for="colorRadio4"> </label>
+                                            </div>
+                                            <div class="d-inline-block custom-control custom-radio mr-1">
+                                                <input type="radio" class="custom-control-input bg-secondary" name="colorRadio" id="colorRadio5" value="5">
+                                                <label class="custom-control-label" for="colorRadio5"> </label>
+                                            </div>
+                                            <fieldset class="form-group position-relative has-icon-left mx-auto mb-0">
+                                                <button type="button" class="btn btn-info addNote">
+                                                    <i class="fa fa-paper-plane d-block d-md-none"></i> 
+                                                    <span class="d-none d-md-block" data-i18n="Add">Añadir</span>
+                                                </button>
+                                        </fieldset>
+                                        <div>
+                                    </fieldset>
+                                    
+                                </form>
+                                <p style="padding-left: 40px;
+                                        padding-right: 40px;
+                                        padding-top: 18px;">* La nota actualizará la fecha del último contacto.</p>
+                                <hr>
+                            </section>
+                            
+                        </div>
+                        <div class="modal-body row">
+                            <div class="col-12">
+                                <label for='relation'><h5 style="float:left"><b>Notas:</b></h5>
+                                    <div style="width:200px;float:left;margin-left: 200px;margin-top:-20px;">
+                                        <div class="custom-control custom-checkbox form-control" style="background-color:transparent;border-color:transparent;">
+                                            <input type="checkbox" class="custom-control-input hide-phone-notes" id="hide-phone-notes" name="hide-phone-notes" checked>
+                                            <label class="custom-control-label" for="hide-phone-notes">Ocultar llamadas</label>
+                                        </div> 
+                                    </div>
+                                </label>
+                                <br>
+                                <div class="contact-card-notes w-90 mx-auto my-1" style='max-height:300px;overflow-y:auto;overflow-x:hidden;'>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-body row">
+                            <div class="col-12">
+                                <label for='relation'><h5 style="float:left"><b>Comercial:</b></h5><br></label>
+                                <div class="contact-card-commercial w-90 mx-auto my-1 p-1 bg-white" style='border: 2px dashed grey; border-radius:10px'>
+                                    <div id="accordion" class='w-100'>
+                                        <div class="card mb-0">
+                                            <div class="card-header p-0 commercial-content" id="headingOne">
+                                                <h5 class="mb-0">
+                                                    <button type='button' class="btn btn-light w-100 bg-white m-0" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                                        <strong><span class='float-left'>Añadir relación</span></strong><span class='float-right fas fa-sort-down'></span><br>
+                                                        <span class='float-left'>Selecciona comercial</span>
+                                                    </button>
+                                                </h5>
+                                            </div>
+
+                                            <div id="collapseOne" class="collapse border collapse-commercial" aria-labelledby="headingOne" data-parent="#accordion">
+                                                <div class="card-body">
+                                                    <form action='#' class='form-commercials'>
+                                                        <input class='form-control search-commercial' type="text" name="search-contact" autocomplete='off'>
+                                                        <label for="search-contact" class='pt-1 pl-1 label-search-commercial'>Empieza a escribir para buscar un comercial</label>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-body row">
+                            <div class="col-12">
+                                <label for='relation'><h5 style="float:left"><b>Ventas:</b></h5><br></label>
+                                <div class="contact-card-sell w-90 mx-auto my-1 p-1 bg-white" style='border-radius:10px'>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</div>
+<!-- Modal Perfil end -->
+
+<!-- Modal Crear Direccion start -->
+<div class="modal fade" id="AddAddress" tabindex="-1" role="dialog" aria-labelledby="AddAddress" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <section class="contact-form">
+                <form method="POST" id="form-address">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title">Añadir dirección</h5>
+                        <span class="d-none address-user-id" aria-hidden='true'></span>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body row">
+                        <fieldset class="form-group col-12">
+                            <label for="address-name">Alias</label>
+                            <input type="text" id="address-name" class="address-name form-control" name="address-name">
+                        </fieldset>
+                        <fieldset class="form-group col-12">
+                            <label for="address-address">Direccion</label>
+                            <input type="text" id="address-address" class="address-address form-control" name="address-address">
+                        </fieldset>
+                        <fieldset class="form-group col-6">
+                            <label for="address-country">Pais</label>
+                            <select id="address-country" class="address-country form-control" name="address-country">
+                            </select>
+                        </fieldset>
+                        <fieldset class="form-group col-6">
+                            <label for="address-province">Provincia</label>
+                            <select id="address-province" class="address-province form-control" name="address-province">
+                            </select>
+                        </fieldset>
+                        <fieldset class="form-group col-6">
+                            <label for="address-cp">Codigo Postal</label>
+                            <input type="text" id="address-cp" class="address-cp form-control" name="address-cp">
+                        </fieldset>
+                        <fieldset class="form-group col-6">
+                            <label for="address-city">Ciudad</label>
+                            <input type="text" id="address-city" class="address-city form-control" name="address-city">
+                        </fieldset>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <fieldset class="form-group position-relative has-icon-left mb-0">
+                            <button type="button" class="btn btn-info addAddress" address_type="">
+                                <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                <span class="d-none d-lg-block" data-i18n="Add">Añadir</span>
+                            </button>
+                        </fieldset>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</div>
+<!-- Modal Crear Direccion end -->
+
+<!-- Modal Ver Nota -->
+<div class="modal fade" id="NoteMoreModal" tabindex="-1" role="dialog" aria-labelledby="NoteMoreModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <section class="contact-form">
+                <div class="modal-header">
+                    <h5 class="modal-note-title"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">                        
+                    <div style="padding:15px;display:block;max-height:500px;overflow-y:scroll;overflow-wrap:break-word;" class="more-note-content"></div>
+                    <div style="padding:15px;" class="row"><div class="more-note-author col-6"></div><div style="text-align:end" class="more-note-date col-6"></div></div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+<!-- Modal Ver Nota end -->

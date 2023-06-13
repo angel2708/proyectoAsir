@@ -1,0 +1,200 @@
+{% extends 'general/layout.html' %}
+
+{% load static %}
+
+{% block titlePage %}
+Control Horario
+{% endblock %}
+
+{% block css %}
+
+    {% include 'checkInControl/css/cssCheckInControl.html' %}
+
+{% endblock %}
+
+{% block body %}
+    <body class="vertical-layout vertical-menu-modern 2-columns app-contacts fixed-navbar" data-open="click" data-menu="vertical-menu-modern" data-col="2-columns">
+{% endblock %}
+
+{% block appContent %}
+
+    <!--scrollbar end-->
+
+    <!-- BEGIN: Content-->
+    <!-- BEGIN: Content-->
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+            </div>
+            <div class="content-detached content-rightt">
+                <div class="content-body">
+                    <div class="content-overlay"></div>
+
+                <!-- TABLA USUARIOS -->
+                    <section class="row all-contacts">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-head">
+                                    <div class="card-header">
+                                        <h4 class="card-title" data-i18n="">Control Horario</h4>
+                                        <input type="hidden" class="user-id" value="{{user_id}}">
+                                        <input type="hidden" class="specific-year" value="{{year}}">
+                                        <input type="hidden" class="specific-month" value="{{month}}">
+                                        <input type="hidden" class="export-month" value="{{month}}">
+                                        <input type="hidden" class="export-year" value="{{year}}">
+                                        <input type="hidden" class="dept_id" value="{{departament}}">
+                                        <input type="hidden" class="this-manager" value="{{dept_name.manager}}">
+                                        <div class="heading-elements mt-0">                                          
+                                                <span class="dropdown">
+                                                    <input type="hidden" value="{{ca.user_id}}">
+                                                    <a class="export-href" href=""><button class="btn btn-primary btn-md export-data"><span class="d-md-block d-none" data-i18n="Preview"> Exportar <i class="feather icon-download-cloud white"></i></span></button></a>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-content">
+                                        <div class="row" style="margin-top:2%;">
+                                            <div class="col-md-12">
+                                                <i class="fas fa-arrow-left arrow-back" style="float:left; font-size: 22px; margin-top: 0.38%; margin-left:34%; cursor:pointer;"></i>
+                                                <h1 class="current-month" style="width: 25%; text-align: center; float:left; font-weight:500;"></h1>
+                                                <i class="fas fa-arrow-right arrow-next" style="font-size: 22px; margin-top: 0.38%; cursor:pointer;"></i>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <!-- Task List table -->
+                                            <div class="">
+                                                <div class="loading-banner">
+                                                    <div class="spinner-border" style="width: 7rem; height: 7rem;font-size: 3rem !important;display:block;margin:0 auto;margin-top:200px;" role="status">
+                                                        <span class="sr-only">Loading...</span>
+                                                    </div>
+                                                    <div style="text-align:center;font-size: 1rem !important;display:block;margin:0 auto;margin-bottom:200px;margin-top:20px;" >
+                                                        <span class="">Consultando la base de datos...</span>
+                                                    </div>
+                                                </div>
+                                                <table id="time_control_table" style="display:none;" class="table table-white-space table-bordered row-grouping display no-wrap icheck table-middle text-center table-responsive">
+                                                    <thead>
+                                                        <tr class="">
+                                                            <th class="control-th" style="width: 19% !important;" data-i18n="empleado">Empleado</th>
+                                                            <th class="control-th" style="width: 19% !important;" data-i18n="estimadas">Total de Horas Estimadas</th>
+                                                            <th class="control-th" style="width: 19% !important;" data-i18n="total_horas">Total de Horas Trabajadas</th>
+                                                            <th class="control-th" style="width: 19% !important;" data-i18n="total_balance">Balance Total de Horas</th>
+                                                            <th class="control-th" style="width: 19% !important;" data-i18n="editados">Tramos Editados</th>
+                                                            <th class="control-th" style="width: 19% !important;" data-i18n="acciones">Acciones</th>
+                                                            {% if user_id == 18 or user_id == 64 or user_id == 25 or user_id == 36 or user_id == 43 %}
+                                                                <th class="control-th dept-column" style="width: 19% !important;" data-i18n="dept">Dept</th>
+                                                            {% endif %}
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="">
+                                                        {% for time_control in time_controls %}
+                                                            {% csrf_token %}
+                                                            <!-- Se establecen los usuario que van a ver TODOS los fichajes. Por el contrario, solo ven los de su departamento. -->
+                                                            {% if user_id == 18 or user_id == 64 or user_id == 25 or user_id == 36 or user_id == 43 %}
+                                                                <tr class="filter-row" dept="{{time_control.dept}}">
+                                                                    <td class="text-center">
+                                                                        <p>{{time_control.name}}{% if time_control.working == 1 %}<div class="green-point" style="visibility: visible !important; margin: -33px 0px 0px -10px !important;"></div>{% endif %}</p>
+                                                                        <input type="hidden" class="time-control-id" value="{{time_control.id}}">
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <p>{{time_control.estimated}}</p>
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <p>{{time_control.total}}</p>
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <p>{{time_control.balance}}</p>
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <p>{{time_control.edited}}</p>
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <a href="{{time_control.id}}/{{year}}/{{month}}"><i class="fas fa-arrow-right" style="font-size: 22px; cursor:pointer;"></i></a>
+                                                                    </td>
+                                                                    <td class="text-center dept-column">
+                                                                        {% if time_control.dept == 2 %}
+                                                                            <p>Sistemas & Marketing</p>
+                                                                        {% elif time_control.dept == 3 %}
+                                                                            <p>Compras</p>
+                                                                        {% elif time_control.dept == 4 %}
+                                                                            <p>Ventas</p>
+                                                                        {% elif time_control.dept == 5 %}
+                                                                            <p>Almacén</p>
+                                                                        {% elif time_control.dept == 7 %}
+                                                                            <p>Administración</p>
+                                                                        {% elif time_control.dept == 10 %}
+                                                                            <p>Ventas Canarias</p>
+                                                                        {% else %}
+                                                                            <p>Gerencia</p>
+                                                                        {% endif %}
+                                                                    </td>
+                                                                </tr>
+                                                            {% else %}
+                                                                {% if departament == time_control.dept %}
+                                                                    <tr class="filter-row" dept="{{time_control.dept}}">
+                                                                        <td class="text-center">
+                                                                            <p>{{time_control.name}}{% if time_control.working == 1 %}<div class="green-point" style="visibility: visible !important; margin: -33px 0px 0px -10px !important;"></div>{% endif %}</p>
+                                                                            <input type="hidden" class="time-control-id" value="{{time_control.id}}">
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                            <p>{{time_control.estimated}}</p>
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                            <p>{{time_control.total}}</p>
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                            <p>{{time_control.balance}}</p>
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                            <p>{{time_control.edited}}</p>
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                            <a href="{{time_control.id}}/{{year}}/{{month}}"><i class="fas fa-arrow-right" style="font-size: 22px; cursor:pointer;"></i></a>
+                                                                        </td>
+                                                                    </tr>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </section>
+                    <!-- TABLA USUSARIOS -->
+                </div>
+            </div>
+            <!-- FILTER -->
+            <div class="sidebar-detached sidebar-left dept-filter" style="display:none;">
+                <div class="sidebar">
+                    <div class="bug-list-sidebar-content">
+                        <div class="card">
+                            <!-- FILTROS CONTROL HORARIO -->
+                            <div class="card-body border-top-blue-grey border-top-lighten-5">
+                                <p class="lead">FILTRAR POR DEPARTAMENTO</p>
+                                <div class="filter-list">
+                                    <a href="#" class="list-group-item dept-filter-item dept-all active" dept="0">Todos los departamentos</a>
+                                    <a href="#" class="list-group-item dept-filter-item dept-com" dept="Compras">Compras</a>
+                                    <a href="#" class="list-group-item dept-filter-item dept-sis" dept="Sistemas & Marketing">Desarrollo</a>
+                                    <a href="#" class="list-group-item dept-filter-item dept-ven" dept="Ventas">Ventas</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- FILTER -->
+
+        </div>
+    </div>
+    <!-- END: Content-->
+
+{% endblock %}
+
+{% block js %}
+
+    {% include 'checkInControl/js/jsCheckInControl.html' %}
+
+{% endblock %}
