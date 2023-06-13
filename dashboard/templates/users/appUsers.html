@@ -1,0 +1,459 @@
+{% extends 'general/layout.html' %}
+
+{% load static %}
+
+{% block titlePage %}
+Usuarios
+{% endblock %}
+
+{% block css %}
+
+    {% include 'users/css/cssUsers.html' %}
+
+{% endblock %}
+
+{% block body %}
+    <body class="vertical-layout vertical-menu-modern 2-columns app-contacts fixed-navbar" data-open="click" data-menu="vertical-menu-modern" data-col="2-columns">
+{% endblock %}
+
+{% block appContent %}
+
+<!--scrollbar-->
+<style>
+    /* width */
+    div::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    /* Track */
+    div::-webkit-scrollbar-track {
+      background: #f1f1f1; 
+    }
+    
+    /* Handle */
+    div::-webkit-scrollbar-thumb {
+      background: #888; 
+      border-radius: 8px;
+    }
+
+    /* Handle on hover */
+    div::-webkit-scrollbar-thumb:hover {
+      background: #555; 
+    }
+</style>
+
+<!--scrollbar end-->
+
+    <!-- BEGIN: Content-->
+    <!-- BEGIN: Content-->
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+            </div>
+            <div class="content-detached content-right">
+                <div class="content-body">
+                    <div class="content-overlay"></div>
+
+                <!-- TABLA USUARIOS -->
+                <section class="row all-contacts">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-head">
+                                <div class="card-header">
+                                    <h4 class="card-title" data-i18n="Users-Management">Gestión de usuarios: {{company_name}}</h4>
+                                    {% if permissions == 'main_admin' %}
+                                    <div class="form-group mt-1">
+                                        <input type="checkbox" id="all-switch" class="switchery all-switch" data-size="xs" data-switchery="true" style="display: none;">
+                                        <label for="switcherySize13">Ver usuarios sin acceso</label>
+                                    </div>
+                                    {% endif %}
+
+                                    <div class="heading-elements mt-0">
+                                        {% if permissions.create or permissions == "main_admin" %}
+                                            <button class="btn btn-primary btn-md user-create" data-toggle="modal" data-target="#UserModal"><i class="d-md-none d-block feather icon-plus white"></i>
+                                                <span class="d-md-block d-none" data-i18n="Add-User">Añadir Usuario</span>
+                                            </button>
+                                        {% endif %}                                        
+
+                                            <!-- Modal Crear Usuario start -->
+                                            <div class="modal fade" id="UserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <section class="contact-form">
+                                                            <form method="POST" id="form-user" class="contact-input">
+                                                                {% csrf_token %}
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="exampleModalLabel1" data-i18n="Users-Management">Gestión del usuario</h5>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <fieldset class="form-group col-12">
+                                                                        <input type="text" id="user-email" class="user-email form-control" placeholder="Email">
+                                                                    </fieldset>
+                                                                    <fieldset class="select-user-prof form-group col-12">                                                                        
+                                                                        <select class="custom-select form-control user-profile" id="user-profile">
+                                                                            <option value="x" selected data-i18n="Choose-Profile">Elegir perfil</option>
+                                                                            {% for profile in profiles %}
+                                                                                <option class="user-profile-{{ profile.id }}" departament-id="{{profile.departament_id}}" value="{{ profile.id }}">{{ profile.dept_name }}: {{ profile.name }}</option>
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                    </fieldset>
+                                                                    <fieldset class="select-admin-dept form-group col-12">                                                                        
+                                                                        <select class="custom-select form-control admin-departament" id="admin-departament">
+                                                                            <option value="0" selected data-i18n="Choose-Profile">Elegir departamento</option>
+                                                                            {% for departament in departaments %}
+                                                                                <option class="admin-departament-{{ departament.id }}" value="{{ departament.id }}">{{ departament.name }}</option>
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                    </fieldset>
+                                                                    <fieldset class="select-user-prof form-group col-12">                                                                        
+                                                                        <select class="custom-select form-control user-rol" id="user-rol">                                                                            
+                                                                            {% for rol in roles %}
+                                                                                <option value="{{ rol.id }}">{{ rol.name }}</option>
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                    </fieldset>
+                                                                    <fieldset class="select-user-prof form-group col-12" id="mirror-container">                                                                        
+                                                                        <select class="custom-select form-control user-mirror" id="user-mirror">
+                                                                            <option value="0" selected data-i18n="Choose-mirror">Elegir espejo</option>
+                                                                            {% for user in users %}
+                                                                                {% if user.role == 2 %}
+                                                                                    <option value="{{ user.id }}">{{ user.first_name }} {{ user.last_name }}</option>
+                                                                                {% endif %}
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                    </fieldset>
+                                                                    <fieldset class="form-group col-12">
+                                                                        <input type="password" id="user-password" class="user-password form-control" placeholder="Cambiar la contraseña">
+                                                                        <button type="button" class="btn btn-info password-eye" style="float:right; margin-top: -9%;"><i class="feather icon-eye"></i></button>
+                                                                        <button type="button" class="btn btn-info password-eye-off" style="float:right; margin-top: -9%; display: none;"><i class="feather icon-eye-off"></i></button>
+                                                                    </fieldset>
+                                                                    <fieldset class="form-group col-12">
+                                                                        <input type="text" id="user-phone" class="user-phone form-control" placeholder="Teléfono">
+                                                                    </fieldset>
+                                                                    <fieldset class="form-group col-12">
+                                                                        <h5 class="modal-title" data-i18n="Users-Management">Avatar:</h5>
+                                                                        <br>
+                                                                        <input type="file" class="avatarimg" id="avatarimg">
+                                                                    </fieldset>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <fieldset class="form-group position-relative has-icon-left mb-0">
+                                                                        <button type="button" class="btn btn-info add-user-item saveUser">
+                                                                            <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                                                            <span class="d-none d-lg-block" data-i18n="Save">Guardar</span>
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-info add-user-item addUser">
+                                                                            <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                                                            <span class="d-none d-lg-block" data-i18n="Add">Añadir</span>
+                                                                        </button>
+                                                                    </fieldset>
+                                                                </div>
+                                                            </form>
+                                                        </section>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Modal Crear Usuario end -->                                            
+                                            <span class="dropdown">
+                                                <button id="btnSearchDrop1" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="btn btn-warning dropdown-menu-right dropdown-toggle btn-md">
+                                                    <i class="feather icon-download-cloud white"></i></button>
+                                                <span aria-labelledby="btnSearchDrop1" class="dropdown-menu dropdown-menu-right mt-1">
+                                                    <a href="#" class="dropdown-item" data-i18n="Import"><i class="feather icon-upload"></i> Importar</a>
+                                                    <a href="#" class="dropdown-item" data-i18n="Export"><i class="feather icon-download"></i> Exportar</a>
+                                                    <a href="#" class="dropdown-item" data-i18n="Find-Duplicate"><i class="feather icon-shuffle"></i>Buscar duplicados</a>
+                                                </span>
+                                            </span>
+                                            <button class="btn btn-default btn-sm"><i class="feather icon-settings white"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <div class="card-body">
+                                        <!-- Task List table -->
+                                        <div class="table-responsive">
+                                            <table id="users-table" class="table table-white-space table-bordered row-grouping display no-wrap icheck table-middle text-center">
+                                                <thead>
+                                                    <tr>
+                                                        <th><input type="checkbox" class="input-chk" id="check-all" onclick="toggle();"></th>
+                                                        <th data-i18n="Code">Codigo</th>
+                                                        <th data-i18n="Name">Nombre</th>
+                                                        <th data-i18n="Email">Email</th>
+                                                        <th data-i18n="Profile">Perfil</th>
+                                                        <th data-i18n="Actions">Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for user in users %}
+                                                    {% csrf_token %}
+                                                        {% if user.removed == False %}
+                                                        <tr>
+                                                            <td>
+                                                                <input type="hidden" class="hidden-id" value="{{user.id}}">
+                                                                <input type="checkbox" class="input-chk check">
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <!-- <a class="id" href="{{user.company_user_id}}">{% if user.company_user_id != None %}{{user.company_user_id}}{% else %}Sin acceso{% endif %}</a> -->
+                                                                <!-- Cambio de company_user_id a id porque el primer usuario tiene id 3 y no coge bien los id -->
+                                                                <a class="id" href="{{user.id}}">{% if user.id != None %}{{user.id}}{% else %}Sin acceso{% endif %}</a>
+                                                            </td>
+                                                            <td>
+                                                                <div class="media">
+                                                                    <div class="media-left pr-1">
+                                                                        <span class="avatar avatar-sm avatar-away">
+                                                                        <img src="{% static 'images/portrait/small/img_user_not_found.png' %}" alt="avatar">
+                                                                        <i></i>
+                                                                        </span>
+                                                                    </div>
+                                                                    <div class="media-body media-middle">
+                                                                        <a class="media-heading name">{{user.first_name}} {{user.last_name}}</a>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <a class="email" href="{{user.email}}">{{user.email}}</a>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                {% if user.company_user_id == 1 %}
+                                                                    <p class="profile" data-i18n="Main-Admin">Administrador Principal</p>
+                                                                {% else %}
+                                                                    {% for profile in profiles %}
+                                                                        {% if user.user_profile == profile.id %}
+                                                                            <p class="profile">{{ profile.name }}</p>
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                {% endif %}
+                                                            </td>   
+                                                            <td>
+                                                                {% if permissions.edit or permissions == "main_admin" %}
+                                                                    {% if user.company_user_id == 1 %}
+                                                                        <a data-toggle="modal" admin="admin" data-target="#UserModal" class="primary edit-user mr-1"><i class="fa fa-pen"></i></a>
+                                                                    {% else %}
+                                                                        <a data-toggle="modal" data-target="#UserModal" class="primary edit-user mr-1 {% if user.company_user_id != None %}inactive{% endif %}"><i class="fa fa-pen"></i></a>
+                                                                    {% endif %}
+                                                                {% endif %}
+                                                                {% if permissions.delete or permissions == "main_admin" %}
+                                                                    <a class="danger delete-user mr-1"><i class="fa fa-trash"></i></a>
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- TABLA USUSARIOS -->
+                </div>
+            </div>
+            <div class="sidebar-detached sidebar-left">
+                <div class="sidebar">
+                    <div class="bug-list-sidebar-content">
+
+                        <!-- Predefined Views -->
+                        
+                        <div class="card">
+                            <div class="card-head" style="padding-left:10px;padding-top:10px;">
+                                <div class="media p-1">
+                                    <div class="media-body media-middle">
+                                        <h5 class="media-heading" data-i18n="Profiles" >Perfiles</h5>
+                                    </div>
+                                    {% if permissions.create or permissions == "main_admin" %}
+                                        <div class="media-right pr-1"><a data-toggle="modal" data-target="#AddProfileModal" class="primary new-profile mr-1"><i class="feather icon-plus-circle"></i></a></div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="card-body departament-container" style="min-height:260px;margin-top:-20px;max-height:690px;overflow-y:scroll;">
+                                {% for departament in departaments %}    
+                                    <b class="departament-{{departament.id}}">Dept. {{departament.name}}</b>
+                                    <ul style='margin-bottom:10px' class="list-group departament-group-{{departament.id}}"></ul>
+                                {% endfor %}
+                            </div>
+
+                        </div>
+
+                        <div class="alert alert-icon-right alert-info mb-2" role="alert" data-i18n="Alert-Profile-Creation">
+                            Cree perfiles para gestionar los permisos de los usuarios.
+                        </div>
+                        <!--/ Predefined Views -->
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Crear perfil start -->
+            <div class="modal fade" id="AddProfileModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                <div class="modal-dialog" role="document" style ="max-width: 100%;width: auto !important;display: inline-block;margin-left:calc(50% - 460px);">
+                    <div class="modal-content">
+                        <section class="contact-form">
+                            <form method="POST" id="profile-form">
+                                {% csrf_token %}
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel1" data-i18n="Permission-Management" >Gestión de permisos</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    
+                                    <fieldset class="form-group">
+                                        <div class="row">
+                                            <div class="col-8">
+                                                <input type="text" id="profile-name" class="cliente-nombre form-control profile-name" placeholder="Nombre del perfil">
+                                            </div>
+
+                                            <div class="col-4">
+                                                <select class="form-control custom-select departament-selection" id="departament-selection">
+                                                    <option value="none" selected data-i18n="Choose-Profile">Elegir departamento</option>
+                                                    <option value="other" data-i18n="Other">Otro</option>
+                                                    {% for departament in departaments %}
+                                                        <option class="departament-{{ departament.id }}" value="{{ departament.id }}">{{ departament.name }}</option>
+                                                    {% endfor %}
+										        </select>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                    <fieldset class="form-group departament-block" style="display:none">
+                                        <div class="row">
+                                            <div class="col-8">
+                                                <button type="button" class="btn btn-info addDepartament" style="float:right;">
+                                                    <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                                    <span class="d-none d-lg-block"  data-i18n="Add" >Añadir</span>
+                                                </button>
+                                            </div>
+                                            <div class="col-4">
+                                                <input type="text" id="departament-name" class="departament-name form-control" placeholder="Nombre del departamento">
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    
+                                    <div class="table-responsive">
+                                    <table class="table ">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" class="custom-control-input" name="checkAllSee" id="checkAllSee">
+                                                        <label class="custom-control-label" for="checkAllSee" data-i18n="See" >Ver</label>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" class="custom-control-input" name="checkAllAdd" id="checkAllAdd">
+                                                        <label class="custom-control-label" for="checkAllAdd" data-i18n="Add" >Añadir</label>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" class="custom-control-input" name="checkAllModify" id="checkAllModify">
+                                                        <label class="custom-control-label" for="checkAllModify" data-i18n="Modify" >Modificar</label>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" class="custom-control-input" name="checkAllDelete" id="checkAllDelete">
+                                                        <label class="custom-control-label" for="checkAllDelete" data-i18n="Delete" >Eliminar</label>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" class="custom-control-input" name="checkAllAll" id="checkAllAll">
+                                                        <label class="custom-control-label" for="checkAllAll" data-i18n="All" >Todas</label>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for function in functions %}                                                
+                                                    <tr>
+                                                        {% if function.parent == 0 %}
+                                                            <td><b data-i18n="{{function.name}}">{{function.name}}</b></td>
+                                                        {% elif function.level == 1 %}
+                                                            <td data-i18n="{{function.name}}">- {{function.name}}</td>
+                                                        {% elif function.level == 2 %}
+                                                            <td data-i18n="{{function.name}}">&emsp;- {{function.name}}</td>
+                                                        {% elif function.level == 3 %}
+                                                            <td data-i18n="{{function.name}}">&emsp;&emsp;- {{function.name}}</td>
+                                                        {% elif function.level == 4 %}
+                                                            <td data-i18n="{{function.name}}">&emsp;&emsp;&emsp;- {{function.name}}</td>
+                                                        {% endif %}
+                                                        <td>
+                                                            <div class="custom-control custom-checkbox">
+                                                                <input type="checkbox" class="custom-control-input see parent-{{function.parent}} {{function.id}} {{function.has_child}} control" name="see-{{function.id}}" id="see-{{function.id}}">
+                                                                <label class="custom-control-label" for="see-{{function.id}}"></label>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="custom-control custom-checkbox">
+                                                                <input type="checkbox" class="custom-control-input add parent-{{function.parent}} {{function.id}} {{function.has_child}} control" name="add-{{function.id}}" id="add-{{function.id}}">
+                                                                <label class="custom-control-label" for="add-{{function.id}}"></label>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="custom-control custom-checkbox">
+                                                                <input type="checkbox" class="custom-control-input modify parent-{{function.parent}} {{function.id}} {{function.has_child}} control" name="modify-{{function.id}}" id="modify-{{function.id}}">
+                                                                <label class="custom-control-label" for="modify-{{function.id}}"></label>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="custom-control custom-checkbox">
+                                                                <input type="checkbox" class="custom-control-input delete parent-{{function.parent}} {{function.id}} {{function.has_child}} control" name="delete-{{function.id}}" id="delete-{{function.id}}">
+                                                                <label class="custom-control-label" for="delete-{{function.id}}"></label>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="custom-control custom-checkbox">
+                                                                <input type="checkbox" class="custom-control-input all parent-{{function.parent}} {{function.id}} {{function.has_child}} control" name="all-{{function.id}}" id="all-{{function.id}}">
+                                                                <label class="custom-control-label" for="all-{{function.id}}"></label>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                    
+                                </div>
+                                <div class="modal-footer">
+                                    <fieldset class="form-group position-relative has-icon-left mb-0">
+                                        <button type="button" class="btn btn-warning deleteProfile" data-dismiss="modal">
+                                            <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                            <span class="d-none d-lg-block"  data-i18n="Delete" >Eliminar</span>
+                                        </button>
+                                        <button type="button" class="btn btn-info saveProfile">
+                                            <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                            <span class="d-none d-lg-block"  data-i18n="Save" >Guardar</span>
+                                        </button>
+                                        <button type="button" class="btn btn-info addProfile">
+                                            <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                            <span class="d-none d-lg-block"  data-i18n="Add" >Añadir</span>
+                                        </button>
+                                    </fieldset>
+                                </div>
+                            </form>
+                        </section>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Crear perfil end -->
+        </div>
+    </div>
+    <!-- END: Content-->
+
+{% endblock %}
+
+{% block js %}
+
+    {% include 'users/js/jsUsers.html' %}
+
+{% endblock %}

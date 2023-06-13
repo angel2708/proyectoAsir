@@ -1,0 +1,15 @@
+<!-- BEGIN: Footer-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <footer class="footer footer-static footer-light navbar-border">
+        <p class="clearfix blue-grey lighten-2 text-sm-center mb-0 px-2">
+            <span class="float-md-left d-block d-md-inline-block">Copyright &copy; <span id="this_year_footer"></span></span>
+            <span class="float-md-right d-none d-lg-block">Dept. IT esMóvil
+                {% comment %} <i class="feather icon-heart pink"></i> {% endcomment %}
+            </span>
+        </p>
+    </footer>
+    <script>
+        var currentYear = (new Date).getFullYear();
+        $('#this_year_footer').text(currentYear)
+    </script>
+<!-- END: Footer-->

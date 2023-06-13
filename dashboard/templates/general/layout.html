@@ -1,0 +1,65 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html class="loading" lang="es" data-textdirection="ltr">
+<!-- BEGIN: Head-->
+
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="JUANFRAN">
+    <title>
+    {% block titlePage %}
+    {% endblock %} 
+    | G</title>
+    <link rel="apple-touch-icon" href="{% static 'images/ico/apple-icon-120.png' %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/ico/favicon.ico' %}">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i%7COpen+Sans:300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    
+    {% block css %}
+    {% endblock %}
+
+</head>
+<!-- END: Head-->
+
+<!-- BEGIN: Body-->
+
+    {% block body %}
+    {% endblock %}
+
+    {% include "general/nav.html" %}
+
+    {% include "general/menu.html" %}
+    
+    <!-- TEMPLATE CONTENT -->
+
+    {% block appContent %}
+    {% endblock %}
+
+    <div class="sidenav-overlay"></div>
+    <div class="drag-target"></div>
+
+
+    {% include "general/footer.html" %}
+    
+    {% block js %}
+    {% endblock %}
+</body>
+
+<!-- END: Body-->
+    
+    <script src="{% static 'vendors/js/extensions/toastr.min.js' %}"></script>
+    <script src="{% static 'js/scripts/extensions/toastr.js' %}"></script>
+    <script src="{% static 'js/apps/calendar/moments.min.js' %}"></script>
+    {% comment %} <script src="{% static 'js/apps/calendar/resize.js' %}"></script> {% endcomment %}
+    <script src="{% static 'js/apps/incidences/incidence.js' %}"></script>
+    <script src="{% static 'vendors/js/extensions/sweetalert2.all.min.js' %}"></script>
+    <script src="{% static 'js/scripts/extensions/sweet-alerts.js' %}"></script>
+    <script src="{% static 'js/scripts/extensions/sweet-alerts.min.js' %}"></script>
+    <script src="{% static 'js/apps/general/nav.js' %}"></script>    
+</html>

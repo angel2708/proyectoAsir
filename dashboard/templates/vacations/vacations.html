@@ -1,0 +1,636 @@
+{% extends 'general/layout.html' %}
+
+{% load static %}
+{% load filters %}
+
+{% block titlePage %}
+Usuarios
+{% endblock %}
+
+{% block css %}
+
+    {% include 'vacations/css/cssVacations.html' %}
+
+{% endblock %}
+
+{% block body %}
+    <body class="vertical-layout vertical-menu-modern 2-columns app-contacts fixed-navbar" data-open="click" data-menu="vertical-menu-modern" data-col="2-columns">
+{% endblock %}
+
+{% block appContent %}
+
+    <!-- BEGIN: Content-->
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="content-wrapper">
+            <div class="content-body">
+                <!-- TABLA VACACIONES -->
+                <section class="row all-contacts">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-head">
+                                <div class="card-header">
+                                    <h4 class="card-title" style="position:absolute; z-index:999;" data-i18n="Vacations-Management">Gestión de vacaciones</h4>
+                                    <input type="hidden" value="{{pending_days}}" class="pending_days">
+                                    <div class="heading-elements" style="width:100%; margin-right:-21px;">
+                                        {% if pending_days > 0 and month == 01 or month == 02 %}
+                                        <div style="width: 600px;height: 132px;background-color:#f5f7fa;border-radius: 15px;text-align:center;border: 2px #4b5367 solid;margin:auto;">
+                                            <h4 style="margin-top: 5px;border-bottom: 2px #4b5367 solid;height: 27px;font-weight: 500;">Días disponibles: Año {{year}}</h4>
+                                            <div class="row">
+                                                <fieldset class="form-group col-3">
+                                                    <h1 style="font-size:38px;" class="pending-days">{{pending_days}}</h1>
+                                                    <h4 style="font-weight: 600;">Año Anterior</h4>
+                                                </fieldset>
+                                                <fieldset class="form-group col-3">
+                                                    <h1 style="font-size:38px;" class="free-days">{{free_days}}</h1>
+                                                    <h4 style="font-weight: 600;">Año Actual</h4>
+                                                </fieldset>
+                                                <fieldset class="form-group col-3">
+                                                    <h1 style="font-size:38px;" class="used-days">{{vacation_days}}</h1>
+                                                    <h4 style="font-weight: 600;">Usados</h4>
+                                                </fieldset>
+                                                <fieldset class="form-group col-3">
+                                                    <h1 style="font-size:38px;" class="total-free-days">{{total_free_days}}</h1>
+                                                    <h4 style="font-weight: 600;">Libres</h4>
+                                                </fieldset>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <div style="width: 600px;height: 132px;background-color:#f5f7fa;border-radius: 15px;text-align:center;border: 2px #4b5367 solid;margin:auto;">
+                                            <h4 style="margin-top: 5px;border-bottom: 2px #4b5367 solid;height: 27px;font-weight: 500;">Días disponibles: Año {{year}}</h4>
+                                            <div class="row">
+                                                <fieldset class="form-group col-3">
+                                                    <h1 style="font-size:38px;" class="total-days">{{total_vacation_days}}</h1>
+                                                    <h4 style="font-weight: 600;">Total</h4>
+                                                </fieldset>
+                                                <fieldset class="form-group col-3">
+                                                    <h1 style="font-size:38px;" class="used-days">{{vacation_days}}</h1>
+                                                    <h4 style="font-weight: 600;">Usados</h4>
+                                                </fieldset>
+                                                <fieldset class="form-group col-3">
+                                                    <h1 style="font-size:38px;" class="free-days">{{free_days}}</h1>
+                                                    <h4 style="font-weight: 600;">Libres</h4>
+                                                </fieldset>
+                                                <fieldset class="form-group col-3">
+                                                    <h1 style="font-size:38px;" class="used-days-next">{{vacation_days_next}}</h1>
+                                                    <h4 style="font-weight: 600;">Año Sig.</h4>
+                                                </fieldset>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        <div style="float:right; margin: -130px 200px 0px 0px;">
+                                            <button class="btn btn-primary btn-md preview empty-form" data-toggle="modal" data-target="#addHolidays">
+                                                <span class="d-md-block d-none" data-i18n="Preview">Añadir Ausencia</span>
+                                            </button>
+                                        </div>
+                                        <div style="float:right; margin: -130px 22px 0px 0px;">
+                                            <button class="btn btn-primary btn-md preview open_calendar" data-toggle="modal" data-target="#PreviewModal">
+                                                <span class="d-md-block d-none" data-i18n="Preview">Ver en el Calendario</span>
+                                            </button>
+                                        </div>        
+                                    </div>
+                                </div>
+
+                                <!-- Modal para vista previa de las vacaciones -->
+                                <div class="modal fade" id="PreviewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                                    <div class="modal-dialog modal-xl" role="document">
+                                        <div class="modal-content modal-preview" style="background-color: #F7F7F7; height: 950px;">
+                                            <section class="contact-form">
+                                                <form method="POST" class="contact-input">
+                                                    {% csrf_token %}
+                                                    <div class="modal-header" style="background-color: white;">
+                                                        <h5 class="modal-title" style="width:100%; margin-left:2%; outline: 0px solid transparent;" id="exampleModalLabel1" data-i18n="CardInfo" prueba="2,1,3">Vista previa de las Vacaciones<span class="calendar-year"></span></h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="sidebar-left" style="width: 175px;">
+                                                            <div class="sidebar" style="width: 175px;">
+                                                                <div class="todo-sidebar d-flex">
+                                                                    <!-- todo app menu -->
+                                                                    <div class="todo-app-menu">
+                                                                        <!-- sidebar list start -->
+                                                                        <div class="sidebar-menu-list">
+                                                                        <i class="feather icon-arrow-left-circle subtract-year" style="font-size: 20px; margin-left: 60px; color:#008385; cursor:pointer;"></i>
+                                                                        <span class="current-year"></span>
+                                                                        <i class="feather icon-arrow-right-circle add-year" style="font-size: 20px; color:#008385; cursor:pointer;"></i>
+                                                                            <div class="filter-main" style="padding-top: 15px;">
+                                                                                <input type="hidden" class="master-dept" value="{{ca.departament_id}}">
+                                                                                <div class="list-group">
+                                                                                    {% if ca.user_id == 18 or ca.user_id == 64 %} <!-- Usuarios que pueden ver el listado de departamentos JOSEMI/JUANFRAN -->
+                                                                                        <a class="list-group-item border-0 filter-preview-dept" style="padding-bottom: 0; padding-top: 0; background-color: #F7F7F7; font-weight: 600; cursor:default;">
+                                                                                            <span class="fonticon-wrap mr-50">
+                                                                                                <i class="feather icon-users"></i>
+                                                                                            </span>
+                                                                                            <span>Por departamento</span>
+                                                                                        </a>
+                                                                                        <div class="main-dept">
+                                                                                            <div class="filter-dept">
+                                                                                                {% comment %} <fieldset class="form-group position-relative has-icon-left m-0 flex-grow-1" style="padding-left: 10px; padding-right: 10px; padding-bottom: 4%; padding-top:8px;">
+                                                                                                    <input type="text" class="form-control dept-search" placeholder="Buscar departamento...">
+                                                                                                    <div class="form-control-position" style="padding-top: 6px;">
+                                                                                                        <i class="feather icon-search"></i>
+                                                                                                    </div>
+                                                                                                </fieldset> {% endcomment %}
+                                                                                                <fieldset class="form-group col-12" style="height: 165px;overflow: auto;margin-bottom: 0;">
+                                                                                                    <div class="list-filter-dept">
+                                                                                                        <ul class="todo-task-list-wrapper list-dept" style="overflow: auto;">
+                                                                                                            {% for departament in departaments %}
+                                                                                                                <li class="dept-item" style="cursor:pointer; border-radius: 9px;">
+                                                                                                                    <div class="todo-title-wrapper d-flex justify-content-between align-items-center">
+                                                                                                                        <div class="todo-title-area d-flex info-dept" dept={{departament.id}} style="margin-top: 1%; margin-left:15px;" is_checked="false">
+                                                                                                                            <p class="mx-50 m-0 truncate info-dept-text" style="width:160px; cursor:pointer;">{{ departament.name }}</p>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </li>
+                                                                                                            {% endfor %}
+                                                                                                        </ul>
+                                                                                                    </div>
+                                                                                                </fieldset>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    {% endif %}
+                                                                                    <a class="list-group-item border-0 filter-preview-user" style="padding-bottom: 0; padding-top: 0; background-color: #F7F7F7; font-weight:600; cursor:default;">
+                                                                                        <span class="fonticon-wrap mr-50">
+                                                                                            <i class="feather icon-user"></i>
+                                                                                        </span>
+                                                                                        <span>Por usuario</span>
+                                                                                    </a>
+                                                                                    <div class="main-user">
+                                                                                        <div class="filter-user">
+                                                                                            {% if ca.user_id == 18 or ca.user_id == 64 %} <!-- Usuarios que pueden ver el listado de departamentos JOSEMI/JUANFRAN -->
+                                                                                                <fieldset class="form-group position-relative has-icon-left m-0 flex-grow-1" style="padding-left: 10px; padding-right: 10px; padding-bottom: 4%; padding-top:8px;">
+                                                                                                    <input type="text" class="form-control user-search" placeholder="Buscar usuario...">
+                                                                                                    <div class="form-control-position" style="padding-top: 6px;">
+                                                                                                        <i class="feather icon-search"></i>
+                                                                                                    </div>
+                                                                                                </fieldset>
+                                                                                            {% endif %}
+                                                                                            <fieldset class="form-group col-12" style="max-height: 250px; overflow: auto; margin-bottom: 0;">
+                                                                                                <div class="list-filter-user">
+                                                                                                    <ul class="todo-task-list-wrapper list-users" style="overflow: auto;">
+                                                                                                        {% for user in users %}
+                                                                                                            <li class="user-item" style="cursor:pointer; border-radius: 9px;">
+                                                                                                                <div class="todo-title-wrapper d-flex justify-content-between align-items-center">
+                                                                                                                    <div class="todo-title-area d-flex info-user" style="margin-top: 1%; margin-left:15px;" is_checked="false" dept={{user.departament_id}} user={{user.user_id}}>
+                                                                                                                        <div class="avatar avatar_user info-user-avatar"><img src="{% static 'images/portrait/small/' %}{{user.avatar}}" style="width:85%;"></div>
+                                                                                                                        <p class="mx-50 m-0 truncate info-user-text" style="width:160px; padding-left:8%;">{{user.first_name}} {{user.last_name}}</p>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </li>
+                                                                                                        {% endfor %}
+                                                                                                    </ul>
+                                                                                                </div>
+                                                                                            </fieldset>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <hr class="filter-hr">
+                                                                                    <div class="filter-state">
+                                                                                        <div class="list-group">
+                                                                                            <a class="list-group-item border-0 d-flex align-items-center justify-content-between filter-accepted" is_checked="false" dept="{{ca.departament_id}}" style="background-color: #f7f7f7; padding-bottom: 10px; padding-top:10px;">
+                                                                                                <span>Vacaciones Aceptadas</span>
+                                                                                                <span class="bullet bullet-sm bullet-success" style="background-color:#b4e6a1 !important;"></span>
+                                                                                            </a>
+                                                                                            <a class="list-group-item border-0 d-flex align-items-center justify-content-between filter-pending" is_checked="false" dept="{{ca.departament_id}}" style="background-color: #f7f7f7; padding-bottom: 10px; padding-top:10px;">
+                                                                                                <span>Vacaciones Pendientes</span>
+                                                                                                <span class="bullet bullet-sm bullet-warning"></span>
+                                                                                            </a>
+                                                                                            <a class="list-group-item border-0 d-flex align-items-center justify-content-between filter-lastyear" is_checked="false" dept="{{ca.departament_id}}" style="background-color: #f7f7f7; padding-bottom: 10px; padding-top:10px;">
+                                                                                                <span>Vacaciones Año Anterior</span>
+                                                                                                <span class="bullet bullet-sm" style="background-color: #e69ae3;"></span>
+                                                                                            </a>
+                                                                                            <a class="list-group-item border-0 d-flex align-items-center justify-content-between filter-repeated" is_checked="false" dept="{{ca.departament_id}}" style="background-color: #f7f7f7; padding-bottom: 10px; padding-top:10px;">
+                                                                                                <span>Ausencias Solapadas</span>
+                                                                                                <span class="bullet bullet-sm bullet-danger"></span>
+                                                                                            </a>
+                                                                                            <a class="list-group-item border-0 d-flex align-items-center justify-content-between filter-other" is_checked="false" dept="{{ca.departament_id}}" style="background-color: #f7f7f7; padding-bottom: 10px; padding-top:10px;">
+                                                                                                <span>Otros/Enfermedad</span>
+                                                                                                <span class="bullet bullet-sm" style="background-color: #9e9e9e;"></span>
+                                                                                            </a>
+                                                                                            <hr>
+                                                                                            <a class="list-group-item border-0 d-flex align-items-center justify-content-between" is_checked="false" dept="{{ca.departament_id}}" style="cursor: default; background-color: #f7f7f7; padding-bottom: 10px; padding-top:10px;">
+                                                                                                <span>Festivos</span>
+                                                                                                <span class="bullet bullet-sm" style="background-color: #55d9c3;"></span>
+                                                                                            </a>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <!-- sidebar list end -->
+                                                                        
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="content-right">
+                                                            <div class="row calendar-row">
+                                                                <div class="col-3" style="padding-left: 20px; padding-right: 20px; padding-bottom: 20px;" id="preview1" month="1">
+                                                                    
+                                                                </div>
+                                                                <div class="col-3" style="padding-left: 20px; padding-right: 20px; padding-bottom: 20px;" id="preview2" month="2">
+                                                                    
+                                                                </div>
+                                                                <div class="col-3" style="padding-left: 20px; padding-right: 20px; padding-bottom: 20px;" id="preview3" month="3">
+                                                                    
+                                                                </div>
+                                                                <div class="col-3" style="padding-left: 20px; padding-right: 20px; padding-bottom: 20px;" id="preview4" month="4">
+                                                                    
+                                                                </div>
+                                                            </div>
+                                                            <div class="row calendar-row">
+                                                                <div class="col-3" style="padding-left: 20px; padding-right: 20px; padding-bottom: 20px;" id="preview5" month="5">
+                                                                    
+                                                                </div>
+                                                                <div class="col-3" style="padding-left: 20px; padding-right: 20px; padding-bottom: 20px;" id="preview6" month="6">
+                                                                    
+                                                                </div>
+                                                                <div class="col-3" style="padding-left: 20px; padding-right: 20px; padding-bottom: 20px;" id="preview7" month="7">
+                                                                    
+                                                                </div>
+                                                                <div class="col-3" style="padding-left: 20px; padding-right: 20px; padding-bottom: 20px;" id="preview8" month="8">
+                                                                    
+                                                                </div>
+                                                            </div>
+                                                            <div class="row calendar-row">
+                                                                <div class="col-3" style="padding-left: 20px; padding-right: 20px; padding-bottom: 20px;" id="preview9" month="9">
+                                                                    
+                                                                </div>
+                                                                <div class="col-3" style="padding-left: 20px; padding-right: 20px; padding-bottom: 20px;" id="preview10" month="10">
+                                                                    
+                                                                </div>
+                                                                <div class="col-3" style="padding-left: 20px; padding-right: 20px; padding-bottom: 20px;" id="preview11" month="11">
+                                                                    
+                                                                </div>
+                                                                <div class="col-3" style="padding-left: 20px; padding-right: 20px; padding-bottom: 20px;" id="preview12" month="12">
+                                                                    
+                                                                </div>
+                                                            </div>
+                                                            <div class="tooltip-data">
+                                                                <ul class="todo-task-list-wrapper tooltip-users">
+                                                                    
+                                                                </ul>
+                                                            </div>
+
+                                                            <!-- Preview de un mes en concreto -->
+                                                            <div class="month-preview" style="display:none; height: 750px;" id="" month="" year=""> 
+                                                                <div class="col-12">
+                                                                    
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </section>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Modal para modificar vacaciones -->
+                                <div class="modal fade" id="EditingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <section class="contact-form">
+                                                <form method="POST" id="form-user" class="contact-input">
+                                                    {% csrf_token %}
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel1" data-i18n="Users-Management">Editar vacaciones</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <fieldset class="form-group col-6" style="float:left;">
+                                                            <div class="form-control editing-names" style="margin-bottom: 0; border:none;">
+
+                                                            </div>
+                                                        </fieldset>
+                                                        <fieldset class="form-group col-6">
+                                                            <p class="form-control editing-departament" style="margin-bottom: 0; border:none; font-weight: bold;"></p>
+                                                        </fieldset>
+                                                        <fieldset class="form-group col-6" style="float:left;">
+                                                            <p style="margin-bottom: 0;">Fecha inicial</p>
+                                                            <input type="date" class="editing-date editing-start">
+                                                        </fieldset>
+                                                        <fieldset class="form-group col-6">
+                                                            <p style="margin-bottom: 0;">Fecha final</p>
+                                                            <input type="date" class="editing-date editing-finish">
+                                                        </fieldset>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <fieldset class="form-group position-relative has-icon-left mb-0">
+                                                            <button type="button" class="btn btn-info add-user-item updateVacations" ida="">
+                                                                <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                                                <span class="d-none d-lg-block" data-i18n="UpdateVacations">Modificar</span>
+                                                            </button>
+                                                        </fieldset>
+                                                    </div>
+                                                </form>
+                                            </section>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-content" style="margin-top:60px;">
+                                    <div class="card-body">
+                                        <!-- Task List table -->
+                                        <div class="table-responsive">
+                                            <input type="hidden" class="absence-data user_id" value="{{ca.user_id}}">
+                                            <input type="hidden" class="absence-data departament_id" value="{{ca.departament_id}}">
+                                            <input type="hidden" class="absence-data vacation_days" value="{{vacation_days}}">
+                                            <input type="hidden" class="absence-data total_vacation_days" value="{{total_vacation_days}}">
+                                            <input type="hidden" class="absence-data this-manager" value="{{dept_name.manager}}">
+                                            <table id="vacations-table" class="table table-white-space table-bordered row-grouping display no-wrap icheck table-middle text-center">
+                                                <thead>
+                                                    <tr>
+                                                        <th data-i18n="Names">Empleado</th>
+                                                        <th data-i18n="Departament">Tipo de Ausencia</th>
+                                                        <th data-i18n="Description">Descripción</th>
+                                                        <th data-i18n="StartDate">Fecha de Inicio</th>
+                                                        <th data-i18n="FinishDate">Fecha de Final</th>
+                                                        <th data-i18n="State">Estado</th>
+                                                        {% if dept_name.manager == ca.user_id or ca.user_id == 45 or ca.user_id == 51 %}
+                                                        <th data-i18n="Image">Archivos</th>
+                                                        {% endif %}
+                                                        <th data-i18n="Actions">Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="vacations-data">
+                                                    {% for absence in absences %}
+                                                    {% csrf_token %}
+                                                        {% if dept_name.manager == ca.user_id or ca.user_id == 45 or ca.user_id == 51 %}
+                                                            <tr class="vacations-data" ida="{{absence.id}}">
+                                                                <td class="text-center">
+                                                                    <input type="hidden" class="vacations-data vacations-id" value="{{absence.id}}">
+                                                                    <input type="hidden" class="vacations-data user-id" value="{{absence.user}}">
+                                                                    <a href="http://gestion.esmovil.es/users-management/{{absence.user}}" target="_blank" class="vacations-data vacations-names">{{absence.first_name}} {{absence.last_name}}</a>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    {% if absence.absence_type == 1 %}
+                                                                        <p class="vacations-data vacations-type">Vacaciones</p>
+                                                                    {% elif absence.absence_type == 2 %}
+                                                                        <p class="vacations-data vacations-type">Enfermedad</p>
+                                                                    {% elif absence.absence_type == 3 %}
+                                                                        <p class="vacations-data vacations-type">Enfermedad de un familiar</p>
+                                                                    {% elif absence.absence_type == 4 %}
+                                                                        <p class="vacations-data vacations-type">Maternidad/Paternidad</p>
+                                                                    {% elif absence.absence_type == 5 %}
+                                                                        <p class="vacations-data vacations-type">Otro</p>
+                                                                    {% elif absence.absence_type == 6 %}
+                                                                        <p class="vacations-data vacations-type">Vacaciones Año Anterior</p>
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <p class="vacations-data vacations-description">{{absence.description|safe}}</p>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <p class="vacations-data vacations-start_date" start_date="{{absence.start}}" ida="{{absence.id}}">{{absence.start}}</p>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <p class="vacations-data vacations-finish_date" finish_date="{{absence.finish}}" ida="{{absence.id}}">{{absence.finish}}</p>
+                                                                </td>   
+                                                                <td class="text-center">
+                                                                    {% if absence.state == 0 %}
+                                                                        <p class="vacations-data vacations-state">Pendiente</p>
+                                                                    {% elif absence.state == 1 %}
+                                                                        <p class="vacations-data vacations-state">Aceptada</p>
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td class="text-center vacations-images">
+                                                                    {% if absence.absence_type == 2%}
+                                                                        {% if absence.file == None%}
+                                                                        <i class="fas fa-file-pdf" style="color:red;"></i>
+                                                                        {% else %}
+                                                                        <a href="../../../dashboard/media/{{absence.file}}" target="_blank">
+                                                                            <i class="fas fa-file-pdf" style="color: #77D797;"></i>
+                                                                        </a>
+                                                                        {% endif %}
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td class="text-center vacations-actions">
+                                                                    {% if dept_name.manager == ca.user_id or ca.user_id == 45 or ca.user_id == 51 %}
+                                                                        {% if absence.state == 0 %}
+                                                                            <i class="fas fa-check accept-absence" style="color:#77D797; cursor: pointer; font-size: 22px; padding: 5px;" ida="{{absence.id}}" absence_user="{{absence.user}}"></i>
+                                                                            <i class="fas fa-close cancel-absence" style="color:#F55F5F; cursor: pointer; font-size: 24px; padding: 5px;" ida="{{absence.id}}" absence_user="{{absence.user}}"></i>
+                                                                        {% elif absence.state == 1 %}
+                                                                            <i class="fas fa-trash-alt delete-absence" style="color:#00b5b8; cursor: pointer; font-size: 22px; padding: 5px;" ida="{{absence.id}}" absence_user="{{absence.user}}"></i>
+                                                                        {% endif %}
+                                                                    {% else %}
+                                                                        {% if absence.state == 0 %}
+                                                                            <i class="fas fa-close cancel-absence" style="color:#F55F5F; cursor: pointer; font-size: 24px; padding: 5px;" ida="{{absence.id}}" absence_user="{{absence.user}}"></i>
+                                                                        {% endif %}
+                                                                    {% endif %}
+                                                                </td>
+                                                            </tr>
+                                                        {% elif ca.user_id == 18 or ca.user_id == 64 %}
+                                                            <tr class="vacations-data" ida="{{absence.id}}">
+                                                                <td class="text-center">
+                                                                    <input type="hidden" class="vacations-data vacations-id" value="{{absence.id}}">
+                                                                    <input type="hidden" class="vacations-data user-id" value="{{absence.user}}">
+                                                                    <a href="http://gestion.esmovil.es/users-management/{{absence.user}}" target="_blank" class="vacations-data vacations-names">{{absence.first_name}} {{absence.last_name}}</a>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    {% if absence.absence_type == 1 %}
+                                                                        <p class="vacations-data vacations-type">Vacaciones</p>
+                                                                    {% elif absence.absence_type == 2 %}
+                                                                        <p class="vacations-data vacations-type">Enfermedad</p>
+                                                                    {% elif absence.absence_type == 3 %}
+                                                                        <p class="vacations-data vacations-type">Enfermedad de un familiar</p>
+                                                                    {% elif absence.absence_type == 4 %}
+                                                                        <p class="vacations-data vacations-type">Maternidad/Paternidad</p>
+                                                                    {% elif absence.absence_type == 5 %}
+                                                                        <p class="vacations-data vacations-type">Otro</p>
+                                                                    {% elif absence.absence_type == 6 %}
+                                                                        <p class="vacations-data vacations-type">Vacaciones Año Anterior</p>
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <p class="vacations-data vacations-description">{{absence.description|safe}}</p>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <p class="vacations-data vacations-start_date" start_date="{{absence.start}}" ida="{{absence.id}}">{{absence.start}}</p>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <p class="vacations-data vacations-finish_date" finish_date="{{absence.finish}}" ida="{{absence.id}}">{{absence.finish}}</p>
+                                                                </td>   
+                                                                <td class="text-center">
+                                                                    {% if absence.state == 0 %}
+                                                                        <p class="vacations-data vacations-state">Pendiente</p>
+                                                                    {% elif absence.state == 1 %}
+                                                                        <p class="vacations-data vacations-state">Aceptada</p>
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td class="text-center vacations-actions">
+                                                                    {% if absence.state == 0 %}
+                                                                        <i class="fas fa-check accept-absence" style="color:#77D797; cursor: pointer; font-size: 22px; padding: 5px;" ida="{{absence.id}}" absence_user="{{absence.user}}"></i>
+                                                                        <i class="fas fa-close cancel-absence" style="color:#F55F5F; cursor: pointer; font-size: 24px; padding: 5px;" ida="{{absence.id}}" absence_user="{{absence.user}}"></i>
+                                                                    {% elif absence.state == 1 %}
+                                                                        <i class="fas fa-trash-alt delete-absence" style="color:#00b5b8; cursor: pointer; font-size: 22px; padding: 5px;" ida="{{absence.id}}" absence_user="{{absence.user}}"></i>
+                                                                    {% endif %}
+                                                                </td>
+                                                            </tr>
+                                                        {% else %}
+                                                            {% if absence.user == ca.user_id %}
+                                                                <tr class="vacations-data" ida="{{absence.id}}">
+                                                                    <td class="text-center">
+                                                                        <input type="hidden" class="vacations-data vacations-id" value="{{absence.id}}">
+                                                                        <input type="hidden" class="vacations-data user-id" value="{{absence.user}}">
+                                                                        <p class="vacations-data vacations-names">{{absence.first_name}} {{absence.last_name}}</p>
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        {% if absence.absence_type == 1 %}
+                                                                            <p class="vacations-data vacations-type">Vacaciones</p>
+                                                                        {% elif absence.absence_type == 2 %}
+                                                                            <p class="vacations-data vacations-type">Enfermedad</p>
+                                                                        {% elif absence.absence_type == 3 %}
+                                                                            <p class="vacations-data vacations-type">Enfermedad de un familiar</p>
+                                                                        {% elif absence.absence_type == 4 %}
+                                                                            <p class="vacations-data vacations-type">Maternidad/Paternidad</p>
+                                                                        {% elif absence.absence_type == 5 %}
+                                                                            <p class="vacations-data vacations-type">Otro</p>
+                                                                        {% elif absence.absence_type == 6 %}
+                                                                            <p class="vacations-data vacations-type">Vacaciones Año Anterior</p>
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <p class="vacations-data vacations-description">{{absence.description|safe}}</p>
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <p class="vacations-data vacations-start_date" start_date="{{absence.start}}" ida="{{absence.id}}">{{absence.start}}</p>
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <p class="vacations-data vacations-finish_date" finish_date="{{absence.finish}}" ida="{{absence.id}}">{{absence.finish}}</p>
+                                                                    </td>   
+                                                                    <td class="text-center">
+                                                                        {% if absence.state == 0 %}
+                                                                            <p class="vacations-data vacations-state">Pendiente</p>
+                                                                        {% elif absence.state == 1 %}
+                                                                            <p class="vacations-data vacations-state">Aceptada</p>
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td class="text-center vacations-actions">
+                                                                        {% if dept_name.manager == ca.user_id %}
+                                                                            {% if absence.state == 0 %}
+                                                                                <i class="fas fa-check accept-absence" style="color:#77D797; cursor: pointer; font-size: 22px; padding: 5px;" ida="{{absence.id}}" absence_user="{{absence.user}}"></i>
+                                                                                <i class="fas fa-close cancel-absence" style="color:#F55F5F; cursor: pointer; font-size: 24px; padding: 5px;" ida="{{absence.id}}" absence_user="{{absence.user}}"></i>
+                                                                            {% elif absence.state == 1 %}
+                                                                                <i class="fas fa-trash-alt delete-absence" style="color:#00b5b8; cursor: pointer; font-size: 22px; padding: 5px;" ida="{{absence.id}}" absence_user="{{absence.user}}"></i>
+                                                                            {% endif %}
+                                                                        {% else %}
+                                                                            {% if absence.state == 0 %}
+                                                                                <i class="fas fa-close cancel-absence" style="color:#F55F5F; cursor: pointer; font-size: 24px; padding: 5px;" ida="{{absence.id}}" absence_user="{{absence.user}}"></i>
+                                                                            {% endif %}
+                                                                        {% endif %}
+                                                                    </td>
+                                                                </tr>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </section>
+                    <!-- TABLA USUSARIOS -->
+            </div>
+        </div>
+    </div>
+    <!-- END: Content-->
+
+    <!-- Modal Crear ausencia start -->
+    <div class="modal fade" id="addHolidays" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document" style="max-width:500px !important;">
+            <div class="modal-content">
+                <section class="contact-form">
+                    <form method="POST" id="form-add-contact" class="contact-input"> 
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title response-title">Añadir Ausencia al Calendario</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body row">
+
+                            <fieldset class="form-group col-12 absence_type_container">
+                                <label for="absence_type">Tipo de Ausencia</label>
+                                <select id="absence_type" class="absence_type form-control">
+                                    <option value="0" selected>Seleccione una Opción</option>
+                                    <option value="1">Vacaciones</option>
+                                    <option value="2">Enfermedad</option>
+                                    <option value="3">Enfermedad de un familiar</option>
+                                    <option value="4">Maternidad/Paternidad</option>
+                                    <option value="5">Otro</option>
+                                    <option class="pending-vac" value="6">Vacaciones Año Anterior</option>
+                                </select>
+                            </fieldset>
+
+                            {% if dept_name.manager == ca.user_id or ca.user_id == 18 or ca.user_id == 64 or ca.user_id == 45 or ca.user_id == 51%}
+                                <fieldset class="form-group col-6">
+                                    <label for="user_list">Usuario</label>
+                                    <select id="user_list" class="user_list form-control">
+                                        <option value="0" selected>Seleccione un usuario</option>
+                                        {% for user in users %}
+                                            <option value="{{user.user_id}}">{{user.first_name}} {{user.last_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </fieldset>
+                            {% endif %}
+
+                            <fieldset class="form-group col-12 input-description">
+                                <label for="absence_description">Descripción</label>
+                                <textarea id="absence_description" class="absence_description form-control" rows="3" cols="95"></textarea>
+                            </fieldset>
+
+                            {% if dept_name.manager == ca.user_id or ca.user_id == 18 or ca.user_id == 64 or ca.user_id == 45 or ca.user_id == 51 %}
+                            <fieldset class="form-group col-12 input-img" style="display: none;">
+                                <label for="absence_img">Imágen</label>
+                                <input type="file" id="abs_image" class="abs_image form-control" accept="image/*, .pdf" >
+                            </fieldset>
+                            {% endif %}
+
+                            <input type="hidden" class="form-control hd-vacation_days" name="user_vacation_days" value="{{ user.vacation_days }}" id="vacation_days">
+                            <input type="hidden" class="form-control hd-pending_days" name="user_pending_days" value="{{ user.pending_days }}" id="vacation_pending_days">
+                            
+                            <fieldset class="form-group col-2 check-fieldset" style="margin-top:20px; visibility:hidden;">
+                                <input type="checkbox" class="hd-day_off" style="margin-left:65px;" id="day_off">
+                                <label class="check-text" style="margin-left:10px;"></label>
+                            </fieldset>
+
+                            <fieldset class="form-group col-4 finishDay">
+                                <label for="">Comienzo</label>
+                                <input class="form-control hd-date1" type="date" value="" id="date_now2" name="start_date">
+                            </fieldset>
+
+                            <fieldset class="form-group col-4 content_day_off" id="content_day_off">
+                                <label for="">Fin</label>
+                                <input class="form-control hd-date2" type="date" value="" id="date_after" name="finish_date">
+                            </fieldset>
+                        </div>
+
+                        <div class="modal-footer w-100">
+                            <fieldset class="form-group position-relative has-icon-left mb-0 float-right">
+                                <button type="button" class="btn btn-info add-contact-item addAbsence add-contact-item">
+                                    <i class="fa fa-paper-plane-o d-block d-lg-none"></i> 
+                                    <span class="d-none d-lg-block">Añadir</span>
+                                </button>
+                            </fieldset>
+                        </div>
+                    </form> 
+                </section>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Crear presupuesto end -->
+
+{% endblock %}
+
+{% block js %}
+
+    {% include 'vacations/js/jsVacations.html' %}
+
+{% endblock %}

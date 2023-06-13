@@ -1,0 +1,244 @@
+2,20,978,AT,43,f,f,t,NNNN,t,t,EUR,Austria
+24,5,36,AU,61,f,f,t,NNNN,t,f,AUD,Australia
+47,3,944,AZ,994,f,f,t,CNNNN,t,f,AZN,Azerbaiyán
+51,2,840,BB,0,f,f,t,CNNNNN,t,f,USD,Barbados
+3,21,978,BE,32,f,f,t,NNNN,t,t,EUR,Bélgica
+49,3,48,BH,973,f,f,t,"",t,f,BHD,Bahréin
+62,4,840,BI,257,f,f,t,"",t,f,USD,Burundi
+54,4,978,BJ,229,f,f,f,"",t,f,EUR,Benin
+55,2,840,BM,0,f,f,t,"",t,f,USD,Bermudas
+59,3,702,BN,673,f,f,t,LLNNNN,t,f,SGD,Brunéi
+34,6,840,BO,591,f,f,t,"",t,f,USD,Bolivia
+48,2,840,BS,0,f,f,t,"",t,f,USD,Bahamas
+57,4,72,BW,267,f,f,t,"",t,f,BWP,Botsuana
+52,7,840,BY,0,f,f,t,NNNNNN,t,f,USD,Belarús
+64,4,950,CM,237,f,f,t,"",t,f,XAF,Camerún
+5,3,156,CN,86,f,f,t,NNNNNN,t,f,CNY,China
+69,6,170,CO,57,f,f,t,NNNNNN,t,f,COP,Colombia
+73,8,840,CR,506,f,f,t,NNNNN,t,f,USD,Costa Rica
+75,8,840,CU,53,f,f,t,"",t,f,USD,Cuba
+76,1,978,CY,357,f,f,t,NNNN,t,t,EUR,Chipre
+16,42,978,CZ,420,f,f,t,NNN NN,t,t,EUR,República Checa
+1,47,978,DE,49,f,f,t,NNNNN,t,t,EUR,Alemania
+77,4,840,DJ,253,f,f,t,"",t,f,USD,Yibuti
+78,8,840,DM,0,f,f,t,"",t,f,USD,Domínica
+79,8,840,DO,0,f,f,t,"",t,f,USD,República Dominicana
+38,4,12,DZ,213,f,f,t,NNNNN,t,f,DZD,Argel
+82,4,840,EG,20,f,f,t,NNNNN,t,f,USD,Egipto
+85,4,840,ER,291,f,f,t,"",t,f,USD,Eritrea
+6,1,978,ES,34,t,t,t,NNNNN,t,t,EUR,España
+17,41,826,GB,44,t,f,t,"",t,t,GBP,Reino Unido
+93,3,981,GE,995,f,f,t,NNNN,t,f,GEL,Georgia
+101,7,0,GG,0,f,f,t,LLN NLL,t,f, ,Guernsey
+94,4,840,GH,233,f,f,t,"",t,f,USD,Ghana
+97,7,826,GI,350,f,f,t,"",t,f,GBP,Gibraltar
+92,4,978,GM,220,f,f,t,"",t,f,EUR,Gambia
+102,4,978,GN,224,f,f,t,"",t,f,EUR,Guinea
+98,8,978,GP,590,f,f,t,"",t,f,EUR,Guadalupe
+84,4,978,GQ,240,f,f,t,"",t,f,EUR,Guinea Ecuatorial
+100,8,320,GT,502,f,f,t,"",t,f,GTQ,Guatemala
+99,5,840,GU,0,f,f,t,"",t,f,USD,Guam
+103,4,978,GW,245,f,f,t,"",t,f,EUR,Guinea-Bissau
+104,6,840,GY,592,f,f,t,"",t,f,USD,Guayana
+22,3,344,HK,852,f,f,f,"",t,f,HKD,Hong Kong
+108,8,840,HN,504,f,f,t,"",t,f,USD,Honduras
+74,24,978,HR,385,f,f,t,NNNNN,t,f,EUR,Croacia
+105,8,840,HT,509,f,f,t,"",t,f,USD,Haití
+111,3,360,ID,62,t,f,t,NNNNN,t,f,IDR,Indonesia
+113,3,840,IQ,964,f,f,t,NNNNN,t,f,USD,Irak
+112,3,364,IR,98,f,f,t,NNNNN-NNNNN,t,f,IRR,Irán
+109,7,978,IS,354,f,f,t,NNN,t,f,EUR,Islandia
+10,35,978,IT,39,t,f,t,NNNNN,t,t,EUR,Italia
+115,8,840,JM,0,f,f,t,"",t,f,USD,Jamaica
+117,3,400,JO,962,f,f,t,"",t,f,JOD,Jordania
+11,3,392,JP,81,t,f,t,NNN-NNNN,t,f,JPY,Japón
+119,4,840,KE,254,f,f,t,"",t,f,USD,Kenia
+123,3,840,KG,996,f,f,t,"",t,f,USD,Kirguistán
+120,5,36,KI,686,f,f,t,"",t,f,AUD,Kiribati
+70,4,978,KM,269,f,f,t,"",t,f,EUR,Comoros
+121,3,0,KP,850,f,f,t,"",t,f, ,Corea del Norte
+122,3,414,KW,965,f,f,t,"",t,f,KWD,Kuwait
+118,3,398,KZ,7,f,f,t,NNNNNN,t,f,KZT,Kazajstán
+124,3,840,LA,856,f,f,t,"",t,f,USD,Laos
+126,3,840,LB,961,f,f,t,"",t,f,USD,Líbano
+127,4,426,LS,266,f,f,t,"",t,f,LSL,Lesotho
+12,38,978,LU,352,f,f,t,NNNN,t,t,EUR,Luxemburgo
+61,3,840,MM,95,f,f,t,"",t,f,USD,Myanmar
+35,4,978,MU,230,f,f,t,"",t,f,EUR,Mauricio
+31,4,840,NG,234,f,f,t,"",t,f,USD,Nigeria
+13,32,978,NL,31,f,f,t,NNNN LL,t,t,EUR,Países Bajos
+23,39,578,NO,47,f,f,t,NNNN,t,t,NOK,Noruega
+14,40,985,PL,48,f,f,t,NN-NNN,t,t,PLN,Polonia
+15,17,978,PT,351,t,f,t,NNNN-NNN,t,t,EUR,Portugal
+36,43,978,RO,40,f,f,t,NNNNNN,t,t,EUR,Rumanía
+18,44,752,SE,46,f,f,t,NNN NN,t,t,SEK,Suecia
+25,3,702,SG,65,f,f,t,NNNNNN,t,f,SGD,Singapur
+83,8,840,SV,503,f,f,t,"",t,f,USD,El Salvador
+67,4,950,TD,235,f,f,t,"",t,f,XAF,Chad
+33,4,978,TG,228,f,f,t,"",t,f,EUR,Togo
+80,3,840,TL,670,f,f,t,"",t,f,USD,Timor-Leste
+107,7,0,VA,379,f,f,t,NNNNN,t,f, ,Ciudad del Vaticano
+30,4,710,ZA,27,f,f,t,NNNN,t,f,ZAR,Sudáfrica
+71,4,840,CD,242,f,f,t,"",t,f,USD,República Democrática del Congo
+43,2,840,AG,0,f,f,t,"",t,f,USD,Antigua y Barbuda
+42,8,840,AI,0,f,f,t,"",t,f,USD,Anguila
+45,3,51,AM,374,f,f,t,NNNN,t,f,AMD,Armenia
+44,6,840,AR,54,t,f,t,LNNNNLLL,t,f,USD,Argentina
+39,2,840,AS,0,f,f,t,"",t,f,USD,Samoa Americana
+56,3,840,BT,975,f,f,t,"",t,f,USD,Bhután
+53,8,840,BZ,501,f,f,f,"",t,f,USD,Belice
+66,4,950,CF,236,f,f,t,"",t,f,XAF,República Centro-Africana
+72,4,950,CG,243,f,f,t,"",t,f,XAF,Congo
+19,45,756,CH,41,f,f,t,NNNN,t,t,CHF,Suiza
+68,6,840,CL,56,f,f,t,NNN-NNNN,t,f,USD,Chile
+232,5,0,AQ,0,f,f,t,"",t,f, ,Antártida
+46,8,840,AW,297,f,f,t,"",t,f,USD,Aruba
+244,7,0,AX,0,f,f,t,NNNNN,t,f, ,Islas Áland
+233,22,978,BA,387,f,f,t,"",t,t,EUR,Bosnia y Herzegovina
+236,23,978,BG,359,f,f,t,NNNN,t,t,EUR,Bulgaria
+58,6,986,BR,55,f,f,t,NNNNN-NNN,t,f,BRL,Brasil
+234,5,0,BV,0,f,f,t,"",t,f, ,Isla Bouvet
+65,4,132,CV,238,f,f,t,NNNN,t,f,CVE,Cabo Verde
+238,3,0,CX,0,f,f,t,"",t,f, ,Islas Christmas
+146,5,840,FM,691,f,f,t,"",t,f,USD,Micronesia
+241,6,978,GF,594,f,f,t,"",t,f,EUR,Guayana Francesa
+143,33,978,HU,36,f,f,t,NNNN,t,t,EUR,Hungría
+181,8,840,LC,0,f,f,t,"",t,f,USD,Santa Lucía
+130,1,756,LI,423,f,f,t,NNNN,t,t,CHF,Liechtenstein
+197,3,840,LK,94,f,f,t,NNNNN,t,f,USD,Sri Lanka
+128,4,840,LR,231,f,f,t,"",t,f,USD,Liberia
+129,4,978,LY,218,f,f,t,"",t,f,EUR,Libia
+152,4,978,MA,212,f,f,t,NNNNN,t,f,EUR,Marruecos
+148,7,978,MC,377,f,f,t,980NN,t,f,EUR,Mónaco
+147,7,498,MD,373,f,f,t,C-NNNN,t,f,MDL,Moldova
+140,5,840,MH,692,f,f,t,"",t,f,USD,Islas Marshall
+133,7,978,MK,389,f,f,t,"",t,f,EUR,Macedonia
+138,4,952,ML,223,f,f,t,"",t,f,XOF,Mali
+149,3,840,MN,976,f,f,t,"",t,f,USD,Mongolia
+141,8,978,MQ,596,f,f,t,"",t,f,EUR,Martinica
+142,4,978,MR,222,f,f,t,"",t,f,EUR,Mauritania
+151,8,840,MS,0,f,f,t,"",t,f,USD,Montserrat
+137,3,840,MV,960,f,f,t,"",t,f,USD,Maldivas
+135,4,840,MW,265,f,f,t,"",t,f,USD,Malawi
+145,2,840,MX,52,t,t,t,NNNNN,t,f,USD,México
+136,3,458,MY,60,f,f,t,NNNNN,t,f,MYR,Malasia
+153,4,943,MZ,258,f,f,t,"",t,f,MZN,Mozambique
+158,5,953,NC,687,f,f,t,"",t,f,XPF,Nueva Caledonia
+160,4,978,NE,227,f,f,t,"",t,f,EUR,Níger
+162,5,36,NF,0,f,f,t,"",t,f,AUD,Islas Norkfolk
+156,3,840,NP,977,f,f,t,"",t,f,USD,Nepal
+155,5,36,NR,674,f,f,t,"",t,f,AUD,Nauru
+161,5,554,NU,683,f,f,t,"",t,f,NZD,Niue
+168,8,840,PA,507,f,f,t,NNNNNN,t,f,USD,Panamá
+171,6,840,PE,51,f,f,t,"",t,f,USD,Perú
+172,3,608,PH,63,f,f,t,NNNN,t,f,PHP,Filipinas
+165,3,586,PK,92,f,f,t,"",t,f,PKR,Pakistán
+174,8,840,PR,0,f,f,t,NNNNN,t,f,USD,Puerto Rico
+167,3,840,PS,0,f,f,t,"",t,f,USD,Palestina
+190,7,978,RS,381,f,f,t,NNNNN,t,f,EUR,Serbia y Montenegro
+177,7,643,RU,7,f,f,t,NNNNNN,t,f,RUB,Rusia
+178,4,840,RW,250,f,f,t,"",t,f,USD,Ruanda
+188,3,682,SA,966,f,f,t,"",t,f,SAR,Arabia Saudita
+194,5,36,SB,677,f,f,t,"",t,f,AUD,Islas Solomón
+191,4,978,SC,248,f,f,t,"",t,f,EUR,Seychelles
+198,4,0,SD,249,f,f,t,"",t,f, ,Sudán
+193,27,978,SI,386,f,f,t,C-NNNN,t,t,EUR,Eslovenia
+200,7,0,SJ,0,f,f,t,"",t,f, ,Islas Svalbard y Jan Mayen
+192,4,840,SL,232,f,f,t,"",t,f,USD,Sierra Leona
+186,7,978,SM,378,f,f,t,NNNNN,t,f,EUR,San Marino
+189,4,952,SN,221,f,f,t,"",t,f,XOF,Senegal
+199,8,840,SR,597,f,f,t,"",t,f,USD,Surinam
+187,4,978,ST,239,f,f,t,"",t,f,EUR,Santo Tomé y Príncipe
+202,3,840,SY,963,f,f,t,"",t,f,USD,Siria
+201,4,748,SZ,268,f,f,t,"",t,f,SZL,Suazilandia
+213,8,840,TC,0,f,f,t,LLLL NLL,t,f,USD,Islas Turcas y Caicos
+204,3,840,TJ,992,f,f,t,"",t,f,USD,Tayikistán
+207,5,0,TK,690,f,f,t,"",t,f, ,Tokelau
+206,3,764,TH,66,f,f,t,NNNNN,t,f,THB,Tanzania
+212,3,840,TM,993,f,f,t,"",t,f,USD,Turkmenistán
+208,5,840,TO,676,f,f,t,"",t,f,USD,Tonga
+211,7,978,TR,90,f,f,t,NNNNN,t,f,EUR,Turquía
+209,6,840,TT,0,f,f,t,"",t,f,USD,Trinidad y Tobago
+214,5,36,TV,688,f,f,t,"",t,f,AUD,Tuvalu
+216,1,980,UA,380,f,f,t,NNNNN,t,t,UAH,Ucrania
+215,4,840,UG,256,f,f,t,"",t,f,USD,Uganda
+218,6,840,UY,598,f,f,t,"",t,f,USD,Uruguay
+219,3,840,UZ,998,f,f,t,"",t,f,USD,Uzbekistán
+221,6,840,VE,58,f,f,t,"",t,f,USD,Venezuela
+222,3,840,VN,84,f,f,t,NNNNNN,t,f,USD,Vietnam
+220,5,548,VU,678,f,f,t,"",t,f,VUV,Vanuatu
+225,5,953,WF,681,f,f,t,"",t,f,XPF,Wallis y Futuna
+185,5,840,WS,685,f,f,t,"",t,f,USD,Samoa
+227,3,840,YE,967,f,f,t,"",t,f,USD,Yemen
+144,4,978,YT,262,f,f,t,"",t,f,EUR,Mayotte
+163,5,840,MP,0,f,f,t,"",t,f,USD,Islas Marianas del Norte
+217,3,784,AE,971,f,f,t,"",t,f,AED,Emiratos Árabes Unidos
+231,3,971,AF,93,f,f,t,NNNN,t,f,AFN,Afganistán
+230,7,978,AL,355,f,f,t,NNNN,t,f,EUR,Albania
+157,8,840,AN,599,f,f,t,"",t,f,USD,Antillas Neerlandesas
+41,4,840,AO,244,f,f,f,"",t,f,USD,Angola
+60,4,978,BF,226,f,f,t,"",t,f,EUR,Burkina Faso
+179,8,978,BL,0,f,f,t,"",t,f,EUR,San Bartolomé
+4,2,124,CA,1,t,f,t,LNL NLN,f,f,CAD,Canadá
+237,8,840,KY,0,f,f,t,"",t,f,USD,Islas Caimán
+164,3,512,OM,968,f,f,t,"",t,f,OMR,Omán
+182,8,978,MF,0,f,f,t,"",t,f,EUR,Isla de San Martín
+205,4,840,TZ,255,f,f,t,"",t,f,USD,Tanzania
+228,4,840,ZM,260,f,f,t,"",t,f,USD,Zambia
+229,4,840,ZW,263,f,f,t,"",t,f,USD,Zimbabue
+239,3,36,CC,0,f,f,t,"",t,f,AUD,Islas Cocos
+32,4,952,CI,225,f,f,t,"",t,f,XOF,Costa de Marfil
+240,5,554,CK,682,f,f,t,"",t,f,NZD,Islas Cook
+196,8,0,GS,0,f,f,t,LLLL NLL,t,f, ,Georgia del Sur e Islas Sandwich del Sur
+106,5,0,HM,0,f,f,t,"",t,f, ,Islas Heard y McDonald
+26,34,978,IE,353,f,f,f,"",t,t,EUR,Irlanda
+29,3,376,IL,972,f,f,t,NNNNNNN,t,f,ILS,Israel
+40,7,978,AD,376,f,f,t,CNNN,t,f,EUR,Andorra
+114,7,826,IM,0,f,f,t,CN NLL,t,f,GBP,Isla de Man
+110,3,356,IN,91,f,f,t,NNN NNN,t,f,INR,India
+235,5,0,IO,0,f,f,t,LLLL NLL,t,f, ,Territorio Británico del Océano Índico
+116,7,0,JE,0,f,f,t,CN NLL,t,f, ,Jersey
+63,3,840,KH,855,f,f,t,NNNNN,t,f,USD,Camboya
+180,8,840,KN,0,f,f,t,"",t,f,USD,San Cristóbal y Nieves
+28,3,410,KR,82,f,f,t,NNN-NNN,t,f,KRW,Corea del Sur
+131,37,978,LT,370,f,f,t,NNNNN,t,t,EUR,Lituania
+125,36,978,LV,371,f,f,t,C-NNNN,t,t,EUR,Letonia
+150,7,978,ME,382,f,f,t,NNNNN,t,f,EUR,Montenegro
+134,4,978,MG,261,f,f,t,"",t,f,EUR,Madagascar
+132,3,344,MO,853,f,f,f,"",t,f,HKD,Macao
+139,1,978,MT,356,f,f,t,LLL NNNN,t,t,EUR,Malta
+154,4,516,NA,264,f,f,t,"",t,f,NAD,Namibia
+159,8,840,NI,505,f,f,t,NNNNNN,t,f,USD,Nicaragua
+27,5,554,NZ,64,f,f,t,NNNN,t,f,NZD,Nueva Zelanda
+242,5,953,PF,689,f,f,t,"",t,f,XPF,Polinesia Francesa
+169,5,598,PG,675,f,f,t,"",t,f,PGK,Papúa Nueva Guinea
+183,8,978,PM,508,f,f,t,"",t,f,EUR,San Pedro y Miquelón
+173,5,0,PN,0,f,f,t,LLLL NLL,t,f, ,Islas Pitcairn
+166,5,840,PW,680,f,f,t,"",t,f,USD,Islas Palaos
+170,6,840,PY,595,f,f,t,"",t,f,USD,Paraguay
+175,3,634,QA,974,f,f,t,"",t,f,QAR,Qatar
+176,4,978,RE,262,f,f,t,"",t,f,EUR,Reunión
+37,26,978,SK,421,f,f,t,NNN NN,t,t,EUR,Eslovaquia
+195,4,840,SO,252,f,f,t,"",t,f,USD,Somalia
+243,5,0,TF,0,f,f,t,"",t,f, ,Territorios Australes Franceses
+210,4,978,TN,216,f,f,t,"",t,f,EUR,Túnez
+203,3,901,TW,886,f,f,t,NNNNN,t,f,TWD,Taiwán
+21,2,840,US,1,t,f,t,NNNNN,f,f,USD,Estados Unidos de América
+184,8,840,VC,0,f,f,t,"",t,f,USD,San Vicente y las Granadinas
+223,2,840,VG,0,f,f,t,CNNNN,t,f,USD,Islas Vírgenes Británicas
+224,2,840,VI,0,f,f,t,"",t,f,USD,Islas Vírgenes de los Estados Unidos de América
+50,3,840,BD,880,f,f,t,NNNN,t,f,USD,Bangladesh
+20,25,208,DK,45,f,f,t,NNNN,t,t,DKK,Dinamarca
+81,6,840,EC,593,f,f,t,CNNNNNN,t,f,USD,Ecuador
+86,28,978,EE,372,f,f,t,NNNNN,t,t,EUR,Estonia
+226,4,0,EH,0,f,f,t,"",t,f, ,Sahara Occidental
+87,4,840,ET,251,f,f,t,"",t,f,USD,Etiopía
+7,29,978,FI,358,f,f,t,NNNNN,t,t,EUR,Finlandia
+90,5,242,FJ,679,f,f,t,"",t,f,FJD,Fiji
+88,8,826,FK,0,f,f,t,LLLL NLL,t,f,GBP,Islas Malvinas
+89,7,208,FO,298,f,f,t,"",t,f,DKK,Islas Faroe
+8,30,978,FR,33,t,f,t,NNNNN,t,t,EUR,Francia
+91,4,978,GA,241,f,f,t,"",t,f,EUR,Gabón
+95,8,840,GD,0,f,f,t,"",t,f,USD,Granada
+96,7,208,GL,299,f,f,t,"",t,f,DKK,Groenlandia
+9,31,978,GR,30,f,f,t,NNNNN,t,t,EUR,Grecia
