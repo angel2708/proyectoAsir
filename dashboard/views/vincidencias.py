@@ -64,7 +64,7 @@ def create_mail(subject, template_name, context):
         subject=subject,
         body='',
         from_email=settings.EMAIL_HOST_USER,
-        to=['pepepalotes12@outlook.es']
+        to=['angeliyovalderrubio3@gmail.com']
     )
 
     message.attach_alternative(content, 'text/html')
@@ -128,12 +128,12 @@ def saveIncidence (request):
                 p_text = 'Alta'
 
             try:
-                if user_id != '14' and user_id != '64': # CAMBIAR POR 14 Y 64
-                    host = request.META['HTTP_HOST']
-                    subject = "Nueva Incidencia - ("+p_text+")"
-                    template_name = "mailing/newIncidence.html"
-                    mail = create_mail(subject, template_name, {'username':username, 'issue':issue, 'description':description, 'host':host})
-                    mail.send(fail_silently=False)
+                # if user_id != '14' and user_id != '64': # CAMBIAR POR 14 Y 64
+                host = request.META['HTTP_HOST']
+                subject = "Nueva Incidencia - ("+p_text+")"
+                template_name = "mailing/newIncidence.html"
+                mail = create_mail(subject, template_name, {'username':username, 'issue':issue, 'description':description, 'host':host})
+                mail.send(fail_silently=False)
             except:
                 return HttpResponse('Ha petado')
 
@@ -385,6 +385,45 @@ def updateIncidence (request):
                 mail = data_mail(subject, template_name, {'username': username, 'number': inc_id, 'issue': incidence.issue, 'comm': comm, 'description': incidence.description, 'host': host})
                 mail.send(fail_silently=False)
 
+            elif new_state == '2':
+                def test_mail(subject, template_name, context):
+                    content = render_to_string(template_name, context)
+                    message = EmailMultiAlternatives(
+                        subject=subject,
+                        body='',
+                        from_email=settings.EMAIL_INCIDENCES_USER,
+                        # Manda el correo a la persona que pone la incidencia
+                        to=[email]
+                    )
+
+                    message.attach_alternative(content, 'text/html')
+                    return message
+
+                host = request.META['HTTP_HOST']
+                subject = "Incidencia en testeo"
+                template_name = "mailing/incidenceEdited.html"
+                mail = test_mail(subject, template_name, {'username': username, 'number': inc_id, 'issue': incidence.issue, 'comm': comm, 'description': incidence.description, 'host': host})
+                mail.send(fail_silently=False)
+
+            elif new_state == '1':
+                def repair_mail(subject, template_name, context):
+                    content = render_to_string(template_name, context)
+                    message = EmailMultiAlternatives(
+                        subject=subject,
+                        body='',
+                        from_email=settings.EMAIL_INCIDENCES_USER,
+                        # Manda el correo a la persona que pone la incidencia
+                        to=[email]
+                    )
+
+                    message.attach_alternative(content, 'text/html')
+                    return message
+
+                host = request.META['HTTP_HOST']
+                subject = "La incidencia se está solucionando"
+                template_name = "mailing/incidenceRepairing.html"
+                mail = repair_mail(subject, template_name, {'username': username, 'number': inc_id, 'issue': incidence.issue, 'comm': comm, 'description': incidence.description, 'host': host})
+                mail.send(fail_silently=False)
             else:
                 incidence.checked=False
 

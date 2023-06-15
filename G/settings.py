@@ -102,11 +102,11 @@ DATABASES = {
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "glocal",
+        "NAME": "G-Local2",
         "USER": "postgres",
         "PASSWORD": "usuario",
-        "HOST": "192.168.99.129",
-        "PORT": "30653",
+        "HOST": "localhost",
+        "PORT": "5432",
     }
 }
 
@@ -183,11 +183,9 @@ EMAIL_HOST = 'smtp-mail.outlook.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "proyectoangelcv@outlook.es"
-EMAIL_HOST_PASSWORD = "958450450Proyecto"
-EMAIL_INCIDENCES_USER = "incidencias@esmovil.es"
-EMAIL_INCIDENCES_PASSWORD = "$_Esmovil_$Incidencias_"
-EMAIL_DELIVERY_USER="sonia.fernandez@esmovil.es"
-EMAIL_DELIVERY_PASSWORD="$_Sonia$_2019"
+EMAIL_HOST_PASSWORD = "958450450Pr"
+EMAIL_INCIDENCES_USER = "proyectoangelcv@outlook.es"
+EMAIL_INCIDENCES_PASSWORD = "958450450Pr"
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 MEDIA_URL = '/dashboard/media/'
