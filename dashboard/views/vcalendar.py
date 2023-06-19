@@ -122,9 +122,9 @@ def vacations(request):
         dept = Departament.objects.get(pk=departament_id)
         manager = dept.manager
 
-        if manager != 0:
-            this_user2 = Account.objects.get(pk=manager)
-            manager_mail = this_user2.email
+        # if manager != 0:
+        #     this_user2 = Account.objects.get(pk=manager)
+        #     manager_mail = this_user2.email
 
         this_user_ca = CA.objects.get(user_id=user)
         this_user_ca_dept = this_user_ca.departament_id
@@ -256,9 +256,6 @@ def vacations(request):
                 host = request.META['HTTP_HOST']
                 subject = str(username)+" ha solicitado una ausencia"
                 template_name = "mailing/absenceMail.html"
-                if str(departament) != '0':
-                    mail = create_mail(manager_mail, subject, template_name, {'host':host, 'username':username, 'absence_type':absence_type2, 'description':description, 'start':start2, 'finish':finish2})
-                    mail.send(fail_silently=False)
                 mail = create_mail('angeliyovalderrubio3@gmail.com', subject, template_name, {'host':host, 'username':username, 'absence_type':absence_type2, 'description':description, 'start':start2, 'finish':finish2})
                 mail.send(fail_silently=False)
             except:
@@ -320,8 +317,6 @@ def vacations(request):
                 host = request.META['HTTP_HOST']
                 subject = str(username)+" ha solicitado una ausencia"
                 template_name = "mailing/absenceMail.html"
-                mail = create_mail(manager_mail, subject, template_name, {'host':host, 'username':username, 'absence_type':absence_type2, 'description':description, 'start':start2, 'finish':finish2})
-                mail.send(fail_silently=False)
                 mail = create_mail('angeliyovalderrubio3@gmail.com', subject, template_name, {'host':host, 'username':username, 'absence_type':absence_type2, 'description':description, 'start':start2, 'finish':finish2})
                 mail.send(fail_silently=False)
             except:
@@ -356,7 +351,6 @@ def vacations(request):
         if str(abs.absence_type) == str(1):
             while dateFinish2 >= dateStart2:
                 yearAbs2 = dateStart2.strftime('%Y')
-                print(yearAbs2)
                 if int(yearAbs2) == int(yearAct2):
                     if (int(vacation_days)+int(diff_act)) <= total_vacation_days:
                         abs = Absence.objects.get(pk=ida)
@@ -381,7 +375,6 @@ def vacations(request):
                         else: 
                             return HttpResponse('error')
                 dateStart2 = dateStart2 + datetime.timedelta(days=1)
-                print(dateStart2)
             return HttpResponse(abs.user)
 
         if str(abs.absence_type) == str(6):
@@ -413,12 +406,12 @@ def vacations(request):
         abs.save()
 
         dept = Departament.objects.get(pk=departament_id)
-        manager_id = dept.manager
-        manager = Account.objects.get(pk=manager_id)
-        manager_mail = manager.email
-        manager_username = str(manager.first_name)+' '+str(manager.last_name)
+        # manager_id = dept.manager
+        # manager = Account.objects.get(pk=manager_id)
+        # manager_mail = manager.email
+        # manager_username = str(manager.first_name)+' '+str(manager.last_name)
 
-        if str(manager_id) == str(request.user.id) or str(request.user.id) == '45' or str(request.user.id) == '51':
+        if str(request.user.id) or str(request.user.id) == '45' or str(request.user.id) == '51':
             absence_user = Account.objects.get(pk=abs.user)
             username = str(absence_user.first_name)+' '+str(absence_user.last_name)
             user_mail = absence_user.email
@@ -450,11 +443,11 @@ def vacations(request):
             # Enviamos el correo electrónico avisando del rechazo de una ausencia
             try:
                 host = request.META['HTTP_HOST']
-                subject = str(manager_username)+" ha rechazado tu solicitud de ausencia"
+                subject = "Se ha rechazado tu solicitud de ausencia"
                 template_name = "mailing/absenceMailCancel.html"
-                mail = create_mail(user_mail, subject, template_name, {'host':host, 'username':username, 'manager_username':manager_username, 'absence_type':absence_type2, 'description':abs.description, 'start':start2, 'finish':finish2})
+                mail = create_mail(user_mail, subject, template_name, {'host':host, 'username':username, 'absence_type':absence_type2, 'description':abs.description, 'start':start2, 'finish':finish2})
                 mail.send(fail_silently=False)
-                mail = create_mail('angeliyovalderrubio3@gmail.com', subject, template_name, {'host':host, 'username':username, 'manager_username':manager_username, 'absence_type':absence_type2, 'description':abs.description, 'start':start2, 'finish':finish2})
+                mail = create_mail('angeliyovalderrubio3@gmail.com', subject, template_name, {'host':host, 'username':username, 'absence_type':absence_type2, 'description':abs.description, 'start':start2, 'finish':finish2})
                 mail.send(fail_silently=False)
             except:
                 print("Límite de correos alcanzado")
