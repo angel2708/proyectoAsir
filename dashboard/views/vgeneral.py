@@ -49,9 +49,6 @@ def email(request):
 
     return render(request, 'appEmail/appEmail.html')
 
-def chat(request):
-    return render(request, 'appChat/appChat.html')
-
 def mantenimiento(request, excepcion=None):
     return HttpResponseNotFound("Page not found")
 

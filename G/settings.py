@@ -12,10 +12,21 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os.path
+import os
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Environ BD
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
+# reading .env file
+environ.Env.read_env()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -27,7 +38,7 @@ SECRET_KEY = 'm0&s0=opp7dk-!jbsx%j8%^s$ex@_wxiaw$+ym+1^(_ti7nmhf'
 #DEBUG = False
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'proyectoasir.ddns.net', '192.168.1.97']
+ALLOWED_HOSTS = ['*']
 #ALLOWED_HOSTS = ['161.22.44.32']
 #ALLOWED_HOSTS = ['161.22.43.152', 'localhost', 'django', '127.0.0.1']
 
@@ -100,14 +111,7 @@ DATABASES = {
 """
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "G-Local2",
-        "USER": "postgres",
-        "PASSWORD": "usuario",
-        "HOST": "localhost",
-        "PORT": "5432",
-    }
+    "default": env.db(),
 }
 
 ##################################################################################################

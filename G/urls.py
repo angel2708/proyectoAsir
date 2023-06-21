@@ -33,7 +33,6 @@ urlpatterns = [
     path('', vgeneral.dashboard, name="inicio"),
     path('inicio/', vgeneral.dashboard, name="inicio"),
     path('email/', vgeneral.email, name="email"),
-    path('chat/', vgeneral.chat, name="chat"),
 
     # SESSION CONTROL
     path('register/', vusers.register, name="register"),
